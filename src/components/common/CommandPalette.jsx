@@ -3,19 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { initialCourses } from '../../data/courses';
 import { initialNotices } from '../../data/notices';
-import { initialEvents } from '../../data/events';
-import { initialProjects } from '../../data/projects';
 import { initialAchievements } from '../../data/achievements';
-import { initialFaculty } from '../../data/faculty';
+import { initialTechClubs, initialStudentProjects } from '../../data/clubsAndProjects';
+import { initialAlumni } from '../../data/alumni';
 import {
   Search,
   BookOpen,
-  Bell,
-  Calendar,
-  Code2,
   Trophy,
+  Bell,
   Users,
-  Terminal,
+  GraduationCap,
+  Code2,
   ArrowRight,
   X
 } from 'lucide-react';
@@ -37,104 +35,108 @@ export const CommandPalette = () => {
 
   if (!commandPaletteOpen) return null;
 
-  // Filter datasets based on query
   const q = query.toLowerCase().trim();
 
+  // Search across courses
   const matchedCourses = initialCourses
     .filter(c => c.title.toLowerCase().includes(q) || c.category.toLowerCase().includes(q) || c.technologies.some(t => t.toLowerCase().includes(q)))
-    .slice(0, 3)
+    .slice(0, 2)
     .map(c => ({
       id: `course-${c.id}`,
       type: "Course",
       title: c.title,
       subtitle: `${c.category} • ${c.difficulty}`,
       icon: BookOpen,
-      iconColor: "text-sky-400",
-      url: `/courses/${c.id}`
+      iconColor: "text-cyan-400",
+      url: `/courses`
     }));
 
+  // Search across notices
   const matchedNotices = initialNotices
-    .filter(n => n.title.toLowerCase().includes(q) || n.category.toLowerCase().includes(q) || n.summary.toLowerCase().includes(q))
+    .filter(n => n.title.toLowerCase().includes(q) || n.priority.toLowerCase().includes(q) || n.summary.toLowerCase().includes(q))
     .slice(0, 2)
     .map(n => ({
       id: `notice-${n.id}`,
       type: "Notice",
       title: n.title,
-      subtitle: `${n.category} • ${n.date}`,
+      subtitle: `${n.priority} • ${n.date}`,
       icon: Bell,
       iconColor: "text-amber-400",
       url: `/notices`
     }));
 
-  const matchedEvents = initialEvents
-    .filter(e => e.title.toLowerCase().includes(q) || e.category.toLowerCase().includes(q) || e.venue.toLowerCase().includes(q))
-    .slice(0, 2)
-    .map(e => ({
-      id: `event-${e.id}`,
-      type: "Event",
-      title: e.title,
-      subtitle: `${e.category} • ${e.date}`,
-      icon: Calendar,
-      iconColor: "text-emerald-400",
-      url: `/events/${e.id}`
-    }));
-
-  const matchedProjects = initialProjects
-    .filter(p => p.name.toLowerCase().includes(q) || p.technologies.some(t => t.toLowerCase().includes(q)))
-    .slice(0, 2)
-    .map(p => ({
-      id: `proj-${p.id}`,
-      type: "Project",
-      title: p.name,
-      subtitle: `${p.category} • ${p.studentTeam}`,
-      icon: Code2,
-      iconColor: "text-purple-400",
-      url: `/projects`
-    }));
-
+  // Search across achievements
   const matchedAchievements = initialAchievements
-    .filter(a => a.achievement.toLowerCase().includes(q) || a.competitionOrg.toLowerCase().includes(q))
+    .filter(a => a.title.toLowerCase().includes(q) || a.team.toLowerCase().includes(q) || a.category.toLowerCase().includes(q))
     .slice(0, 2)
     .map(a => ({
       id: `ach-${a.id}`,
       type: "Achievement",
-      title: a.achievement,
-      subtitle: `${a.studentTeam} • ${a.competitionOrg}`,
+      title: a.title,
+      subtitle: `${a.category} • ${a.team}`,
       icon: Trophy,
       iconColor: "text-yellow-400",
       url: `/achievements`
     }));
 
-  const matchedFaculty = initialFaculty
-    .filter(f => f.name.toLowerCase().includes(q) || f.department.toLowerCase().includes(q) || f.specialization.toLowerCase().includes(q))
+  // Search across clubs & projects
+  const matchedClubs = initialTechClubs
+    .filter(c => c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q) || c.tags.some(t => t.toLowerCase().includes(q)))
     .slice(0, 2)
-    .map(f => ({
-      id: `fac-${f.id}`,
-      type: "Faculty",
-      title: f.name,
-      subtitle: `${f.department} • ${f.specialization}`,
+    .map(c => ({
+      id: `club-${c.id}`,
+      type: "Tech Club",
+      title: c.name,
+      subtitle: `${c.activeMembers} Members • Lead: ${c.lead.split(' ')[0]}`,
       icon: Users,
-      iconColor: "text-rose-400",
-      url: `/about`
+      iconColor: "text-purple-400",
+      url: `/clubs-and-projects`
     }));
 
-  // Quick navigation destinations when search is empty
-  const defaultActions = [
-    { id: "act-courses", type: "Navigation", title: "Explore All Courses", subtitle: "Cyber Security, AI/ML, Cloud, IoT, Web", icon: BookOpen, iconColor: "text-sky-400", url: "/courses" },
-    { id: "act-techzone", type: "Navigation", title: "Open Tech Zone", subtitle: "Coding challenges, AI & Cyber quizzes, Leaderboard", icon: Terminal, iconColor: "text-cyan-400", url: "/tech-zone" },
-    { id: "act-timetable", type: "Navigation", title: "Weekly Timetable", subtitle: "Lecture & practical schedule", icon: Calendar, iconColor: "text-indigo-400", url: "/timetable" },
-    { id: "act-assignments", type: "Navigation", title: "Assignments & Submissions", subtitle: "Track deliverables and scores", icon: Code2, iconColor: "text-emerald-400", url: "/assignments" },
-    { id: "act-labs", type: "Navigation", title: "Interactive Labs Sandbox", subtitle: "Browser-based code executor & exercises", icon: Terminal, iconColor: "text-purple-400", url: "/labs" }
+  const matchedProjects = initialStudentProjects
+    .filter(p => p.name.toLowerCase().includes(q) || p.studentTeam.toLowerCase().includes(q) || p.technologies.some(t => t.toLowerCase().includes(q)))
+    .slice(0, 2)
+    .map(p => ({
+      id: `proj-${p.id}`,
+      type: "Student Project",
+      title: p.name,
+      subtitle: `${p.category} • ${p.studentTeam}`,
+      icon: Code2,
+      iconColor: "text-emerald-400",
+      url: `/clubs-and-projects`
+    }));
+
+  // Search across alumni
+  const matchedAlumni = initialAlumni
+    .filter(al => al.name.toLowerCase().includes(q) || al.company.toLowerCase().includes(q) || al.currentRole.toLowerCase().includes(q))
+    .slice(0, 2)
+    .map(al => ({
+      id: `alumni-${al.id}`,
+      type: "Alumni Leader",
+      title: al.name,
+      subtitle: `${al.currentRole} at ${al.company} (${al.batch})`,
+      icon: GraduationCap,
+      iconColor: "text-blue-400",
+      url: `/alumni`
+    }));
+
+  // Default Quick Navigation when empty
+  const defaultShortcuts = [
+    { id: "nav-courses", type: "Navigation", title: "All Courses", subtitle: "Explore AI, Cyber Security, Cloud, Web, Data Science", icon: BookOpen, iconColor: "text-cyan-400", url: "/courses" },
+    { id: "nav-achievements", type: "Navigation", title: "Wall of Fame & Achievements", subtitle: "Hackathon champions, patents & research honors", icon: Trophy, iconColor: "text-yellow-400", url: "/achievements" },
+    { id: "nav-notices", type: "Navigation", title: "Official Notice Board", subtitle: "Hackathon updates, exam dates & circulars", icon: Bell, iconColor: "text-amber-400", url: "/notices" },
+    { id: "nav-cp", type: "Navigation", title: "Student Clubs & Projects", subtitle: "Join tech guilds & explore open-source capstones", icon: Users, iconColor: "text-purple-400", url: "/clubs-and-projects" },
+    { id: "nav-alumni", type: "Navigation", title: "Alumni Mentorship Directory", subtitle: "Book 1-on-1 mentorship with leaders at Google, AWS & Stripe", icon: GraduationCap, iconColor: "text-blue-400", url: "/alumni" }
   ];
 
   const results = q ? [
     ...matchedCourses,
     ...matchedNotices,
-    ...matchedEvents,
-    ...matchedProjects,
     ...matchedAchievements,
-    ...matchedFaculty
-  ] : defaultActions;
+    ...matchedClubs,
+    ...matchedProjects,
+    ...matchedAlumni
+  ] : defaultShortcuts;
 
   const handleSelect = (item) => {
     setCommandPaletteOpen(false);
@@ -160,14 +162,15 @@ export const CommandPalette = () => {
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-950/80 backdrop-blur-md"
+        className="fixed inset-0 bg-[#0B0F19]/80 backdrop-blur-md"
         onClick={() => setCommandPaletteOpen(false)}
       />
 
-      {/* Palette box */}
-      <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-150">
-        {/* Search Input Bar */}
-        <div className="flex items-center px-4 py-3.5 border-b border-slate-800 gap-3">
+      {/* Palette Box */}
+      <div className="relative w-full max-w-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-150">
+        
+        {/* Search Bar */}
+        <div className="flex items-center px-4 py-3.5 border-b border-slate-200 dark:border-slate-800 gap-3">
           <Search className="w-5 h-5 text-slate-400 shrink-0" />
           <input
             ref={inputRef}
@@ -178,24 +181,24 @@ export const CommandPalette = () => {
               setSelectedIndex(0);
             }}
             onKeyDown={handleKeyDown}
-            placeholder="Type to search courses, notices, events, labs, projects... (or Esc to exit)"
-            className="w-full bg-transparent text-slate-100 placeholder-slate-400 text-sm md:text-base focus:outline-none"
+            placeholder="Type to search courses, notices, clubs, projects, alumni... (Esc to exit)"
+            className="w-full bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm md:text-base focus:outline-none"
           />
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="p-1 rounded text-slate-400 hover:text-white"
+              className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-white"
             >
               <X className="w-4 h-4" />
             </button>
           )}
-          <span className="hidden sm:inline-block px-2 py-0.5 text-xs font-mono text-slate-400 bg-slate-800 rounded border border-slate-700">
+          <span className="hidden sm:inline-block px-2 py-0.5 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
             ESC
           </span>
         </div>
 
         {/* Results List */}
-        <div className="max-h-[60vh] overflow-y-auto p-2 divide-y divide-slate-800/40">
+        <div className="max-h-[60vh] overflow-y-auto p-2 divide-y divide-slate-100 dark:divide-slate-800/40">
           {results.length > 0 ? (
             results.map((item, idx) => {
               const Icon = item.icon;
@@ -206,40 +209,41 @@ export const CommandPalette = () => {
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors ${
-                    isSelected ? 'bg-sky-500/10 text-white border border-sky-500/20' : 'text-slate-300 hover:bg-slate-800/60'
+                    isSelected ? 'bg-cyan-50 dark:bg-cyan-500/10 text-slate-900 dark:text-white border border-cyan-200 dark:border-cyan-500/20' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50'
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className={`p-2 rounded-lg bg-slate-800 border border-slate-700/50 ${item.iconColor}`}>
+                    <div className={`p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/50 ${item.iconColor}`}>
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">{item.type}</span>
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400">{item.type}</span>
                       </div>
-                      <p className="text-sm font-medium text-slate-100 truncate">{item.title}</p>
-                      <p className="text-xs text-slate-400 truncate">{item.subtitle}</p>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{item.title}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{item.subtitle}</p>
                     </div>
                   </div>
-                  <ArrowRight className={`w-4 h-4 text-slate-400 transition-transform ${isSelected ? 'translate-x-1 text-sky-400' : ''}`} />
+                  <ArrowRight className={`w-4 h-4 text-slate-400 transition-transform ${isSelected ? 'translate-x-1 text-cyan-500 dark:text-cyan-400' : ''}`} />
                 </div>
               );
             })
           ) : (
-            <div className="p-8 text-center text-slate-400 text-sm">
+            <div className="p-8 text-center text-slate-500 dark:text-slate-400 text-sm">
               No matching records found for "{query}".
             </div>
           )}
         </div>
 
-        {/* Keyboard Footer Helper */}
-        <div className="px-4 py-2 bg-slate-950/80 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+        {/* Keyboard Helper */}
+        <div className="px-4 py-2 bg-slate-50 dark:bg-[#0B0F19] border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <span><kbd className="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700">↑</kbd> <kbd className="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700">↓</kbd> to navigate</span>
-            <span><kbd className="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700">Enter</kbd> to select</span>
+            <span><kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded border border-slate-300 dark:border-slate-700">↑</kbd> <kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded border border-slate-300 dark:border-slate-700">↓</kbd> navigate</span>
+            <span><kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded border border-slate-300 dark:border-slate-700">Enter</kbd> open</span>
           </div>
-          <span className="hidden sm:inline">Future Skills Search Matrix</span>
+          <span>Future Skills Directory Search</span>
         </div>
+
       </div>
     </div>
   );

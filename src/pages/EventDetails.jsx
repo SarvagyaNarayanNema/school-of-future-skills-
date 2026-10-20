@@ -75,32 +75,32 @@ export const EventDetails = () => {
             )}
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
             {event.title}
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
             {event.description}
           </p>
 
           {/* Speaker Highlight Card */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-purple-400">
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
               <User className="w-4 h-4" /> Featured Speaker / Mentor
             </div>
-            <h4 className="text-base font-bold text-white">{event.speaker}</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">{event.speakerBio}</p>
+            <h4 className="text-base font-bold text-slate-900 dark:text-white">{event.speaker}</h4>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{event.speakerBio}</p>
           </div>
 
           {/* Schedule Timeline */}
           {event.schedule && event.schedule.length > 0 && (
-            <div className="space-y-4 pt-4 border-t border-slate-800">
-              <h3 className="text-lg font-bold text-white">Event Itinerary</h3>
+            <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Event Itinerary</h3>
               <div className="space-y-3">
                 {event.schedule.map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-4 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
-                    <span className="font-mono font-bold text-sky-400 shrink-0 w-32">{item.time}</span>
-                    <span className="text-slate-200">{item.item}</span>
+                  <div key={idx} className="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs">
+                    <span className="font-mono font-bold text-sky-600 dark:text-sky-400 shrink-0 w-32">{item.time}</span>
+                    <span className="text-slate-700 dark:text-slate-200">{item.item}</span>
                   </div>
                 ))}
               </div>
@@ -110,28 +110,28 @@ export const EventDetails = () => {
 
         {/* Sidebar Info */}
         <div className="lg:col-span-4 glass-panel p-6 rounded-3xl border border-purple-500/20 space-y-5">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">Event Information</h3>
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Event Information</h3>
           
-          <div className="space-y-3 text-xs text-slate-300">
+          <div className="space-y-3 text-xs text-slate-700 dark:text-slate-300">
             <div className="flex items-center gap-2.5">
-              <Calendar className="w-4 h-4 text-purple-400 shrink-0" />
+              <Calendar className="w-4 h-4 text-purple-600 dark:text-purple-400 shrink-0" />
               <div>
-                <span className="text-slate-400 block text-[10px]">Date</span>
-                <span className="font-medium text-white">{event.date}</span>
+                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">Date</span>
+                <span className="font-medium text-slate-900 dark:text-white">{event.date}</span>
               </div>
             </div>
             <div className="flex items-center gap-2.5">
-              <Clock className="w-4 h-4 text-purple-400 shrink-0" />
+              <Clock className="w-4 h-4 text-purple-600 dark:text-purple-400 shrink-0" />
               <div>
-                <span className="text-slate-400 block text-[10px]">Time</span>
-                <span className="font-medium text-white">{event.time}</span>
+                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">Time</span>
+                <span className="font-medium text-slate-900 dark:text-white">{event.time}</span>
               </div>
             </div>
             <div className="flex items-center gap-2.5">
-              <MapPin className="w-4 h-4 text-purple-400 shrink-0" />
+              <MapPin className="w-4 h-4 text-purple-600 dark:text-purple-400 shrink-0" />
               <div>
-                <span className="text-slate-400 block text-[10px]">Venue</span>
-                <span className="font-medium text-white">{event.venue}</span>
+                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">Venue</span>
+                <span className="font-medium text-slate-900 dark:text-white">{event.venue}</span>
               </div>
             </div>
             <div className="flex items-center gap-2.5">

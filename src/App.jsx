@@ -7,25 +7,16 @@ import { CommandPalette } from './components/common/CommandPalette';
 import { ToastContainer } from './components/common/ToastContainer';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 
-// Pages
+// 5 Core Pages + Home & 404
 import { Home } from './pages/Home';
-import { About } from './pages/About';
 import { Courses } from './pages/Courses';
-import { CourseDetails } from './pages/CourseDetails';
-import { Notices } from './pages/Notices';
-import { Events } from './pages/Events';
-import { EventDetails } from './pages/EventDetails';
-import { Projects } from './pages/Projects';
 import { Achievements } from './pages/Achievements';
-import { TechZone } from './pages/TechZone';
-import { Dashboard } from './pages/Dashboard';
-import { Timetable } from './pages/Timetable';
-import { Assignments } from './pages/Assignments';
-import { Labs } from './pages/Labs';
-import { Profile } from './pages/Profile';
+import { Notices } from './pages/Notices';
+import { ClubsAndProjects } from './pages/ClubsAndProjects';
+import { Alumni } from './pages/Alumni';
 import { NotFound } from './pages/NotFound';
 
-// Scroll to top helper
+// Smooth scroll to top on page navigation
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -38,34 +29,36 @@ export const App = () => {
   return (
     <ErrorBoundary>
       <ScrollToTop />
-      <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 tech-grid-pattern transition-colors duration-200">
-        <Navbar />
+      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 antialiased tech-grid-pattern selection:bg-cyan-500 selection:text-slate-950 transition-colors duration-200">
         
+        {/* Sticky Top Navbar strictly holding Future Skills brand + 5 links */}
+        <Navbar />
+
+        {/* Dynamic Route Content */}
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
             <Route path="/courses" element={<Courses />} />
-            <Route path="/courses/:id" element={<CourseDetails />} />
-            <Route path="/notices" element={<Notices />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/events/:id" element={<EventDetails />} />
-            <Route path="/projects" element={<Projects />} />
             <Route path="/achievements" element={<Achievements />} />
-            <Route path="/tech-zone" element={<TechZone />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/timetable" element={<Timetable />} />
-            <Route path="/assignments" element={<Assignments />} />
-            <Route path="/labs" element={<Labs />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/notices" element={<Notices />} />
+            <Route path="/clubs-and-projects" element={<ClubsAndProjects />} />
+            <Route path="/alumni" element={<Alumni />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
 
+        {/* Global Footer */}
         <Footer />
+
+        {/* Floating AI Helper Widget */}
         <FutureBot />
+
+        {/* Command Palette (Ctrl + K) Search */}
         <CommandPalette />
+
+        {/* Toast Notification Container */}
         <ToastContainer />
+
       </div>
     </ErrorBoundary>
   );

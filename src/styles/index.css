@@ -4,19 +4,19 @@
 
 @layer base {
   :root {
-    --bg-primary: #080c16;
-    --bg-secondary: #0f172a;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --border-color: #1e293b;
-  }
-
-  html.light {
     --bg-primary: #f8fafc;
     --bg-secondary: #ffffff;
     --text-primary: #0f172a;
     --text-secondary: #475569;
     --border-color: #e2e8f0;
+  }
+
+  .dark {
+    --bg-primary: #080c16;
+    --bg-secondary: #0f172a;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border-color: #1e293b;
   }
 
   body {
@@ -28,15 +28,15 @@
 
 /* Glassmorphism utility */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(226, 232, 240, 0.9);
 }
 
-.light .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.12);
 }
 
 /* Custom scrollbars */
@@ -45,19 +45,22 @@
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
-}
-.light ::-webkit-scrollbar-track {
   background: #f1f5f9;
 }
+.dark ::-webkit-scrollbar-track {
+  background: #090d16;
+}
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #cbd5e1;
   border-radius: 4px;
 }
-.light ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+.dark ::-webkit-scrollbar-thumb {
+  background: #1e293b;
 }
 ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
 
@@ -81,13 +84,72 @@
 
 /* Tech grid background */
 .tech-grid-pattern {
+  background-image: radial-gradient(rgba(2, 132, 199, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.dark .tech-grid-pattern {
   background-image: radial-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px),
                     radial-gradient(rgba(139, 92, 246, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
   background-position: 0 0, 16px 16px;
 }
 
-.light .tech-grid-pattern {
-  background-image: radial-gradient(rgba(2, 132, 199, 0.1) 1px, transparent 1px);
-  background-size: 28px 28px;
+/* 3D Bot Floating & Voice Soundwave Animations */
+@keyframes bot-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
+
+@keyframes bot-pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 14px rgba(6, 182, 212, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 24px rgba(6, 182, 212, 0.9)) drop-shadow(0 0 36px rgba(168, 85, 247, 0.4));
+  }
+}
+
+@keyframes soundwave-bar-1 {
+  0%, 100% { height: 6px; }
+  50% { height: 22px; }
+}
+
+@keyframes soundwave-bar-2 {
+  0%, 100% { height: 16px; }
+  50% { height: 6px; }
+}
+
+@keyframes soundwave-bar-3 {
+  0%, 100% { height: 8px; }
+  50% { height: 26px; }
+}
+
+@keyframes soundwave-bar-4 {
+  0%, 100% { height: 20px; }
+  50% { height: 10px; }
+}
+
+@keyframes soundwave-bar-5 {
+  0%, 100% { height: 10px; }
+  50% { height: 24px; }
+}
+
+.animate-bot-float {
+  animation: bot-float 3.5s ease-in-out infinite;
+}
+
+.animate-bot-glow {
+  animation: bot-pulse-glow 2.5s ease-in-out infinite;
+}
+
+.animate-soundwave-1 { animation: soundwave-bar-1 0.8s ease-in-out infinite; }
+.animate-soundwave-2 { animation: soundwave-bar-2 0.7s ease-in-out infinite 0.15s; }
+.animate-soundwave-3 { animation: soundwave-bar-3 0.9s ease-in-out infinite 0.3s; }
+.animate-soundwave-4 { animation: soundwave-bar-4 0.75s ease-in-out infinite 0.1s; }
+.animate-soundwave-5 { animation: soundwave-bar-5 0.85s ease-in-out infinite 0.25s; }
+

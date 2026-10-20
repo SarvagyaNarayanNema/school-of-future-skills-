@@ -36,34 +36,34 @@ export const AssignmentSubmitModal = ({ isOpen, onClose, assignment }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`Submit: ${assignment.title}`} maxWidth="max-w-md">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-xs">
-          <p className="font-semibold text-white">{assignment.subject} ({assignment.code})</p>
-          <p className="text-slate-400 mt-0.5">Due: {assignment.dueDate} at {assignment.dueTime}</p>
-          <p className="text-sky-400 mt-1">Deliverables: {assignment.deliverables}</p>
+        <div className="p-3 bg-slate-100 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+          <p className="font-semibold text-slate-900 dark:text-white">{assignment.subject} ({assignment.code})</p>
+          <p className="text-slate-500 dark:text-slate-400 mt-0.5">Due: {assignment.dueDate} at {assignment.dueTime}</p>
+          <p className="text-sky-600 dark:text-sky-400 mt-1">Deliverables: {assignment.deliverables}</p>
         </div>
 
         {/* File upload simulated dropzone */}
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Deliverable File</label>
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Deliverable File</label>
           <div
             onClick={handleSimulateFilePick}
             className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-colors ${
               fileAttached
-                ? 'border-emerald-500/50 bg-emerald-950/10'
-                : 'border-slate-700 hover:border-sky-500/50 bg-slate-950/40'
+                ? 'border-emerald-500/50 bg-emerald-500/10'
+                : 'border-slate-300 dark:border-slate-700 hover:border-sky-500/50 bg-slate-50 dark:bg-slate-950/40'
             }`}
           >
             {fileAttached ? (
               <div className="space-y-1">
-                <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
-                <p className="text-xs font-medium text-emerald-300">{fileName}</p>
-                <p className="text-[11px] text-slate-400">2.1 MB • Ready for review (click to re-attach)</p>
+                <CheckCircle2 className="w-8 h-8 text-emerald-500 dark:text-emerald-400 mx-auto" />
+                <p className="text-xs font-medium text-emerald-600 dark:text-emerald-300">{fileName}</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">2.1 MB • Ready for review (click to re-attach)</p>
               </div>
             ) : (
               <div className="space-y-1">
                 <UploadCloud className="w-8 h-8 text-slate-400 mx-auto" />
-                <p className="text-xs font-medium text-slate-300">Click to choose or attach project archive</p>
-                <p className="text-[11px] text-slate-400">Supports .zip, .tar.gz, .cpp, .py, .pdf</p>
+                <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Click to choose or attach project archive</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Supports .zip, .tar.gz, .cpp, .py, .pdf</p>
               </div>
             )}
           </div>
@@ -71,21 +71,21 @@ export const AssignmentSubmitModal = ({ isOpen, onClose, assignment }) => {
 
         {/* Comments input */}
         <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5">Student Notes / Repository Link (Optional)</label>
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Student Notes / Repository Link (Optional)</label>
           <textarea
             rows="3"
             value={comments}
             onChange={(e) => setComments(e.target.value)}
             placeholder="Include any build steps, branch name, or test coverage notes for the evaluator..."
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-sky-500 resize-none"
+            className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-sky-500 resize-none"
           />
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white"
+            className="px-4 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           >
             Cancel
           </button>

@@ -1,0 +1,121 @@
+export const ALUMNI_ROLES = [
+  "All Roles",
+  "AI & ML Engineer",
+  "Software Systems Engineer",
+  "Cloud & Infrastructure",
+  "Security Architect",
+  "Quantitative Researcher"
+];
+
+export const ALUMNI_BATCHES = [
+  "All Batches",
+  "Class of 2025",
+  "Class of 2024",
+  "Class of 2023",
+  "Class of 2022"
+];
+
+export const initialAlumni = [
+  {
+    id: "alumni-1",
+    name: "Arjun Krishnamurthy",
+    currentRole: "Machine Learning Systems Engineer",
+    company: "Google DeepMind",
+    batch: "Class of 2024",
+    roleCategory: "AI & ML Engineer",
+    location: "London, UK / Mountain View",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
+    bio: "Graduated with honors in Computer Science from Future Skills. Currently working on high-throughput distributed tensor parallelism and foundation model inference acceleration.",
+    pastUniversityProject: "Lead author of OpenAttention framework (awarded Best Departmental Capstone 2024).",
+    linkedin: "https://linkedin.com/in/example-arjun-ml",
+    mentorshipAvailable: true,
+    availableSlots: 4,
+    skills: ["Distributed PyTorch", "CUDA", "LLM Serving", "Systems Architecture"],
+    mentorshipTopics: ["Resume Review", "Mock Interview", "Career Advice"]
+  },
+  {
+    id: "alumni-2",
+    name: "Dr. Natasha Roy",
+    currentRole: "Staff Cloud Infrastructure Architect",
+    company: "Amazon Web Services (AWS)",
+    batch: "Class of 2022",
+    roleCategory: "Cloud & Infrastructure",
+    location: "Seattle, WA, USA",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=800&q=80",
+    bio: "Oversees low-latency hypervisor virtualization and multi-tenant VPC security at AWS. Former lead of Future Skills Cloud Computing Club.",
+    pastUniversityProject: "Architected the department's first private OpenStack micro-datacenter cluster.",
+    linkedin: "https://linkedin.com/in/example-natasha-cloud",
+    mentorshipAvailable: true,
+    availableSlots: 2,
+    skills: ["Kubernetes", "Linux Kernel", "Terraform", "eBPF", "AWS Core"],
+    mentorshipTopics: ["Resume Review", "Career Advice", "Mock Interview"]
+  },
+  {
+    id: "alumni-3",
+    name: "Kabir Malhotra",
+    currentRole: "Senior Security Research Engineer",
+    company: "CrowdStrike Falcon Labs",
+    batch: "Class of 2023",
+    roleCategory: "Security Architect",
+    location: "Bengaluru, India",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+    bio: "Specializes in threat hunting, offensive kernel rootkit detection, and incident response automation. Active speaker at DEF CON and Black Hat conferences.",
+    pastUniversityProject: "Founded the Cyber Defense & War-Gaming Guild and coached two National CTF champion teams.",
+    linkedin: "https://linkedin.com/in/example-kabir-sec",
+    mentorshipAvailable: true,
+    availableSlots: 3,
+    skills: ["Windows & Linux Internals", "GDB", "Memory Forensics", "eBPF", "Assembly"],
+    mentorshipTopics: ["Mock Interview", "Resume Review", "Career Advice"]
+  },
+  {
+    id: "alumni-4",
+    name: "Sneha Nair",
+    currentRole: "Senior Full Stack Platform Engineer",
+    company: "Stripe",
+    batch: "Class of 2023",
+    roleCategory: "Software Systems Engineer",
+    location: "Dublin, Ireland",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80",
+    bio: "Engineers global payments orchestration middleware processing billions in daily volume with zero-downtime database schema migrations.",
+    pastUniversityProject: "Developed student course registration platform handle 10,000 concurrent socket connections.",
+    linkedin: "https://linkedin.com/in/example-sneha-stripe",
+    mentorshipAvailable: true,
+    availableSlots: 5,
+    skills: ["React 19", "Ruby", "TypeScript", "PostgreSQL", "Idempotency"],
+    mentorshipTopics: ["Resume Review", "Mock Interview", "Career Advice"]
+  },
+  {
+    id: "alumni-5",
+    name: "Rishi Vardhan",
+    currentRole: "Quantitative Trading Strategist & Engineer",
+    company: "Jane Street Capital",
+    batch: "Class of 2024",
+    roleCategory: "Quantitative Researcher",
+    location: "New York, NY, USA",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
+    bio: "Designs sub-microsecond algorithmic order routing engines and statistical arbitrage market models. 2x ICPC World Finals medalist.",
+    pastUniversityProject: "Lead problem setter for Departmental Algorithmic Code Blitz tournaments.",
+    linkedin: "https://linkedin.com/in/example-rishi-quant",
+    mentorshipAvailable: true,
+    availableSlots: 2,
+    skills: ["OCaml", "C++20", "Stochastic Calculus", "FPGA Interfacing"],
+    mentorshipTopics: ["Mock Interview", "Career Advice"]
+  },
+  {
+    id: "alumni-6",
+    name: "Meera Sen",
+    currentRole: "Core Robotics Software Engineer",
+    company: "Boston Dynamics",
+    batch: "Class of 2022",
+    roleCategory: "AI & ML Engineer",
+    location: "Waltham, MA, USA",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80",
+    bio: "Develops dynamic balance controllers and trajectory optimization algorithms for quadruped autonomous robots in extreme field environments.",
+    pastUniversityProject: "Built the university autonomous terrain rover and published two IEEE robotics conference papers.",
+    linkedin: "https://linkedin.com/in/example-meera-robotics",
+    mentorshipAvailable: true,
+    availableSlots: 3,
+    skills: ["C++", "ROS2", "Model Predictive Control", "Kinematics", "PyTorch"],
+    mentorshipTopics: ["Resume Review", "Career Advice"]
+  }
+];

@@ -185,34 +185,34 @@ export const TechZone = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-semibold text-cyan-400">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-semibold text-cyan-600 dark:text-cyan-400">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Interactive Gamified Arena</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Future Skills Tech Zone
           </h1>
-          <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
             Sharpen your algorithmic instincts, test cybersecurity concepts, compete on the departmental leaderboard, and unlock verified skill badges.
           </p>
         </div>
 
         {/* User live XP pill */}
-        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-700/80 text-left min-w-[200px]">
-          <span className="text-[11px] font-mono text-slate-400 block">CURRENT XP SCORE</span>
-          <span className="text-2xl font-black text-amber-400 block">{user.points} XP</span>
-          <span className="text-xs text-sky-400 font-semibold">{user.badges.length} Badges Earned</span>
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 text-left min-w-[200px] shadow-sm">
+          <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 block">CURRENT XP SCORE</span>
+          <span className="text-2xl font-black text-amber-500 dark:text-amber-400 block">{user.points} XP</span>
+          <span className="text-xs text-sky-600 dark:text-sky-400 font-semibold">{user.badges.length} Badges Earned</span>
         </div>
       </div>
 
       {/* Arena Navigation Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-slate-800">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-slate-200 dark:border-slate-800">
         <button
           onClick={() => setActiveTab('daily')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${
             activeTab === 'daily'
               ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-              : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+              : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
           }`}
         >
           <Flame className="w-4 h-4" /> Daily Tech Question
@@ -223,7 +223,7 @@ export const TechZone = () => {
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${
             activeTab === 'coding'
               ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-              : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+              : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
           }`}
         >
           <Code2 className="w-4 h-4" /> Coding Challenges
@@ -234,7 +234,7 @@ export const TechZone = () => {
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${
             activeTab === 'cyber'
               ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
-              : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+              : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
           }`}
         >
           <Shield className="w-4 h-4" /> Cyber Quiz
@@ -245,7 +245,7 @@ export const TechZone = () => {
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${
             activeTab === 'ai'
               ? 'bg-purple-500 text-white shadow-md shadow-purple-500/20'
-              : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+              : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
           }`}
         >
           <Cpu className="w-4 h-4" /> AI / ML Quiz
@@ -256,7 +256,7 @@ export const TechZone = () => {
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${
             activeTab === 'minigame'
               ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20'
-              : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+              : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
           }`}
         >
           <Gamepad2 className="w-4 h-4" /> Mini Game
@@ -267,7 +267,7 @@ export const TechZone = () => {
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${
             activeTab === 'leaderboard'
               ? 'bg-cyan-500 text-slate-950 font-black shadow-md shadow-cyan-500/20'
-              : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+              : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
           }`}
         >
           <Trophy className="w-4 h-4" /> Leaderboard
@@ -277,23 +277,23 @@ export const TechZone = () => {
       {/* TAB CONTENT: DAILY QUESTION */}
       {activeTab === 'daily' && (
         <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-500/30 space-y-6 max-w-3xl mx-auto">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-400">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-500 dark:text-amber-400">
               <Flame className="w-4 h-4" /> {dailyQuestion.date} • {dailyQuestion.topic}
             </span>
-            <span className="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+            <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
               +{dailyQuestion.points} XP
             </span>
           </div>
 
-          <h3 className="text-lg sm:text-xl font-bold text-white leading-relaxed">
+          <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-relaxed">
             {dailyQuestion.question}
           </h3>
 
           <form onSubmit={handleDailySubmit} className="space-y-3">
             {dailyQuestion.options.map((option, idx) => {
               const isSelected = dailySelected === idx;
-              let optionStyle = "border-slate-800 bg-slate-900/60 hover:bg-slate-800/80 text-slate-200";
+              let optionStyle = "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-800 dark:text-slate-200";
 
               if (dailySubmitted) {
                 if (idx === dailyQuestion.correctIndex) {
@@ -379,10 +379,10 @@ export const TechZone = () => {
                   <Badge variant={ch.difficulty === 'Easy' ? 'emerald' : ch.difficulty === 'Medium' ? 'primary' : 'purple'} size="xs">
                     {ch.difficulty}
                   </Badge>
-                  <span className="font-mono text-amber-400 font-bold">+{ch.points} XP</span>
+                  <span className="font-mono text-amber-500 dark:text-amber-400 font-bold">+{ch.points} XP</span>
                 </div>
-                <h4 className="text-sm font-bold text-white truncate">{ch.title}</h4>
-                <p className="text-[11px] text-slate-400 mt-1">Time limit: {ch.timeLimit}</p>
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">{ch.title}</h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Time limit: {ch.timeLimit}</p>
               </div>
             ))}
           </div>
@@ -390,18 +390,18 @@ export const TechZone = () => {
           {/* Interactive Code Editor & Test Harness */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Problem & Instructions */}
-            <div className="lg:col-span-5 glass-panel p-6 rounded-2xl border border-slate-800 space-y-4 text-xs">
+            <div className="lg:col-span-5 glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 text-xs">
               <div className="space-y-1">
-                <span className="text-[10px] font-bold text-sky-400 uppercase tracking-wider">Problem Statement</span>
-                <h3 className="text-lg font-bold text-white">{currentChallenge.title}</h3>
+                <span className="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider">Problem Statement</span>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">{currentChallenge.title}</h3>
               </div>
 
-              <p className="text-slate-300 leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                 {currentChallenge.description}
               </p>
 
               <div className="space-y-2 pt-2">
-                <span className="font-bold text-slate-200 block">Sample Test Assertions:</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 block">Sample Test Assertions:</span>
                 {currentChallenge.testCases.map((tc, i) => (
                   <div key={i} className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-[11px] text-slate-300">
                     <p className="text-sky-300">Input: {tc.input}</p>
@@ -482,7 +482,7 @@ export const TechZone = () => {
                 </span>
               </div>
 
-              <h3 className="text-lg font-bold text-white leading-snug">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-snug">
                 {cyberQuizQuestions[cyberCurrentIdx].question}
               </h3>
 
@@ -543,9 +543,9 @@ export const TechZone = () => {
               <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30">
                 <Trophy className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-bold text-white">Cyber Assessment Completed!</h3>
-              <p className="text-sm text-slate-300">
-                You scored <span className="text-emerald-400 font-bold">{cyberScore} / {cyberQuizQuestions.length}</span>!
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Cyber Assessment Completed!</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                You scored <span className="text-emerald-500 dark:text-emerald-400 font-bold">{cyberScore} / {cyberQuizQuestions.length}</span>!
               </p>
               <div className="inline-block px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300 font-mono">
                 +{cyberScore * 40} XP awarded to profile
@@ -577,22 +577,22 @@ export const TechZone = () => {
                 </span>
               </div>
 
-              <h3 className="text-lg font-bold text-white leading-snug">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-snug">
                 {aiQuizQuestions[aiCurrentIdx].question}
               </h3>
 
               <div className="space-y-2.5">
                 {aiQuizQuestions[aiCurrentIdx].options.map((opt, i) => {
-                  let optClass = "border-slate-800 bg-slate-900/60 hover:bg-slate-800/80 text-slate-200";
+                  let optClass = "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-800 dark:text-slate-200";
 
                   if (aiAnsweredState) {
                     if (i === aiQuizQuestions[aiCurrentIdx].correctIndex) {
-                      optClass = "border-purple-500 bg-purple-950/20 text-purple-300 font-semibold";
+                      optClass = "border-purple-500 bg-purple-50 dark:bg-purple-950/20 text-purple-700 dark:text-purple-300 font-semibold";
                     } else if (i === aiSelected) {
-                      optClass = "border-rose-500 bg-rose-950/20 text-rose-300";
+                      optClass = "border-rose-500 bg-rose-50 dark:bg-rose-950/20 text-rose-700 dark:text-rose-300";
                     }
                   } else if (aiSelected === i) {
-                    optClass = "border-sky-500 bg-sky-950/20";
+                    optClass = "border-sky-500 bg-sky-50 dark:bg-sky-950/20";
                   }
 
                   return (
@@ -602,13 +602,13 @@ export const TechZone = () => {
                       className={`p-3.5 rounded-xl border cursor-pointer transition-colors text-xs leading-relaxed flex items-center justify-between ${optClass}`}
                     >
                       <div className="flex items-center gap-3">
-                        <span className="w-5 h-5 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center font-mono text-[11px] shrink-0">
+                        <span className="w-5 h-5 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center font-mono text-[11px] shrink-0">
                           {String.fromCharCode(65 + i)}
                         </span>
                         <span>{opt}</span>
                       </div>
                       {aiAnsweredState && i === aiQuizQuestions[aiCurrentIdx].correctIndex && (
-                        <CheckCircle2 className="w-4 h-4 text-purple-400 shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-purple-600 dark:text-purple-400 shrink-0" />
                       )}
                     </div>
                   );
@@ -616,18 +616,18 @@ export const TechZone = () => {
               </div>
 
               {aiAnsweredState && (
-                <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300 space-y-1">
-                  <p className="font-bold text-purple-400">Model Insights:</p>
+                <div className="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 space-y-1">
+                  <p className="font-bold text-purple-600 dark:text-purple-400">Model Insights:</p>
                   <p>{aiQuizQuestions[aiCurrentIdx].explanation}</p>
                 </div>
               )}
 
-              <div className="flex items-center justify-between pt-4 border-t border-slate-800">
-                <span className="text-xs text-slate-400">Score: {aiScore} correct</span>
+              <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800">
+                <span className="text-xs text-slate-500 dark:text-slate-400">Score: {aiScore} correct</span>
                 <button
                   onClick={handleNextAi}
                   disabled={!aiAnsweredState}
-                  className="px-5 py-2 rounded-xl bg-purple-500 hover:bg-purple-400 text-white font-bold text-xs disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                  className="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs disabled:opacity-40 disabled:pointer-events-none transition-colors"
                 >
                   {aiCurrentIdx + 1 === aiQuizQuestions.length ? "Finish Quiz" : "Next Question"}
                 </button>
@@ -635,20 +635,20 @@ export const TechZone = () => {
             </>
           ) : (
             <div className="text-center py-8 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center mx-auto border border-purple-500/30">
+              <div className="w-16 h-16 rounded-full bg-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center mx-auto border border-purple-500/30">
                 <Trophy className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-bold text-white">AI/ML Quiz Completed!</h3>
-              <p className="text-sm text-slate-300">
-                You scored <span className="text-purple-400 font-bold">{aiScore} / {aiQuizQuestions.length}</span>!
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">AI/ML Quiz Completed!</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                You scored <span className="text-purple-600 dark:text-purple-400 font-bold">{aiScore} / {aiQuizQuestions.length}</span>!
               </p>
-              <div className="inline-block px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs text-purple-300 font-mono">
+              <div className="inline-block px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs text-purple-700 dark:text-purple-300 font-mono">
                 +{aiScore * 40} XP awarded to profile
               </div>
               <div className="pt-4">
                 <button
                   onClick={resetAiQuiz}
-                  className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold"
+                  className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold"
                 >
                   Retake AI Quiz
                 </button>
@@ -662,17 +662,17 @@ export const TechZone = () => {
       {activeTab === 'minigame' && (
         <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-rose-500/30 space-y-6 max-w-2xl mx-auto text-center">
           <div className="space-y-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-rose-400">Mini Game Challenge</span>
-            <h3 className="text-2xl font-extrabold text-white">Binary Breaker</h3>
-            <p className="text-xs text-slate-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">Mini Game Challenge</span>
+            <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white">Binary Breaker</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Toggle the 4 binary bits (8, 4, 2, 1) to match the decimal target number!
             </p>
           </div>
 
-          <div className="py-4 bg-slate-950/80 rounded-2xl border border-slate-800">
-            <span className="text-xs text-slate-400 uppercase tracking-wider block">Target Decimal:</span>
-            <span className="text-5xl font-black text-rose-400 font-mono">{targetBinary}</span>
-            <p className="text-xs text-slate-400 mt-2">Round {gameRound} • Solved: {gameScore}</p>
+          <div className="py-4 bg-slate-100 dark:bg-slate-950/80 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <span className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Target Decimal:</span>
+            <span className="text-5xl font-black text-rose-500 dark:text-rose-400 font-mono">{targetBinary}</span>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">Round {gameRound} • Solved: {gameScore}</p>
           </div>
 
           {/* Interactive 4 Bits */}
@@ -686,7 +686,7 @@ export const TechZone = () => {
                   className={`p-4 rounded-2xl border transition-all flex flex-col items-center justify-center ${
                     bit === 1
                       ? 'bg-rose-500 text-white border-rose-400 shadow-lg shadow-rose-500/25 scale-105'
-                      : 'bg-slate-900 text-slate-400 border-slate-700 hover:border-slate-600'
+                      : 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-400 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600'
                   }`}
                 >
                   <span className="text-3xl font-black font-mono">{bit}</span>
@@ -697,7 +697,7 @@ export const TechZone = () => {
           </div>
 
           {gameMessage && (
-            <p className={`text-xs font-semibold ${gameMessage.startsWith('✓') ? 'text-emerald-400' : 'text-amber-400'}`}>
+            <p className={`text-xs font-semibold ${gameMessage.startsWith('✓') ? 'text-emerald-500 dark:text-emerald-400' : 'text-amber-500 dark:text-amber-400'}`}>
               {gameMessage}
             </p>
           )}
@@ -718,8 +718,8 @@ export const TechZone = () => {
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h3 className="text-xl font-bold text-white">Department Leaderboard</h3>
-              <p className="text-xs text-slate-400">Live rankings updated as students solve problems & quizzes.</p>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">Department Leaderboard</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Live rankings updated as students solve problems & quizzes.</p>
             </div>
             <div className="text-xs text-slate-400">
               Sorted by Total Verified XP Points

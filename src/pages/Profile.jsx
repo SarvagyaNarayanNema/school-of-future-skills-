@@ -73,13 +73,13 @@ export const Profile = () => {
             {/* Basic Info */}
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-white">{user.name}</h1>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">{user.name}</h1>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30">
                   {user.rollNo}
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-slate-300 font-medium">{user.department}</p>
-              <p className="text-xs text-slate-400">{user.year} • {user.email}</p>
+              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium">{user.department}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{user.year} • {user.email}</p>
             </div>
           </div>
 
@@ -87,7 +87,7 @@ export const Profile = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsEditing(!isEditing)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-300 dark:border-slate-700 transition-colors shadow-sm"
             >
               <Edit3 className="w-4 h-4" />
               <span>{isEditing ? "Close Editor" : "Edit Profile"}</span>
@@ -96,22 +96,22 @@ export const Profile = () => {
         </div>
 
         {/* Level & Progress Strip */}
-        <div className="mt-8 pt-6 border-t border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-3.5 bg-slate-950/60 rounded-xl border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-400 uppercase block">RANK TITLE</span>
-            <span className="text-base font-bold text-white block">{levelInfo.title}</span>
-            <span className="text-xs text-sky-400 font-mono">Level {levelInfo.levelNumber}</span>
+        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="p-3.5 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase block">RANK TITLE</span>
+            <span className="text-base font-bold text-slate-900 dark:text-white block">{levelInfo.title}</span>
+            <span className="text-xs text-sky-600 dark:text-sky-400 font-mono">Level {levelInfo.levelNumber}</span>
           </div>
 
-          <div className="p-3.5 bg-slate-950/60 rounded-xl border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-400 uppercase block">VERIFIED XP POINTS</span>
-            <span className="text-xl font-black text-amber-400 block">{user.points} XP</span>
-            <span className="text-[11px] text-slate-400">Earned through challenges & labs</span>
+          <div className="p-3.5 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase block">VERIFIED XP POINTS</span>
+            <span className="text-xl font-black text-amber-600 dark:text-amber-400 block">{user.points} XP</span>
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">Earned through challenges & labs</span>
           </div>
 
-          <div className="p-3.5 bg-slate-950/60 rounded-xl border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-400 uppercase block">NEXT LEVEL MILESTONE</span>
-            <span className="text-sm font-bold text-slate-200 block">{levelInfo.nextLevelPoints} XP</span>
+          <div className="p-3.5 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase block">NEXT LEVEL MILESTONE</span>
+            <span className="text-sm font-bold text-slate-800 dark:text-slate-200 block">{levelInfo.nextLevelPoints} XP</span>
             <div className="mt-2">
               <ProgressBar progress={levelInfo.progressPercent} size="sm" />
             </div>
@@ -211,19 +211,19 @@ export const Profile = () => {
         
         {/* Left Col: Bio & Skills */}
         <div className="lg:col-span-6 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-3 text-xs leading-relaxed">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">About Student</h3>
-            <p className="text-slate-300">{user.bio}</p>
+          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 text-xs leading-relaxed">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">About Student</h3>
+            <p className="text-slate-600 dark:text-slate-300">{user.bio}</p>
           </div>
 
           {/* Skills Grid */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-3">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">Verified Engineering Competencies</h3>
+          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Verified Engineering Competencies</h3>
             <div className="flex flex-wrap gap-2 pt-1">
               {user.skills.map((s, idx) => (
                 <span
                   key={idx}
-                  className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-xs font-mono font-medium shadow-sm"
+                  className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-mono font-medium shadow-sm"
                 >
                   {s}
                 </span>
@@ -233,22 +233,22 @@ export const Profile = () => {
         </div>
 
         {/* Right Col: Badges Wall */}
-        <div className="lg:col-span-6 glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Trophy className="w-4 h-4 text-amber-400" /> Earned Skill Badges ({user.badges.length})
+        <div className="lg:col-span-6 glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-amber-500 dark:text-amber-400" /> Earned Skill Badges ({user.badges.length})
             </h3>
-            <span className="text-xs text-slate-400 font-mono">100% Verified</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">100% Verified</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {user.badges.map((b) => (
-              <div key={b.id} className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start gap-3">
+              <div key={b.id} className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex items-start gap-3">
                 <span className="text-2xl shrink-0">{b.icon}</span>
                 <div className="min-w-0">
-                  <h4 className="text-xs font-bold text-white truncate">{b.name}</h4>
-                  <p className="text-[11px] text-slate-400 line-clamp-1">{b.desc}</p>
-                  <span className="text-[10px] text-sky-400 font-mono mt-1 block">{b.unlockedAt}</span>
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate">{b.name}</h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">{b.desc}</p>
+                  <span className="text-[10px] text-sky-600 dark:text-sky-400 font-mono mt-1 block">{b.unlockedAt}</span>
                 </div>
               </div>
             ))}

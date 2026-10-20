@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { initialFaculty, FACULTY_DEPARTMENTS } from '../data/faculty';
 import { FacultyCard } from '../components/cards/FacultyCard';
+import { BuildersSection } from '../components/sections/BuildersSection';
 import { EmptyState } from '../components/common/EmptyState';
 import {
   Sparkles,
@@ -41,9 +42,11 @@ export const About = () => {
   ];
 
   const filteredFaculty = initialFaculty.filter(fac => {
-    const matchesSearch = fac.name.toLowerCase().includes(facultySearch.toLowerCase()) ||
-                          fac.specialization.toLowerCase().includes(facultySearch.toLowerCase()) ||
-                          fac.bio.toLowerCase().includes(facultySearch.toLowerCase());
+    const term = facultySearch.toLowerCase();
+    const matchesSearch = (fac.name || '').toLowerCase().includes(term) ||
+                          (fac.specialization || '').toLowerCase().includes(term) ||
+                          (fac.bio || '').toLowerCase().includes(term) ||
+                          (fac.department || '').toLowerCase().includes(term);
     const matchesDept = selectedDept === 'All' || fac.department === selectedDept;
     return matchesSearch && matchesDept;
   });
@@ -52,16 +55,16 @@ export const About = () => {
     <div className="space-y-16 pb-16">
       
       {/* Header Banner */}
-      <section className="relative overflow-hidden py-12 md:py-16 border-b border-slate-800/80">
+      <section className="relative overflow-hidden py-12 md:py-16 border-b border-slate-200 dark:border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-xs font-semibold text-sky-400">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-xs font-semibold text-sky-600 dark:text-sky-400">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Future Skills Department Overview</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Preparing Engineers for Emerging Frontiers
           </h1>
-          <p className="text-slate-300 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
             The Future Skills department bridges academic rigor with rapid industry evolution, enabling students to design, prototype, and defend real-world software and hardware systems.
           </p>
         </div>
@@ -73,20 +76,20 @@ export const About = () => {
           
           {/* Vision */}
           <div className="glass-panel p-8 rounded-3xl border border-sky-500/30 space-y-4 relative overflow-hidden">
-            <div className="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 flex items-center justify-center border border-sky-500/20">
+            <div className="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-500 dark:text-sky-400 flex items-center justify-center border border-sky-500/20">
               <Compass className="w-6 h-6" />
             </div>
-            <h2 className="text-xl font-bold text-white">Department Vision</h2>
-            <p className="text-sm text-slate-300 leading-relaxed">
-              [Editable Placeholder]: To be an internationally recognized center of undergraduate excellence in emerging computing paradigms—producing ethical technologists capable of architecting resilient systems, leading breakthrough research, and solving high-impact global challenges.
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Department Vision</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              To be an internationally recognized center of undergraduate excellence in emerging computing paradigms—producing ethical technologists capable of architecting resilient systems, leading breakthrough research, and solving high-impact global challenges.
             </p>
-            <ul className="text-xs text-slate-400 space-y-2 pt-2">
+            <ul className="text-xs text-slate-500 dark:text-slate-400 space-y-2 pt-2">
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-sky-400 shrink-0" />
+                <CheckCircle className="w-4 h-4 text-sky-500 dark:text-sky-400 shrink-0" />
                 <span>Pioneer experiential lab-first pedagogy across computer science tracks</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-sky-400 shrink-0" />
+                <CheckCircle className="w-4 h-4 text-sky-500 dark:text-sky-400 shrink-0" />
                 <span>Foster inclusive student participation in open source and international competitions</span>
               </li>
             </ul>
@@ -94,20 +97,20 @@ export const About = () => {
 
           {/* Mission */}
           <div className="glass-panel p-8 rounded-3xl border border-purple-500/30 space-y-4 relative overflow-hidden">
-            <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20">
+            <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-500/20">
               <Target className="w-6 h-6" />
             </div>
-            <h2 className="text-xl font-bold text-white">Department Mission</h2>
-            <p className="text-sm text-slate-300 leading-relaxed">
-              [Editable Placeholder]: To provide hands-on curriculum, high-performance computing infrastructure, and active mentorship that transforms motivated students into production-ready engineers, security researchers, and innovators.
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Department Mission</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              To provide hands-on curriculum, high-performance computing infrastructure, and active mentorship that transforms motivated students into production-ready engineers, security researchers, and innovators.
             </p>
-            <ul className="text-xs text-slate-400 space-y-2 pt-2">
+            <ul className="text-xs text-slate-500 dark:text-slate-400 space-y-2 pt-2">
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-purple-400 shrink-0" />
+                <CheckCircle className="w-4 h-4 text-purple-500 dark:text-purple-400 shrink-0" />
                 <span>Ensure 100% of students author open-source capstones and technical papers</span>
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-purple-400 shrink-0" />
+                <CheckCircle className="w-4 h-4 text-purple-500 dark:text-purple-400 shrink-0" />
                 <span>Bridge academia with active industry engineering fellowships and mentorship</span>
               </li>
             </ul>
@@ -119,9 +122,9 @@ export const About = () => {
       {/* What Students Learn (8 Domains) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center space-y-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-cyan-400">Curriculum Breadth</span>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">What Students Master</h2>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">
+          <span className="text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 font-mono">Curriculum Breadth</span>
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">What Students Master</h2>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
             Practical skills engineered to match current production standards in technology enterprises.
           </p>
         </div>
@@ -132,13 +135,13 @@ export const About = () => {
             return (
               <div
                 key={idx}
-                className="glass-panel p-6 rounded-2xl border border-slate-800/80 hover:border-slate-700 transition-all duration-300 hover:-translate-y-1 space-y-3"
+                className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 hover:-translate-y-1 space-y-3"
               >
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${pillar.color}`}>
                   <Icon className="w-5 h-5" />
                 </div>
-                <h3 className="text-base font-bold text-white">{pillar.title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">{pillar.desc}</p>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">{pillar.title}</h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{pillar.desc}</p>
               </div>
             );
           })}
@@ -147,16 +150,16 @@ export const About = () => {
 
       {/* Animated Technologies Covered */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="glass-panel p-8 rounded-3xl border border-slate-800/80 text-center space-y-6">
+        <div className="glass-panel p-8 rounded-3xl border border-slate-200 dark:border-slate-800/80 text-center space-y-6">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Toolchains & Stacks</span>
-            <h3 className="text-xl sm:text-2xl font-bold text-white mt-1">Technologies Covered In Departmental Labs</h3>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">Toolchains & Stacks</span>
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-1">Technologies Covered In Departmental Labs</h3>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 max-w-3xl mx-auto">
             {technologies.map((tech, i) => (
               <span
                 key={i}
-                className="px-3.5 py-1.5 rounded-xl bg-slate-900/90 text-slate-200 text-xs font-mono font-medium border border-slate-700 hover:border-sky-400 hover:text-sky-300 transition-colors shadow-sm"
+                className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 text-slate-700 dark:text-slate-200 text-xs font-mono font-medium border border-slate-200 dark:border-slate-700 hover:border-sky-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors shadow-sm"
               >
                 {tech}
               </span>
@@ -169,10 +172,10 @@ export const About = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-sky-400">Department Directory</span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mt-1">Faculty & Lab Mentors</h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1">
-              [Editable Sample Directory]: Research advisors and instructional fellows guiding student projects.
+            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 font-mono">Department Directory</span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1">Faculty & Lab Mentors</h2>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+              Official academic leadership and technical mentors guiding student projects at the School of Future Skills & IT (FSIT).
             </p>
           </div>
 
@@ -184,7 +187,7 @@ export const About = () => {
               value={facultySearch}
               onChange={(e) => setFacultySearch(e.target.value)}
               placeholder="Search faculty or specialization..."
-              className="w-full pl-9 pr-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-sky-500"
+              className="w-full pl-9 pr-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-sky-500"
             />
           </div>
         </div>
@@ -198,7 +201,7 @@ export const About = () => {
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
                 selectedDept === dept
                   ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20'
-                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
               }`}
             >
               {dept}
@@ -224,6 +227,9 @@ export const About = () => {
           />
         )}
       </section>
+
+      {/* Website Builders & Creators */}
+      <BuildersSection />
 
     </div>
   );

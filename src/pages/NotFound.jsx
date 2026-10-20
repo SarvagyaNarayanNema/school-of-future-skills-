@@ -9,8 +9,8 @@ export const NotFound = () => {
         <div className="w-16 h-16 mx-auto rounded-2xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center font-mono font-black text-2xl">
           404
         </div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">Route Not Found</h1>
-        <p className="text-xs text-slate-400 leading-relaxed">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Route Not Found</h1>
+        <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
           The requested page endpoint does not exist on the Future Skills platform or has moved to another sector.
         </p>
         <div className="flex items-center justify-center gap-3 pt-3">
