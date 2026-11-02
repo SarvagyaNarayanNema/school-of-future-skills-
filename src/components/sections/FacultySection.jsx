@@ -61,6 +61,10 @@ export const FacultySection = () => {
                     alt={headOfSchool.name}
                     className="w-full h-full object-cover object-top rounded-xl group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80";
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none rounded-xl" />
                   <div className="absolute bottom-3 left-3 right-3 text-center">
@@ -187,6 +191,10 @@ export const FacultySection = () => {
                       alt={fac.name}
                       className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80";
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
                     
@@ -282,6 +290,10 @@ export const FacultySection = () => {
                     src={selectedFaculty.image}
                     alt={selectedFaculty.name}
                     className="w-full h-full object-cover object-top"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80";
+                    }}
                   />
                 </div>
                 <div className="space-y-2 text-center sm:text-left min-w-0">

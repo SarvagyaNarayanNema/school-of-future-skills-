@@ -210,7 +210,6 @@ export const Courses = () => {
           <button
             onClick={() => {
               setSearchQuery('');
-              setSelectedSchool('All');
               setSelectedDuration('All');
             }}
             className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors border border-slate-300 dark:border-slate-700"

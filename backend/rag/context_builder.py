@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 class ContextBuilder:
     """
@@ -14,7 +14,7 @@ STRICT RULES:
 4. Structure your response with a concise introduction, bullet points, and citation tags."""
 
     @staticmethod
-    def build_prompt(user_query: str, retrieved_chunks: List[Dict[str, Any]], history: List[Dict[str, Any]] = None) -> str:
+    def build_prompt(user_query: str, retrieved_chunks: List[Dict[str, Any]], history: Optional[List[Dict[str, Any]]] = None) -> str:
         context_parts = []
         for idx, chunk in enumerate(retrieved_chunks):
             source = chunk.get("source", "Official SGSU Record")

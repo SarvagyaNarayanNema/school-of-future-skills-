@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 
 class SourceMetadata(BaseModel):
     source: str
@@ -38,4 +38,4 @@ class ChatResponse(BaseModel):
     actions: List[ActionLink] = []
     confidence: str = "HIGH" # "HIGH" | "MEDIUM" | "LOW" | "INSUFFICIENT"
     intent: str
-    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())

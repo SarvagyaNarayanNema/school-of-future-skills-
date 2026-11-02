@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { NAVIGATION_ITEMS } from '../../data/navigationData';
+import { getAssetUrl } from '../../utils/assets';
 
 /**
  * CascadingNavbar Component
@@ -200,7 +201,7 @@ export const CascadingNavbar = () => {
           {/* Official FSIT Neon Brand Logo (Image 1) */}
           <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden shadow-[0_0_18px_rgba(242,101,34,0.35)] group-hover:shadow-[0_0_26px_rgba(217,70,239,0.55)] transition-all duration-300 shrink-0 bg-slate-900 border border-fuchsia-500/30 group-hover:border-amber-400/60 flex items-center justify-center p-0.5">
             <img
-              src="/fsit-neon-logo.png"
+              src={getAssetUrl("/fsit-neon-logo.png")}
               alt="School of Future Skills Logo"
               className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
             />

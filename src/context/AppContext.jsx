@@ -157,7 +157,11 @@ export const AppProvider = ({ children }) => {
       year: "2026 Submission",
       image: projectData.image || "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
       description: projectData.description,
-      technologies: projectData.technologies.split(',').map(t => t.trim()).filter(Boolean),
+      technologies: Array.isArray(projectData.technologies)
+        ? projectData.technologies
+        : (typeof projectData.technologies === 'string'
+            ? projectData.technologies.split(',').map(t => t.trim()).filter(Boolean)
+            : []),
       github: projectData.github || "https://github.com",
       demo: projectData.demo || "",
       likes: 1

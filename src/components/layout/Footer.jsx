@@ -1,14 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, MapPin, Mail, BookOpen, Trophy, Bell, Users, GraduationCap } from 'lucide-react';
+import { getAssetUrl } from '../../utils/assets';
+import { websiteBuilders } from '../../data/builders';
 
 export const Footer = () => {
-  const builders = [
-    { name: "Sarvagya Narayan Nema", image: "/builders/sarvagya.jpg" },
-    { name: "Dimpy Rai", image: "/builders/dimpy.jpg" },
-    { name: "Hemant", image: "/builders/hemant.jpg" },
-    { name: "Soumya Malviya", image: "/builders/soumya.jpg" }
-  ];
+  const builders = websiteBuilders;
 
   return (
     <footer className="border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0B0F19] text-slate-600 dark:text-slate-400 text-sm mt-20 transition-colors">
@@ -20,7 +17,7 @@ export const Footer = () => {
             <Link to="/" className="flex items-center gap-3 group">
               <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-[0_0_18px_rgba(242,101,34,0.3)] group-hover:shadow-[0_0_24px_rgba(217,70,239,0.5)] transition-all duration-300 shrink-0 bg-slate-900 border border-fuchsia-500/30 group-hover:border-amber-400/60 flex items-center justify-center p-0.5">
                 <img
-                  src="/fsit-neon-logo.png"
+                  src={getAssetUrl("/fsit-neon-logo.png")}
                   alt="School of Future Skills Logo"
                   className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                 />

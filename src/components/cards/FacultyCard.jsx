@@ -15,6 +15,10 @@ export const FacultyCard = ({ faculty }) => {
                 alt={faculty.name}
                 className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
                 loading="lazy"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80";
+                }}
               />
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center bg-slate-200 dark:bg-slate-800 text-cyan-600 dark:text-cyan-400">

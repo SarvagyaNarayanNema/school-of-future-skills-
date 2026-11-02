@@ -44,6 +44,10 @@ export const BuildersSection = () => {
                     alt={builder.name}
                     className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80";
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />
                   
@@ -143,6 +147,10 @@ export const BuildersSection = () => {
                     src={selectedBuilder.image}
                     alt={selectedBuilder.name}
                     className="w-full h-full object-cover object-top"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80";
+                    }}
                   />
                 </div>
                 <div className="space-y-2 text-center sm:text-left min-w-0">

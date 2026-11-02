@@ -30,6 +30,7 @@ import {
   VolumeX
 } from 'lucide-react';
 import { askFutureBot, getBotConfig, saveBotConfig } from '../../services/rag/futureBotService';
+import { getAssetUrl } from '../../utils/assets';
 
 /**
  * SGSU FutureBot 🤖 - Official AI University Intelligence Assistant
@@ -795,7 +796,7 @@ I can help you with:
       >
         <div className="relative w-full h-full rounded-full overflow-hidden flex items-center justify-center">
           <img
-            src="/bot-avatar.png"
+            src={getAssetUrl("/bot-avatar.png")}
             alt="SGSU FutureBot"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
           />
@@ -815,7 +816,7 @@ I can help you with:
               <div className="relative shrink-0">
                 <div className="w-10 h-10 rounded-full bg-slate-900 border border-cyan-500/40 overflow-hidden flex items-center justify-center p-0.5 shadow-inner">
                   <img
-                    src="/bot-avatar.png"
+                    src={getAssetUrl("/bot-avatar.png")}
                     alt="SGSU FutureBot Avatar"
                     className="w-full h-full object-cover"
                   />
@@ -919,7 +920,7 @@ I can help you with:
                   <div className="flex items-center gap-1.5 mb-1 px-1">
                     {isBot && (
                       <div className="w-4 h-4 rounded-full bg-slate-900 border border-cyan-500/40 overflow-hidden flex items-center justify-center shrink-0">
-                        <img src="/bot-avatar.png" alt="FutureBot" className="w-full h-full object-cover" />
+                        <img src={getAssetUrl("/bot-avatar.png")} alt="FutureBot" className="w-full h-full object-cover" />
                       </div>
                     )}
                     <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
@@ -1067,7 +1068,7 @@ I can help you with:
                               }}
                             >
                               <img
-                                src="/bot-avatar.png"
+                                src={getAssetUrl("/bot-avatar.png")}
                                 alt="3D SGSU FutureBot Robot Avatar"
                                 draggable={false}
                                 className="w-full h-full object-contain select-none pointer-events-none transition-transform duration-300 group-hover:scale-110"

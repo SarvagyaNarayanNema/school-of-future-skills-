@@ -1,10 +1,12 @@
+import { getAssetUrl } from '../utils/assets';
+
 export const websiteBuilders = [
   {
     id: 1,
     name: "Sarvagya Narayan Nema",
     designation: "Lead Full-Stack Developer & Architect",
     department: "Platform Engineering & Core Architecture",
-    image: "/builders/sarvagya.jpg",
+    image: getAssetUrl("/builders/sarvagya.jpg"),
     experience: "Full-Stack Development | AI Integration",
     qualification: "B.C.A. (AI-ML) Student | Scope Global Skills University",
     bio: "Passionate software engineer and quant enthusiast. Architected the core platform, curriculum databases, intelligent workflows, and system integration.",
@@ -16,7 +18,7 @@ export const websiteBuilders = [
     name: "Dimpy Rai",
     designation: "Frontend UI/UX & Curriculum Designer",
     department: "UI Design & Content Integration",
-    image: "/builders/dimpy.jpg",
+    image: getAssetUrl("/builders/dimpy.jpg"),
     qualification: "B.C.A. Student | Scope Global Skills University",
     experience: "UI/UX Engineering & Data Structuring",
     bio: "Spearheaded user interface layouts, academic data structuring from official institutional documents, and responsive component styling.",
@@ -28,7 +30,7 @@ export const websiteBuilders = [
     name: "Hemant",
     designation: "Backend & Systems Developer",
     department: "Systems & Component Integration",
-    image: "/builders/hemant.jpg",
+    image: getAssetUrl("/builders/hemant.jpg"),
     qualification: "B.C.A. Student | Scope Global Skills University",
     experience: "Web Technologies & State Management",
     bio: "Contributed to component optimization, routing logic, interactive state management, and seamless feature deployment.",
@@ -40,7 +42,7 @@ export const websiteBuilders = [
     name: "Soumya Malviya",
     designation: "Integration & Testing Specialist",
     department: "Quality Assurance & Frontend Polish",
-    image: "/builders/soumya.jpg",
+    image: getAssetUrl("/builders/soumya.jpg"),
     qualification: "B.C.A. Student | Scope Global Skills University",
     experience: "Feature Testing & Visual Polish",
     bio: "Focused on frontend styling consistency, asset management, interactive polish, and thorough user experience validation.",

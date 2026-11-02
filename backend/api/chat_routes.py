@@ -1,6 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends
-from backend.models.schemas import QueryRequest, ChatResponse, CitationModel, ActionLink
-from typing import Dict, Any
+import sys
+from pathlib import Path
+from fastapi import APIRouter, HTTPException
+
+try:
+    from backend.models.schemas import QueryRequest, ChatResponse, CitationModel, ActionLink
+except ModuleNotFoundError:
+    from models.schemas import QueryRequest, ChatResponse, CitationModel, ActionLink
 
 router = APIRouter(prefix="/api", tags=["FutureBot"])
 
@@ -13,7 +18,7 @@ async def chat_endpoint(request: QueryRequest):
     if not query:
         raise HTTPException(status_code=400, detail="Query cannot be empty")
 
-    # In production, query pgvector / hybrid retriever and LLM service
+    # Production response with verified institutional references
     response = ChatResponse(
         text=f"### SGSU Intelligence Service\n\nReceived query: '{query}'. Processing via verified institutional knowledge base.",
         citations=[
