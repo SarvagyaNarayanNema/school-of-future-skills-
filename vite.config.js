@@ -6,7 +6,6 @@ export default defineConfig({
   base: '/school-of-future-skills/',
   server: {
     port: 3000,
-    open: true,
-  },
-  base:'/school-of-future-skills/'
+    open: true
+  }
 });
