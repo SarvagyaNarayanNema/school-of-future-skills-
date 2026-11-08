@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { NAVIGATION_ITEMS } from '../../data/navigationData';
-import { getAssetUrl } from '../../utils/assets';
+import { getAssetUrl, getLogoFallback } from '../../utils/assets';
 
 /**
  * CascadingNavbar Component
@@ -206,6 +206,10 @@ export const CascadingNavbar = () => {
               src={getAssetUrl("/fsit-neon-logo.png")}
               alt="School of Future Skills Logo"
               className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = getLogoFallback();
+              }}
             />
           </div>
 

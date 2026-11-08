@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, MapPin, Mail, BookOpen, Trophy, Bell, Users, GraduationCap } from 'lucide-react';
-import { getAssetUrl } from '../../utils/assets';
+import { getAssetUrl, getLogoFallback, getAvatarFallback } from '../../utils/assets';
 import { websiteBuilders } from '../../data/builders';
 
 export const Footer = () => {
@@ -20,6 +20,10 @@ export const Footer = () => {
                   src={getAssetUrl("/fsit-neon-logo.png")}
                   alt="School of Future Skills Logo"
                   className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = getLogoFallback();
+                  }}
                 />
               </div>
               <span className="font-extrabold text-xl text-slate-900 dark:text-white tracking-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-200 transition-colors">School of Future Skills</span>
@@ -63,6 +67,10 @@ export const Footer = () => {
                       alt={builder.name}
                       className="w-full h-full object-cover"
                       loading="lazy"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = getAvatarFallback(builder.name, 'Builder');
+                      }}
                     />
                   </div>
                   <span className="text-xs md:text-sm text-slate-700 dark:text-slate-300 font-medium group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors truncate">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { initialCourses } from '../data/courses';
 import { useApp } from '../context/AppContext';
+import { getImageFallback } from '../utils/assets';
 import {
   BookOpen,
   Search,
@@ -242,6 +243,10 @@ export const Courses = () => {
                       alt={c.programme}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = getImageFallback(c.programme);
+                      }}
                     />
                     <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 max-w-[78%]">
                       <span className="text-[10px] font-mono font-bold bg-white/95 dark:bg-[#0B0F19]/90 text-cyan-700 dark:text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-300 dark:border-cyan-500/30 backdrop-blur-md truncate shadow-sm">
@@ -470,6 +475,10 @@ export const Courses = () => {
                         src={activeCourseModal.image}
                         alt={activeCourseModal.programme}
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = getImageFallback(activeCourseModal.programme);
+                        }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-transparent to-transparent dark:from-slate-950 dark:via-slate-950/30" />
                       <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">

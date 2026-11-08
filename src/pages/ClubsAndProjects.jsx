@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { studentClubs, initialTechClubs, initialStudentProjects } from '../data/clubsAndProjects';
 import { useApp } from '../context/AppContext';
+import { getImageFallback } from '../utils/assets';
 import {
   Users,
   Code2,
@@ -277,6 +278,10 @@ export const ClubsAndProjects = () => {
                         alt={club.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = getImageFallback(club.name);
+                        }}
                       />
                       <div className="absolute top-3 left-3">
                         <span className="text-[11px] font-mono font-bold bg-[#0B0F19]/90 text-purple-300 px-3 py-1 rounded-full border border-purple-500/30 backdrop-blur-md shadow-md">
@@ -386,6 +391,10 @@ export const ClubsAndProjects = () => {
                         alt={p.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         loading="lazy"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = getImageFallback(p.name);
+                        }}
                       />
                       <div className="absolute top-2.5 left-2.5">
                         <span className="text-[10px] font-mono font-bold bg-[#0B0F19]/90 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/30 backdrop-blur-md">

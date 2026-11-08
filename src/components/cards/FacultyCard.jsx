@@ -1,6 +1,7 @@
 import React from 'react';
 import { Mail, BookOpen, MapPin, Award, GraduationCap } from 'lucide-react';
 import { Linkedin } from '../common/BrandIcons';
+import { getAvatarFallback } from '../../utils/assets';
 
 export const FacultyCard = ({ faculty }) => {
   return (
@@ -17,7 +18,7 @@ export const FacultyCard = ({ faculty }) => {
                 loading="lazy"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80";
+                  e.target.src = getAvatarFallback(faculty.name, faculty.badges?.[0] || 'Faculty');
                 }}
               />
             ) : (

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { initialAchievements, wallOfFameSpotlights, ACHIEVEMENT_CATEGORIES, ACHIEVEMENT_YEARS } from '../data/achievements';
+import { getImageFallback } from '../utils/assets';
 import {
   Trophy,
   Search,
@@ -148,6 +149,10 @@ export const Achievements = () => {
                   alt={spotlight.title}
                   className="w-full h-full object-cover opacity-90 dark:opacity-80"
                   loading="lazy"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = getImageFallback(spotlight.title);
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 dark:from-[#0B0F19] via-slate-900/20 dark:via-[#0B0F19]/40 to-transparent" />
                 <div className="absolute top-3 left-3 flex items-center gap-2">

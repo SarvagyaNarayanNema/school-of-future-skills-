@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { facultyMembers } from '../../data/faculty';
+import { getAvatarFallback } from '../../utils/assets';
 import {
   GraduationCap,
   Award,
@@ -63,7 +64,7 @@ export const FacultySection = () => {
                     loading="lazy"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80";
+                      e.target.src = getAvatarFallback(headOfSchool.name, 'Head of School');
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none rounded-xl" />
@@ -193,7 +194,7 @@ export const FacultySection = () => {
                       loading="lazy"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80";
+                        e.target.src = getAvatarFallback(fac.name, fac.badges?.[0] || 'Faculty');
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
@@ -292,7 +293,7 @@ export const FacultySection = () => {
                     className="w-full h-full object-cover object-top"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80";
+                      e.target.src = getAvatarFallback(selectedFaculty.name, selectedFaculty.badges?.[0] || 'Faculty');
                     }}
                   />
                 </div>

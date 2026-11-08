@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { websiteBuilders } from '../../data/builders';
+import { getAvatarFallback } from '../../utils/assets';
 import { Sparkles, Code2, Cpu, CheckCircle2, ChevronRight, X, ExternalLink } from 'lucide-react';
 
 export const BuildersSection = () => {
@@ -46,7 +47,7 @@ export const BuildersSection = () => {
                     loading="lazy"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80";
+                      e.target.src = getAvatarFallback(builder.name, builder.roleBadge || 'Builder');
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />
@@ -149,7 +150,7 @@ export const BuildersSection = () => {
                     className="w-full h-full object-cover object-top"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80";
+                      e.target.src = getAvatarFallback(builder.name, builder.roleBadge || 'Builder');
                     }}
                   />
                 </div>

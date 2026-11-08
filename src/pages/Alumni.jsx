@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { initialAlumni, ALUMNI_ROLES, ALUMNI_BATCHES } from '../data/alumni';
 import { useApp } from '../context/AppContext';
+import { getAvatarFallback } from '../utils/assets';
 import {
   GraduationCap,
   Search,
@@ -227,6 +228,10 @@ export const Alumni = () => {
                       alt={al.name}
                       className="w-14 h-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 shadow-md shrink-0"
                       loading="lazy"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = getAvatarFallback(al.name, al.company || 'Alumni');
+                      }}
                     />
                     <div className="min-w-0">
                       <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors truncate">
@@ -348,6 +353,10 @@ export const Alumni = () => {
                   src={activeMentorshipAlumni.image}
                   alt={activeMentorshipAlumni.name}
                   className="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = getAvatarFallback(activeMentorshipAlumni.name, activeMentorshipAlumni.company || 'Alumni');
+                  }}
                 />
                 <div>
                   <span className="text-[10px] font-mono uppercase text-blue-600 dark:text-blue-400 font-bold">1-on-1 Alumni Guidance</span>
