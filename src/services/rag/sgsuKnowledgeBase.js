@@ -291,16 +291,18 @@ Required Documents Checklist:
     last_updated: "2026-03-15",
     content_type: "project_repository",
     keywords: [
-      "projects", "student projects", "neuralshield", "auradoc", "skysense",
-      "chronosync", "kubeweave", "capstone", "open source"
+      "projects", "department projects", "dimpy cosmos", "pixelmefaizan", "sarvagya",
+      "binary battle club", "spendwise", "edutrack", "aashima mall", "aegis 3d", "showcase"
     ],
-    summary: "Featured student open-source capstones include NeuralShield (eBPF zero-day mitigator), AuraDoc (clinical RAG), SkySense (IoT mesh), ChronoSync (CRDT editor), and KubeWeave.",
-    content: `Featured Student Capstone Repositories:
-• NeuralShield: High-speed Linux kernel-space packet filter built with Rust, eBPF, and PyTorch for sub-2ms DDoS and zero-day intrusion interception.
-• AuraDoc: Multimodal clinical research assistant cross-indexing CT scans and PubMed journals with guaranteed 0% hallucination diagnostic citation graphs.
-• SkySense: Battery-free microclimate LoRaWAN sensor mesh monitoring campus air quality and humidity over 4.2km range.
-• ChronoSync: Peer-to-peer real-time collaborative coding workspace utilizing Conflict-free Replicated Data Types (CRDTs).
-• KubeWeave: Custom Golang Kubernetes operator autoscaling idle student dev pods to zero to conserve lab energy.`
+    summary: "Featured department digital creations include Dimpy's COSMOS (3D solar exploration), PixelMeFaizan (AI/ML portfolio), Sarvagya's Portfolio, Binary Battle Club, SpendWise, EduTrack Pro, and Aashima Mall.",
+    content: `Verified Department Projects & Digital Creations:
+• Dimpy's COSMOS: Interactive 3D WebXR solar system simulator exploring celestial orbital physics and planetary bodies.
+• PixelMeFaizan: Official AI & ML developer portfolio of Syed Faizan Ali at SGSU Bhopal showcasing interactive 3D web experiences.
+• Sarvagya's Portfolio: Cinematic portfolio of creative technologist and AI builder Sarvagya Narayan Nema.
+• Binary Battle Club: Official competitive programming and AI coding society platform of SGSU Bhopal.
+• SpendWise: Personal expense management and financial intelligence web application with festive budgeting.
+• EduTrack Pro: Academic attendance and performance analytics dashboard with Chart.js telemetry.
+• Aashima Mall: Commercial digital shopping and multiplex entertainment web portal for Bhopal.`
   },
 
   // ----------------------------------------------------

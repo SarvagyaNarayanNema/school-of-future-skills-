@@ -261,7 +261,7 @@ Students can schedule 1-on-1 academic mentorship sessions directly through campu
   if (intent === INTENTS.CLUBS_PROJECTS || qLower.includes('club') || qLower.includes('binary battle') || qLower.includes('cyber warrior')) {
     text = `### SGSU Student Guilds & Innovation Clubs ⚡
 
-SGSU has thriving tech clubs where students build real-world software and compete in national hackathons! The **Binary Battle Club** focuses on competitive programming and algorithms, while the **Cyber Warriors Club** specializes in ethical hacking, CTF challenges, and network defense. Students also build open-source research capstones like **NeuralShield**.`;
+SGSU has thriving tech clubs where students build real-world software and compete in national hackathons! The **Binary Battle Club** focuses on competitive programming and algorithms, while the **Cyber Warriors Club** specializes in ethical hacking, CTF challenges, and network defense. Students also build real-world departmental creations like **Dimpy's COSMOS** (3D solar exploration) and **PixelMeFaizan**.`;
 
     actions.push({ label: 'Explore Clubs & Projects', route: '/clubs-and-projects', type: 'internal' });
     actions.push({ label: 'Join Binary Battle Club', route: '/clubs-and-projects', type: 'internal' });

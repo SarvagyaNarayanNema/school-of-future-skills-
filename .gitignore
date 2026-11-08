@@ -38,3 +38,4 @@ ENV/
 backend/backups/*.sql.gz
 backend/uploads/*
 !backend/uploads/.gitkeep
+scratch/

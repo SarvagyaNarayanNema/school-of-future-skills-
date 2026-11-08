@@ -43,6 +43,7 @@ export const PublicHeader = () => {
     { label: 'Programmes', path: '/courses' },
     { label: 'Faculty', path: '/about#faculty' },
     { label: 'Research & Labs', path: '/labs' },
+    { label: 'Projects', path: '/projects' },
     { label: 'Achievements', path: '/achievements' },
     { label: 'Student Life', path: '/clubs-and-projects' },
     { label: 'Events', path: '/events' },

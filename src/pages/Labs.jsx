@@ -48,7 +48,7 @@ export const Labs = () => {
         "Local vector database clusters (Qdrant & Chroma)",
         "Automated continuous model evaluation pipelines"
       ],
-      currentInitiatives: "NeuralShield kernel-space inference & AuraDoc Multimodal Clinical RAG Engine."
+      currentInitiatives: "Interactive 3D simulation platforms, local neural inference acceleration & multimodal web architectures."
     },
     {
       id: "fac-sec",

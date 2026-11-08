@@ -9,7 +9,7 @@ export default defineConfig({
       configureServer(server) {
         // Transparently route requests made without the base path to the base path
         server.middlewares.use((req, res, next) => {
-          const publicPrefixes = ['/builders/', '/faculty/', '/fsit-', '/bot-avatar', '/images__6_'];
+          const publicPrefixes = ['/projects/', '/builders/', '/faculty/', '/fsit-', '/bot-avatar', '/images__6_'];
           if (publicPrefixes.some(p => req.url.startsWith(p))) {
             req.url = '/school-of-future-skills' + req.url;
           }

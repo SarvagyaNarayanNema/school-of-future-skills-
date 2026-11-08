@@ -2,8 +2,11 @@
 
 const STORAGE_PREFIX = 'future_skills_';
 
+const isStorageAvailable = () => typeof window !== 'undefined' && typeof localStorage !== 'undefined';
+
 export const storage = {
   get: (key, defaultValue = null) => {
+    if (!isStorageAvailable()) return defaultValue;
     try {
       const item = localStorage.getItem(STORAGE_PREFIX + key);
       return item ? JSON.parse(item) : defaultValue;
@@ -14,6 +17,7 @@ export const storage = {
   },
 
   set: (key, value) => {
+    if (!isStorageAvailable()) return false;
     try {
       localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(value));
       return true;
@@ -24,6 +28,7 @@ export const storage = {
   },
 
   remove: (key) => {
+    if (!isStorageAvailable()) return false;
     try {
       localStorage.removeItem(STORAGE_PREFIX + key);
       return true;
@@ -34,6 +39,7 @@ export const storage = {
   },
 
   clearAll: () => {
+    if (!isStorageAvailable()) return false;
     try {
       Object.keys(localStorage).forEach((k) => {
         if (k.startsWith(STORAGE_PREFIX)) {

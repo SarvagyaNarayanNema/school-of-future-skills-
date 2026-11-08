@@ -1,12 +1,13 @@
 import { initialProjects } from '../data/projects';
 import { storage } from '../utils/storage';
 
-const STORAGE_KEY = 'projects_list';
+const STORAGE_KEY = 'department_real_projects_v2';
 
 export const projectService = {
   getAll: () => {
     const stored = storage.get(STORAGE_KEY);
-    if (!stored) {
+    if (!stored || !Array.isArray(stored) || stored.length === 0 || stored[0]?.id?.startsWith('proj-01')) {
+      // Invalidate old fake project cache and initialize with real projects
       storage.set(STORAGE_KEY, initialProjects);
       return initialProjects;
     }

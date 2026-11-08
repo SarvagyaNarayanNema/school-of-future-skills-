@@ -5,7 +5,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { initialCourses } from '../data/courses';
 import { initialEvents } from '../data/events';
-import { studentClubs, initialStudentProjects } from '../data/clubsAndProjects';
+import { studentClubs } from '../data/clubsAndProjects';
+import { initialProjects } from '../data/projects';
 import { initialAlumni } from '../data/alumni';
 import { wallOfFameSpotlights } from '../data/achievements';
 import { FacultySection } from '../components/sections/FacultySection';
@@ -14,7 +15,7 @@ import { FutureBotShowcaseSection } from '../components/sections/FutureBotShowca
 import { HeroKnowledgeCore } from '../components/three/HeroKnowledgeCore';
 import { StatCard } from '../components/common/StatCard';
 import { Button } from '../components/common/Button';
-import { getImageFallback } from '../utils/assets';
+import { getImageFallback, getAssetUrl } from '../utils/assets';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useApp } from '../context/AppContext';
 
@@ -178,8 +179,8 @@ export const Home = () => {
     },
   ];
 
-  // Section 7: Student Capstone Projects
-  const featuredProjects = initialStudentProjects.slice(0, 2);
+  // Section 7: Curated Real Department Projects Showcase
+  const featuredProjects = initialProjects.filter((p) => p.featured).slice(0, 4);
 
   // Section 8: Achievements & Recognition Spotlights
   const spotlightAchievements = wallOfFameSpotlights.slice(0, 2);
@@ -512,23 +513,26 @@ export const Home = () => {
       </section>
 
       {/* ========================================================= */}
-      {/* SECTION 7 — STUDENT PROJECT SHOWCASE                      */}
+      {/* SECTION 7 — PROJECTS & DIGITAL CREATIONS SHOWCASE         */}
       {/* ========================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 max-w-2xl">
             <span className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">
-              Student Open Source Engineering
+              Department Engineering &amp; Digital Creations
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-              Student Capstones &amp; Projects
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Built With Vision. Created With Technology.
             </h2>
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              Explore digital experiences, creative applications, interactive 3D simulations, and community platforms developed by the students and engineering cohorts of School of Future Skills.
+            </p>
           </div>
           <Link
-            to="/clubs-and-projects?view=projects"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
+            to="/projects"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:text-white hover:bg-cyan-500/10 border border-cyan-500/20 transition-all shrink-0"
           >
-            <span>Explore All Projects</span>
+            <span>View All Projects</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -539,56 +543,81 @@ export const Home = () => {
             return (
               <div
                 key={proj.id}
-                className="glass-card p-6 flex flex-col justify-between space-y-4 hover:border-cyan-500/40 transition-all duration-300"
+                className="glass-card overflow-hidden rounded-2xl flex flex-col justify-between hover:border-cyan-500/40 transition-all duration-300 group hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/10"
               >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyan-100 dark:bg-cyan-500/10 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-500/30">
-                      {proj.category}
-                    </span>
-                    <span className="text-xs font-mono text-slate-500 dark:text-slate-400">Team {proj.studentTeam || proj.author}</span>
+                <div>
+                  {/* Screenshot Thumbnail */}
+                  <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-950 border-b border-slate-200 dark:border-slate-800/80">
+                    <img
+                      src={getAssetUrl(proj.image)}
+                      alt={proj.name}
+                      loading="lazy"
+                      className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
+                      <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-950/80 text-cyan-300 border border-cyan-500/30 backdrop-blur-md">
+                        {proj.category}
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 backdrop-blur-md">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        Verified Live
+                      </span>
+                    </div>
                   </div>
 
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                    {proj.name || proj.title}
-                  </h3>
-
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                    {proj.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {(proj.technologies || proj.techStack)?.map((t, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-mono text-slate-700 dark:text-slate-300"
-                      >
-                        {t}
+                  {/* Body */}
+                  <div className="p-5 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                        {proj.creators || proj.studentTeam}
                       </span>
-                    ))}
+                    </div>
+
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors">
+                      {proj.name}
+                    </h3>
+
+                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">
+                      {proj.description}
+                    </p>
+
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {proj.technologies?.map((t, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] font-mono text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                {/* Footer Action */}
+                <div className="p-5 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
                   <button
                     onClick={() => upvoteProject(proj.id)}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold border transition-colors ${
+                    type="button"
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors ${
                       isUpvoted
                         ? 'bg-cyan-500 text-slate-950 border-cyan-400'
-                        : 'bg-slate-100 dark:bg-slate-800/80 hover:bg-cyan-500/10 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-cyan-500/40 hover:text-cyan-600'
                     }`}
                   >
                     <ThumbsUp className="w-3.5 h-3.5" />
-                    <span>{proj.likes || proj.upvotes || 0} Upvotes</span>
+                    <span>{proj.upvotes || 0} Applauds</span>
                   </button>
 
-                  <Link
-                    to="/clubs-and-projects?view=projects"
-                    className="text-xs text-cyan-600 dark:text-cyan-400 hover:underline font-semibold flex items-center gap-1"
+                  <a
+                    href={proj.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-950 bg-cyan-400 hover:bg-cyan-300 dark:bg-cyan-500 dark:hover:bg-cyan-400 transition-colors shadow-sm shadow-cyan-500/20"
                   >
-                    <span>Inspect Capstone</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
+                    <span>View Live Project</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
                 </div>
               </div>
             );

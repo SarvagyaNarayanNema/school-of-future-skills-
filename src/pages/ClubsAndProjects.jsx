@@ -465,16 +465,20 @@ export const ClubsAndProjects = () => {
                           <GitBranch className="w-3.5 h-3.5" />
                         </a>
                       )}
-                      {p.demo && (
+                      {p.isAvailable && (p.demo || p.url) ? (
                         <a
-                          href={p.demo}
+                          href={p.demo || p.url}
                           target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/20"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/20"
                         >
-                          <span>Live Demo</span>
+                          <span>View Live Project</span>
                           <ExternalLink className="w-3 h-3" />
                         </a>
+                      ) : (
+                        <span className="text-[11px] font-medium text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-xl border border-amber-500/20">
+                          Verification Pending
+                        </span>
                       )}
                     </div>
 

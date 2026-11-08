@@ -124,7 +124,7 @@ export function detectIntent(query, context = {}) {
   }
 
   // 9. Clubs & Projects
-  if (q.includes('club') || q.includes('binary battle') || q.includes('cyber warriors') || q.includes('project') || q.includes('neuralshield') || q.includes('capstone') || q.includes('hackathon')) {
+  if (q.includes('club') || q.includes('binary battle') || q.includes('cyber warriors') || q.includes('project') || q.includes('cosmos') || q.includes('portfolio') || q.includes('capstone') || q.includes('hackathon')) {
     return INTENTS.CLUBS_PROJECTS;
   }
 

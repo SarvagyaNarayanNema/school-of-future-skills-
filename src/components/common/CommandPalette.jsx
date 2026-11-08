@@ -110,12 +110,12 @@ export const CommandPalette = () => {
     .slice(0, 2)
     .map(p => ({
       id: `proj-${p.id}`,
-      type: "Student Project",
+      type: "Department Project",
       title: p.name,
-      subtitle: `${p.category || 'Engineering'} • ${p.studentTeam || 'Student Team'}`,
+      subtitle: `${p.category || 'Engineering'} • ${p.studentTeam || p.creators || 'Student Team'}`,
       icon: Code2,
       iconColor: "text-emerald-400",
-      url: `/clubs-and-projects?view=projects`
+      url: `/projects`
     }));
 
   // Search across alumni
@@ -140,7 +140,8 @@ export const CommandPalette = () => {
     { id: "nav-labs", type: "Research", title: "Research & Laboratory Facilities", subtitle: "Explore specialized research facilities & sandbox modules", icon: Terminal, iconColor: "text-indigo-400", url: "/labs" },
     { id: "nav-achievements", type: "Honors", title: "Wall of Fame & Achievements", subtitle: "Global Cyber Siege champions, patents & research publications", icon: Trophy, iconColor: "text-yellow-400", url: "/achievements" },
     { id: "nav-events", type: "Events", title: "Campus Events & Hackathons", subtitle: "National coding blitzes, workshops and guest lecture summits", icon: Calendar, iconColor: "text-emerald-400", url: "/events" },
-    { id: "nav-cp", type: "Community", title: "Student Guilds & Projects", subtitle: "Binary Battle Club, Cyber Warriors & open-source capstones", icon: Users, iconColor: "text-purple-400", url: "/clubs-and-projects" },
+    { id: "nav-projects", type: "Showcase", title: "Projects & Digital Creations", subtitle: "Dimpy's COSMOS, PixelMeFaizan, Sarvagya's Portfolio & department platforms", icon: Code2, iconColor: "text-cyan-400", url: "/projects" },
+    { id: "nav-cp", type: "Community", title: "Student Guilds & Clubs", subtitle: "Binary Battle Club, Cyber Warriors & technical initiatives", icon: Users, iconColor: "text-purple-400", url: "/clubs-and-projects" },
     { id: "nav-alumni", type: "Network", title: "Alumni Network & Impact", subtitle: "Graduates at Google DeepMind, AWS, CrowdStrike & Microsoft", icon: GraduationCap, iconColor: "text-blue-400", url: "/alumni" },
     { id: "nav-notices", type: "Announcements", title: "Official Circulars & Notices", subtitle: "Public departmental circulars, schedules and announcements", icon: Bell, iconColor: "text-amber-400", url: "/notices" }
   ];

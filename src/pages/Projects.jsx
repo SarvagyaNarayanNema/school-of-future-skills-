@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { initialProjects, PROJECT_CATEGORIES } from '../data/projects';
 import { ProjectCard } from '../components/cards/ProjectCard';
 import { EmptyState } from '../components/common/EmptyState';
@@ -10,223 +10,376 @@ import {
   Search,
   ExternalLink,
   ThumbsUp,
-  Star,
+  X,
+  CheckCircle2,
   Users,
-  Flame
+  Compass,
+  Layers,
+  ArrowRight,
+  ShieldCheck,
+  Clock
 } from 'lucide-react';
-import { Github } from '../components/common/BrandIcons';
 import { Badge } from '../components/common/Badge';
 import { Breadcrumbs } from '../components/common/Breadcrumbs';
+import { getAssetUrl } from '../utils/assets';
 
 export const Projects = () => {
   const [projects, setProjects] = useState(() => projectService.getAll());
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortBy, setSortBy] = useState('upvotes');
+  const [selectedCategory, setSelectedCategory] = useState('All Projects');
+  const [selectedProjectModal, setSelectedProjectModal] = useState(null);
   const { earnPoints } = useApp();
 
   const handleUpvote = (id) => {
     const updated = projectService.upvote(id);
     setProjects(projectService.getAll());
-    if (updated?.hasUpvoted) {
-      earnPoints(10, "Upvoted innovative student project");
+    if (updated?.hasUpvoted && earnPoints) {
+      earnPoints(10, 'Applauded department innovation showcase');
     }
   };
 
-  const projectOfMonth = projects.find(p => p.isProjectOfMonth) || projects[0];
+  // Filter projects by search and category
+  const filteredProjects = useMemo(() => {
+    return projects.filter((p) => {
+      const q = searchQuery.toLowerCase().trim();
+      const matchesSearch =
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        (p.creators && p.creators.toLowerCase().includes(q)) ||
+        (p.studentTeam && p.studentTeam.toLowerCase().includes(q)) ||
+        (p.technologies && p.technologies.some((t) => t.toLowerCase().includes(q)));
 
-  const filteredProjects = projects.filter(p => {
-    const q = searchQuery.toLowerCase();
-    const matchesSearch = p.name.toLowerCase().includes(q) ||
-                          p.description.toLowerCase().includes(q) ||
-                          p.studentTeam.toLowerCase().includes(q) ||
-                          p.technologies.some(t => t.toLowerCase().includes(q));
-    const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  }).sort((a, b) => {
-    if (sortBy === 'upvotes') return b.upvotes - a.upvotes;
-    return b.stars - a.stars;
-  });
+      const matchesCategory =
+        selectedCategory === 'All Projects' || p.category === selectedCategory;
+
+      return matchesSearch && matchesCategory;
+    });
+  }, [projects, searchQuery, selectedCategory]);
+
+  // Featured Project: Dimpy's COSMOS (or first featured project)
+  const spotlightProject = useMemo(() => {
+    return projects.find((p) => p.isProjectOfMonth) || projects[0];
+  }, [projects]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
-      
-      {/* Breadcrumbs */}
-      <Breadcrumbs items={[{ label: 'Student Projects Showcase' }]} />
+      {/* Breadcrumb Navigation */}
+      <Breadcrumbs items={[{ label: 'Department Showcase', path: '/projects' }, { label: 'Projects & Digital Creations' }]} />
 
-      {/* Header */}
-      <div className="space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-semibold text-cyan-600 dark:text-cyan-400">
+      {/* Main Section Header */}
+      <header className="space-y-4">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-semibold text-cyan-600 dark:text-cyan-400">
           <Code2 className="w-3.5 h-3.5" />
-          <span>Student Engineering Incubator</span>
+          <span>Department Engineering &amp; Creative Portfolio</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Built by Students. Powered by Ideas.
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+          Built With Vision.<br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 via-sky-400 to-indigo-500">
+            Created With Technology.
+          </span>
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
-          Explore production-grade open-source tools, kernel monitors, multimodal AI systems, and hardware sensors developed by students in the department.
+        <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
+          Explore digital experiences, creative applications, interactive 3D simulations, and community platforms developed by the students, innovators, and engineering cohorts of the School of Future Skills at Scope Global Skills University.
         </p>
-      </div>
+      </header>
 
-      {/* FEATURED: PROJECT OF THE MONTH */}
-      {projectOfMonth && (
-        <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-white via-slate-50 to-cyan-50/40 dark:from-slate-900 dark:via-slate-900/90 dark:to-cyan-950/40 border border-cyan-500/30 shadow-2xl overflow-hidden group">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
+      {/* EDITORIAL SPOTLIGHT: FEATURED HERO CARD */}
+      {spotlightProject && selectedCategory === 'All Projects' && !searchQuery && (
+        <section aria-label="Spotlight Project" className="relative rounded-3xl p-6 sm:p-10 bg-gradient-to-br from-slate-900 via-slate-900/95 to-cyan-950/60 border border-cyan-500/30 shadow-2xl overflow-hidden group">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none" />
 
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-8 space-y-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 text-xs font-bold uppercase tracking-wider">
-                  <Flame className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-                  Project of the Month
+            {/* Visual Preview */}
+            <div className="lg:col-span-6 rounded-2xl overflow-hidden border border-cyan-500/20 shadow-2xl bg-slate-950 aspect-[16/10] relative">
+              <img
+                src={getAssetUrl(spotlightProject.image)}
+                alt={spotlightProject.name}
+                className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute top-3 left-3 flex items-center gap-2">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cyan-500 text-slate-950 text-xs font-black uppercase tracking-wider shadow-lg">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Featured Spotlight
                 </span>
-                <Badge variant="cyan" size="xs">{projectOfMonth.category}</Badge>
-                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{projectOfMonth.status}</span>
+              </div>
+            </div>
+
+            {/* Editorial Content */}
+            <div className="lg:col-span-6 space-y-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="purple" size="sm">{spotlightProject.category}</Badge>
+                <span className="inline-flex items-center gap-1 text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  {spotlightProject.linkVerificationStatus}
+                </span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors">
-                {projectOfMonth.name}
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-white group-hover:text-cyan-300 transition-colors">
+                {spotlightProject.name}
               </h2>
 
-              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
-                {projectOfMonth.description}
+              <div className="flex items-center gap-2 text-xs text-slate-300">
+                <Users className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="font-semibold text-white">{spotlightProject.creators}</span>
+                <span>•</span>
+                <span className="text-slate-400">{spotlightProject.year}</span>
+              </div>
+
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+                {spotlightProject.description}
               </p>
 
               {/* Highlights */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 text-xs">
-                {projectOfMonth.highlights.map((hl, i) => (
-                  <div key={i} className="p-2.5 rounded-xl bg-white/90 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 shrink-0" />
-                    <span className="truncate font-medium">{hl}</span>
-                  </div>
-                ))}
-              </div>
+              {spotlightProject.highlights && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
+                  {spotlightProject.highlights.map((hl, i) => (
+                    <div key={i} className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-slate-300 flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                      <span className="font-medium truncate">{hl}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
 
-              <div className="flex flex-wrap gap-2 pt-2">
-                {projectOfMonth.technologies.map((t, idx) => (
-                  <span key={idx} className="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+              {/* Technologies */}
+              <div className="flex flex-wrap gap-1.5 pt-2">
+                {spotlightProject.technologies.map((t, idx) => (
+                  <span key={idx} className="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-800/90 text-cyan-200 border border-slate-700">
                     {t}
                   </span>
                 ))}
               </div>
-            </div>
 
-            <div className="lg:col-span-4 flex flex-col gap-4 bg-white/90 dark:bg-slate-950/80 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
-              <div className="space-y-1.5 text-xs text-slate-600 dark:text-slate-300 pb-4 border-b border-slate-200 dark:border-slate-800">
-                <p className="text-slate-500 dark:text-slate-400">Team Contributors:</p>
-                <p className="font-semibold text-slate-900 dark:text-white text-sm">{projectOfMonth.studentTeam}</p>
-                <p className="text-slate-500 dark:text-slate-400">{projectOfMonth.year}</p>
-              </div>
-
-              <div className="flex items-center justify-between">
+              {/* Action Buttons */}
+              <div className="flex items-center gap-4 pt-3">
+                {spotlightProject.url && (
+                  <a
+                    href={spotlightProject.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:-translate-y-0.5"
+                  >
+                    <span>View Live Project</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                )}
                 <button
-                  onClick={() => handleUpvote(projectOfMonth.id)}
-                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-colors ${
-                    projectOfMonth.hasUpvoted
-                      ? 'bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border-cyan-500/40'
-                      : 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800'
+                  onClick={() => handleUpvote(spotlightProject.id)}
+                  type="button"
+                  className={`inline-flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold border transition-colors ${
+                    spotlightProject.hasUpvoted
+                      ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
                   }`}
                 >
-                  <ThumbsUp className={`w-4 h-4 ${projectOfMonth.hasUpvoted ? 'fill-cyan-500 text-cyan-500 dark:fill-cyan-400 dark:text-cyan-400' : ''}`} />
-                  <span>{projectOfMonth.upvotes} Upvotes</span>
+                  <ThumbsUp className={`w-4 h-4 ${spotlightProject.hasUpvoted ? 'fill-cyan-400 text-cyan-400' : ''}`} />
+                  <span>{spotlightProject.upvotes} Applauds</span>
                 </button>
-
-                <div className="flex items-center gap-2">
-                  {projectOfMonth.github && (
-                    <a
-                      href={projectOfMonth.github}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-300 dark:border-slate-700 transition-colors"
-                      title="GitHub"
-                    >
-                      <Github className="w-4 h-4" />
-                    </a>
-                  )}
-                  {projectOfMonth.demo && (
-                    <a
-                      href={projectOfMonth.demo}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs inline-flex items-center gap-1.5 transition-colors shadow-lg shadow-cyan-500/25"
-                    >
-                      <span>Live App</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                  )}
-                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
       )}
 
-      {/* Filter and Search Bar */}
-      <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+      {/* FILTER & SEARCH CONTROL BAR */}
+      <section className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          {/* Search Box */}
           <div className="relative w-full md:w-96">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search student projects, technologies, authors..."
-              className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500 shadow-sm"
+              placeholder="Search by project name, creator, or tech stack..."
+              className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500 transition-colors shadow-sm"
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
-          <div className="w-full md:w-56">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-cyan-500 shadow-sm"
-            >
-              <option value="upvotes">Sort by: Most Upvoted</option>
-              <option value="stars">Sort by: GitHub Stars</option>
-            </select>
+          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+            Showing <span className="font-bold text-slate-900 dark:text-white">{filteredProjects.length}</span> verified department {filteredProjects.length === 1 ? 'project' : 'projects'}
           </div>
         </div>
 
-        {/* Categories */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none pt-2 border-t border-slate-800/80">
+        {/* Category Filter Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none pt-2 border-t border-slate-200 dark:border-slate-800/80">
           {PROJECT_CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
+              type="button"
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
                 selectedCategory === cat
                   ? 'bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/20'
-                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700'
               }`}
             >
               {cat}
             </button>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Projects Grid */}
+      {/* PROJECTS GALLERY GRID */}
       {filteredProjects.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <section aria-label="Department Projects Gallery" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((p) => (
             <ProjectCard
               key={p.id}
               project={p}
               onUpvote={handleUpvote}
+              onSelect={setSelectedProjectModal}
             />
           ))}
-        </div>
+        </section>
       ) : (
         <EmptyState
-          title="No projects matched"
-          description="Try selecting another category or searching for different stack keywords."
+          title="No projects match your filter"
+          description="Try selecting another category or searching for another keyword like '3D', 'AI', or 'React'."
           onReset={() => {
             setSearchQuery('');
-            setSelectedCategory('All');
+            setSelectedCategory('All Projects');
           }}
         />
       )}
 
+      {/* LIGHTWEIGHT PROJECT DETAIL MODAL */}
+      {selectedProjectModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setSelectedProjectModal(null)}
+        >
+          <div
+            className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedProjectModal(null)}
+              className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-800"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Modal Image Preview */}
+            <div className="aspect-[16/9] w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-200 dark:border-slate-800">
+              <img
+                src={getAssetUrl(selectedProjectModal.image)}
+                alt={selectedProjectModal.name}
+                className="w-full h-full object-cover object-top"
+              />
+            </div>
+
+            {/* Title & Badges */}
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="cyan" size="sm">{selectedProjectModal.category}</Badge>
+                <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                  selectedProjectModal.isAvailable ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                }`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${selectedProjectModal.isAvailable ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                  {selectedProjectModal.linkVerificationStatus}
+                </span>
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                {selectedProjectModal.name}
+              </h2>
+              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                <Users className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="font-semibold text-slate-700 dark:text-slate-300">
+                  {selectedProjectModal.creators}
+                </span>
+                <span>•</span>
+                <span>{selectedProjectModal.year}</span>
+              </div>
+            </div>
+
+            {/* Description */}
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              {selectedProjectModal.description}
+            </p>
+
+            {/* Verified Highlights */}
+            {selectedProjectModal.highlights && (
+              <div className="space-y-2 p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Verified Engineering Attributes
+                </h4>
+                <div className="space-y-1.5">
+                  {selectedProjectModal.highlights.map((h, i) => (
+                    <div key={i} className="flex items-start gap-2 text-xs text-slate-700 dark:text-slate-300">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-cyan-500 shrink-0 mt-0.5" />
+                      <span>{h}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Tech Tags */}
+            {selectedProjectModal.technologies && (
+              <div className="space-y-1.5">
+                <span className="text-xs text-slate-500 dark:text-slate-400 block font-medium">Technology Stack:</span>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProjectModal.technologies.map((t, idx) => (
+                    <span key={idx} className="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Modal Actions */}
+            <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800">
+              <button
+                onClick={() => {
+                  handleUpvote(selectedProjectModal.id);
+                  setSelectedProjectModal((prev) => ({
+                    ...prev,
+                    upvotes: (prev.upvotes || 0) + 1,
+                    hasUpvoted: true
+                  }));
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              >
+                <ThumbsUp className="w-3.5 h-3.5 text-cyan-400" />
+                <span>{selectedProjectModal.upvotes || 0} Applauds</span>
+              </button>
+
+              {selectedProjectModal.isAvailable && selectedProjectModal.url ? (
+                <a
+                  href={selectedProjectModal.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/20 transition-all hover:scale-105"
+                >
+                  <span>View Live Project</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              ) : (
+                <span className="text-xs text-amber-400 font-medium flex items-center gap-1.5">
+                  <Clock className="w-4 h-4" />
+                  <span>Deployment undergoing departmental verification</span>
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

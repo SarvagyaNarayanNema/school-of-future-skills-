@@ -105,15 +105,15 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Campus Initiatives & Guilds */}
+          {/* Campus Initiatives & Showcase */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Student Guilds</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">Department Showcase</h4>
             <ul className="space-y-2 text-xs">
+              <li><Link to="/projects" className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 transition-colors">Dimpy's COSMOS (3D)</Link></li>
+              <li><Link to="/projects" className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 transition-colors">PixelMeFaizan (AI/ML)</Link></li>
+              <li><Link to="/projects" className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 transition-colors">Sarvagya's Portfolio</Link></li>
               <li><Link to="/clubs-and-projects" className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 transition-colors">Binary Battle Club</Link></li>
               <li><Link to="/clubs-and-projects" className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 transition-colors">Cyber Warriors Club</Link></li>
-              <li><Link to="/clubs-and-projects" className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 transition-colors">NeuralShield Capstone</Link></li>
-              <li><Link to="/clubs-and-projects" className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 transition-colors">AuraDoc Clinical RAG</Link></li>
-              <li><Link to="/clubs-and-projects" className="text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 transition-colors">SkySense IoT Mesh</Link></li>
             </ul>
           </div>
 
