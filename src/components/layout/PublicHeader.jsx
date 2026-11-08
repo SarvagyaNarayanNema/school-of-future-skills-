@@ -42,10 +42,10 @@ export const PublicHeader = () => {
     { label: 'Home', path: '/' },
     { label: 'About', path: '/about' },
     { label: 'Programmes', path: '/courses' },
-    { label: 'Faculty', path: '/about#faculty' },
+    { label: 'Research & Labs', path: '/labs' },
     { label: 'Achievements', path: '/achievements' },
-    { label: 'Clubs & Projects', path: '/clubs-and-projects' },
-    { label: 'Events', path: '/events' },
+    { label: 'Faculty', path: '/about#faculty' },
+    { label: 'Student Life', path: '/clubs-and-projects' },
     { label: 'Alumni', path: '/alumni' },
   ];
 

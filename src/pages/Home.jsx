@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
 import { initialCourses } from '../data/courses';
 import { initialEvents } from '../data/events';
-import { initialTechClubs, initialStudentProjects } from '../data/clubsAndProjects';
+import { studentClubs, initialStudentProjects } from '../data/clubsAndProjects';
 import { initialAlumni } from '../data/alumni';
+import { wallOfFameSpotlights } from '../data/achievements';
 import { FacultySection } from '../components/sections/FacultySection';
 import { BuildersSection } from '../components/sections/BuildersSection';
 import { FutureBotShowcaseSection } from '../components/sections/FutureBotShowcaseSection';
+import { HeroKnowledgeCore } from '../components/three/HeroKnowledgeCore';
 import { StatCard } from '../components/common/StatCard';
 import { Button } from '../components/common/Button';
 import { getImageFallback } from '../utils/assets';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useApp } from '../context/AppContext';
+
 import {
   Sparkles,
   ArrowRight,
@@ -31,61 +39,198 @@ import {
   ArrowUpRight,
   Layers,
   ThumbsUp,
-  Briefcase
+  Briefcase,
+  Building2,
+  Award,
+  Radio,
+  FileText
 } from 'lucide-react';
-import { useApp } from '../context/AppContext';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export const Home = () => {
   const { user, upvoteProject, userUpvotedProjects = [] } = useApp();
-  const [selectedDomain, setSelectedDomain] = useState('All');
+  const { prefersReducedMotion } = useReducedMotion();
 
+  const heroRef = useRef(null);
+  const headlineLeftRef = useRef(null);
+  const headlineRightRef = useRef(null);
+
+  // GSAP Subtle Entrance & Scroll Kinematics for Cinematic Hero
+  useEffect(() => {
+    if (prefersReducedMotion || !headlineLeftRef.current || !headlineRightRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // 1. Entrance animation
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 1.0 } });
+      tl.from(headlineLeftRef.current, { x: -35, opacity: 0 })
+        .from(headlineRightRef.current, { x: 35, opacity: 0 }, '<0.15');
+
+      // 2. Subtle scroll-controlled separation
+      gsap.to(headlineLeftRef.current, {
+        x: -24,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.2,
+        },
+      });
+
+      gsap.to(headlineRightRef.current, {
+        x: 24,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.2,
+        },
+      });
+    }, heroRef);
+
+    return () => ctx.revert();
+  }, [prefersReducedMotion]);
+
+  // Section 3: Verified Institutional Benchmarks
   const institutionalStats = [
-    { label: "Active Student Innovators", value: "1,450+", icon: Users, color: "cyan", subtext: "Across 4 Technology Tracks" },
+    { label: "Active Student Innovators", value: "1,450+", icon: Users, color: "cyan", subtext: "Across 4 Engineering Tracks" },
     { label: "National Contests Won", value: "38+", icon: Trophy, color: "amber", subtext: "Smart India, SIH & Global Hackathons" },
-    { label: "Technical Guilds & Clubs", value: "2 Active", icon: Terminal, color: "purple", subtext: "AI Syndicate & CyberSec Brigade" },
-    { label: "Placed Alumni at Top Tech", value: "420+", icon: GraduationCap, color: "blue", subtext: "Google, Microsoft, Zomato, AWS" }
+    { label: "Specialized Research Labs", value: "4 Active", icon: Cpu, color: "purple", subtext: "AI, Cyber Defense, Cloud & IoT" },
+    { label: "Placed Alumni at Top Tech", value: "420+", icon: GraduationCap, color: "blue", subtext: "Google DeepMind, AWS, Microsoft" }
   ];
 
-  const featuredCourses = initialCourses.slice(0, 3);
-  const featuredEvents = initialEvents.slice(0, 2);
-  const featuredProjects = initialStudentProjects.slice(0, 2);
-  const prominentAlumni = initialAlumni.slice(0, 3);
+  // Section 4: Flagship Academic Programmes
+  const featuredCourses = initialCourses.slice(0, 4);
 
+  // Section 5: Educational Pillars
   const pillars = [
     {
       icon: Terminal,
       title: "Hands-On Practical Labs",
-      description: "Step away from dry theory. Engage directly in production-grade code execution, network simulations, and live container sandboxes.",
+      description: "Engage directly in production-grade code execution, network simulations, container sandboxes, and hardware testbeds from Semester 1.",
       color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/30"
     },
     {
       icon: Cpu,
       title: "Applied AI & Systems First",
-      description: "Explore large language models, retrieval augmented generation, autonomous agent architectures, and high-performance computing.",
+      description: "Explore foundation models, retrieval augmented generation, autonomous agent workflows, and tensor parallelism on dedicated compute clusters.",
       color: "text-blue-400 bg-blue-500/10 border-blue-500/30"
     },
     {
       icon: Shield,
       title: "Cyber Defense War Room",
-      description: "Practice ethical hacking, intrusion analysis, threat modeling, and defensive system hardening in competitive CTF environments.",
+      description: "Practice ethical hacking, threat modeling, kernel forensics, and active perimeter hardening in competitive international CTF arenas.",
       color: "text-purple-400 bg-purple-500/10 border-purple-500/30"
     },
     {
       icon: Layers,
       title: "Open Source Capstones",
-      description: "Build real tools with active student teams. Ship production releases to GitHub, collaborate with alumni, and present at national hackathons.",
+      description: "Build authentic systems with student engineering squads. Publish real code to GitHub, collaborate with alumni, and present at national summits.",
       color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30"
     }
   ];
 
+  // Section 6: University Research & Innovation Laboratories
+  const researchLabs = [
+    {
+      id: "lab-ai",
+      name: "Quantum & Neural Intelligence Lab",
+      track: "Artificial Intelligence & HPC",
+      focus: "Transformer memory alignment, eBPF telemetry, local LLM fine-tuning, and on-chip quantization.",
+      hardware: "NVIDIA Tensor-Core Compute • PyTorch Accelerated Stacks",
+      badge: "Flagship Research",
+      color: "border-cyan-500/30 text-cyan-400 bg-cyan-500/10",
+      icon: Cpu,
+    },
+    {
+      id: "lab-sec",
+      name: "Cyber Defense SOC & Forensics Arena",
+      track: "Offensive & Defensive Security",
+      focus: "Simulated industrial SCADA intrusion defense, packet reverse-engineering, and live CTF wargames.",
+      hardware: "Isolated Attack-Defense Sandboxes • Threat Telemetry Wall",
+      badge: "Industry Certified",
+      color: "border-purple-500/30 text-purple-400 bg-purple-500/10",
+      icon: Shield,
+    },
+    {
+      id: "lab-cloud",
+      name: "Cloud Native & DevOps Engineering Forge",
+      track: "Distributed Systems & Infrastructure",
+      focus: "Multi-tenant Kubernetes architectures, GitOps automation, service mesh observability, and resilience.",
+      hardware: "Private Cloud Infrastructure • Bare-Metal Micro-Datacenter",
+      badge: "DevOps Pipeline",
+      color: "border-blue-500/30 text-blue-400 bg-blue-500/10",
+      icon: Terminal,
+    },
+    {
+      id: "lab-iot",
+      name: "Smart Embedded Systems & IoT Foundry",
+      track: "Edge Computing & Hardware",
+      focus: "Ultra-low power sensor mesh networks, RISC-V edge prototyping, and real-time robotic telemetry.",
+      hardware: "Hardware Logic Analyzers • Wireless Protocol Testbeds",
+      badge: "Hardware Prototyping",
+      color: "border-emerald-500/30 text-emerald-400 bg-emerald-500/10",
+      icon: Layers,
+    },
+  ];
+
+  // Section 7: Student Capstone Projects
+  const featuredProjects = initialStudentProjects.slice(0, 2);
+
+  // Section 8: Achievements & Recognition Spotlights
+  const spotlightAchievements = wallOfFameSpotlights.slice(0, 2);
+
+  // Section 10: Student Life & Technical Guilds
+  const clubs = studentClubs.slice(0, 2);
+
+  // Section 11: Industry Collaboration & Career Development
+  const careerHighlights = [
+    {
+      title: "Co-Created Curriculum with Industry",
+      org: "Geeks of Gurukul Partnership",
+      desc: "Specialized undergraduate curricula designed directly alongside tier-1 software architects to address verified industry engineering gaps.",
+      icon: Briefcase,
+    },
+    {
+      title: "Executive Training Credibility",
+      org: "SBI, LIC, EPFO, RCVP Noronha Academy",
+      desc: "Faculty and lab resources trusted by national administrative and financial institutions for executive and digital transformation sessions.",
+      icon: Building2,
+    },
+    {
+      title: "1-on-1 Alumni Capstone Advisory",
+      org: "Global Alumni Mentorship Network",
+      desc: "Direct weekly review sessions connecting student project teams with practicing engineers at Google DeepMind, AWS, and CrowdStrike.",
+      icon: Users,
+    },
+    {
+      title: "Dedicated Technical Placement Cell",
+      org: "Scope Global Skills University Campus",
+      desc: "Rigorous coding interview preparation, competitive programming hackathons, and direct campus recruitment drives.",
+      icon: Award,
+    },
+  ];
+
+  // Section 12: Prominent Alumni
+  const prominentAlumni = initialAlumni.slice(0, 3);
+
+  // Section 13: Events & Workshops
+  const featuredEvents = initialEvents.slice(0, 2);
+
   return (
-    <div className="space-y-24 pb-20">
+    <div className="space-y-24 md:space-y-32 pb-24">
       
       {/* ========================================================= */}
-      {/* 1. HERO SECTION                                           */}
+      {/* SECTION 2 — CINEMATIC HERO                                */}
       {/* ========================================================= */}
-      <section className="relative overflow-hidden pt-12 md:pt-20 pb-16 border-b border-slate-200 dark:border-slate-800/60">
-        
+      <section
+        ref={heroRef}
+        className="relative overflow-hidden pt-12 md:pt-20 pb-16 lg:pb-24 border-b border-slate-200 dark:border-slate-800/60"
+      >
         {/* Ambient Glow Orbs */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-cyan-500/15 via-blue-600/15 to-purple-600/10 blur-[130px] rounded-full pointer-events-none" />
         <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none" />
@@ -97,21 +242,25 @@ export const Home = () => {
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-50/90 dark:bg-slate-900/90 border border-cyan-500/30 text-xs text-cyan-800 dark:text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
               <span className="flex h-2 w-2 rounded-full bg-cyan-500 animate-ping" />
               <span className="font-semibold tracking-wide">Scope Global Skills University</span>
-              <span className="text-slate-500 dark:text-slate-400 hidden sm:inline">• School of Future Skills & IT</span>
+              <span className="text-slate-500 dark:text-slate-400 hidden sm:inline">• School of Future Skills &amp; IT</span>
             </div>
 
-            {/* Master Headline from Plan */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.08]">
-              Learn. Build.{' '}
-              <span className="bg-gradient-to-r from-cyan-600 via-sky-500 to-blue-600 dark:from-cyan-400 dark:via-sky-300 dark:to-blue-400 bg-clip-text text-transparent">
-                Innovate.
-              </span>{' '}
-              Lead.
+            {/* Master Headline with Smooth GSAP Split-and-Merge Kinematics */}
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.08] flex flex-wrap items-center justify-center gap-x-4">
+              <span ref={headlineLeftRef} className="inline-block will-change-transform">
+                Learn. Build.
+              </span>
+              <span
+                ref={headlineRightRef}
+                className="inline-block bg-gradient-to-r from-cyan-600 via-sky-500 to-blue-600 dark:from-cyan-400 dark:via-sky-300 dark:to-blue-400 bg-clip-text text-transparent will-change-transform"
+              >
+                Innovate. Lead.
+              </span>
             </h1>
 
             {/* Supporting Editorial Paragraph */}
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
-              Transform your curiosity into practical skills through technology-driven education, research, innovation and real-world projects. Master computer science, artificial intelligence, and cyber defense in a dedicated engineering ecosystem.
+            <p className="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
+              Transform curiosity into capability through technology-driven education, hands-on research, innovation and real-world projects. Master computer science, artificial intelligence, and cyber defense in a dedicated engineering ecosystem.
             </p>
 
             {/* Primary Action Buttons */}
@@ -124,16 +273,22 @@ export const Home = () => {
 
               <Link to="/about" className="w-full sm:w-auto">
                 <Button size="lg" variant="secondary" icon={Sparkles} className="w-full">
-                  Discover FSIT
+                  Discover Our Department
                 </Button>
               </Link>
             </div>
 
             {/* Trust Indicators */}
-            <div className="pt-4 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-600 dark:text-slate-400 font-medium">
+            <div className="pt-4 flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs text-slate-600 dark:text-slate-400 font-medium">
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-cyan-500" /> Industry Capstones</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-cyan-500" /> Alumni Mentorship</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-cyan-500" /> Research Laboratories</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-cyan-500" /> Autonomous RAG Assistant</span>
+            </div>
+
+            {/* 3D Technology Centerpiece */}
+            <div className="pt-6 sm:pt-10 max-w-md mx-auto">
+              <HeroKnowledgeCore />
             </div>
 
           </div>
@@ -141,10 +296,10 @@ export const Home = () => {
       </section>
 
       {/* ========================================================= */}
-      {/* 2. INSTITUTIONAL HIGHLIGHTS / STATS                       */}
+      {/* SECTION 3 — INSTITUTIONAL TRUST & BENCHMARKS              */}
       {/* ========================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
+        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
           <h2 className="text-xs font-mono font-bold tracking-widest text-cyan-600 dark:text-cyan-400 uppercase">
             Institutional Benchmarks
           </h2>
@@ -165,23 +320,101 @@ export const Home = () => {
             />
           ))}
         </div>
+
+        {/* Accreditation & Governance Strip */}
+        <div className="mt-8 p-4 rounded-2xl bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-around gap-4 text-xs font-mono text-slate-500 dark:text-slate-400 text-center">
+          <span>🏛️ Established under Madhya Pradesh State Act</span>
+          <span>📜 UGC Recognized Higher Educational Institution</span>
+          <span>🔬 Outcome-Based Engineering Framework</span>
+          <span>🤝 Co-Created Industry Specializations</span>
+        </div>
       </section>
 
       {/* ========================================================= */}
-      {/* 3. WHY CHOOSE FUTURE SKILLS — EDITORIAL PILLARS           */}
+      {/* SECTION 4 — ACADEMIC PROGRAMMES SHOWCASE                  */}
+      {/* ========================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+          <div className="space-y-1.5">
+            <span className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">
+              Undergraduate Degree Specializations
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+              Flagship Academic Programmes
+            </h2>
+          </div>
+          <Link
+            to="/courses"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
+          >
+            <span>View All 42+ Degree Tracks</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {featuredCourses.map((c) => (
+            <div
+              key={c.id}
+              className="glass-card flex flex-col justify-between overflow-hidden group p-5 space-y-4 hover:border-cyan-500/40 transition-all duration-300"
+            >
+              <div>
+                <div className="relative aspect-video rounded-xl overflow-hidden mb-4 bg-slate-900 border border-slate-800">
+                  <img
+                    src={c.image}
+                    alt={c.programme}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = getImageFallback(c.programme);
+                    }}
+                  />
+                  <div className="absolute top-2.5 left-2.5">
+                    <span className="text-[10px] font-mono font-bold bg-[#0B0F19]/90 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/30">
+                      {c.level || "UG Degree"}
+                    </span>
+                  </div>
+                </div>
+
+                <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors line-clamp-2">
+                  {c.programme}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-3 leading-relaxed">
+                  {c.overview || c.description}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                <span className="font-mono text-slate-500 dark:text-slate-400 text-[11px]">{c.duration || "3 Years (6 Semesters)"}</span>
+                <Link
+                  to={`/courses/${c.id}`}
+                  className="font-semibold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
+                >
+                  <span>Syllabus</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* SECTION 5 — WHY SCHOOL OF FUTURE SKILLS (PILLARS)         */}
       {/* ========================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="glass-panel p-8 sm:p-12 rounded-3xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
           
           <div className="max-w-3xl space-y-3 mb-10 text-left">
             <span className="text-xs font-mono font-bold tracking-wider text-cyan-600 dark:text-cyan-400 uppercase">
-              The FSIT Advantage
+              The FSIT Pedagogy
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               An Academic Model Built for the AI Century
             </h2>
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-              We combine computer science rigor with real-world software engineering practices. Learn modern distributed systems, data analytics, and security in an immersive laboratory environment.
+              We combine computer science rigor with production software engineering. Learn modern distributed systems, data analytics, and autonomous security inside dedicated technical laboratories.
             </p>
           </div>
 
@@ -208,68 +441,69 @@ export const Home = () => {
       </section>
 
       {/* ========================================================= */}
-      {/* 4. ACADEMIC PROGRAMMES SHOWCASE                           */}
+      {/* SECTION 6 — RESEARCH, LABORATORIES & INNOVATION           */}
       {/* ========================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
           <div className="space-y-1.5">
             <span className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">
-              Undergraduate &amp; Postgraduate Curricula
+              Research Infrastructure &amp; Technical Capabilities
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-              Featured Academic Programmes
+              Specialized University Research Labs
             </h2>
           </div>
           <Link
-            to="/courses"
+            to="/labs"
             className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
           >
-            <span>View All 42+ Programmes</span>
+            <span>Explore Interactive Practice Labs</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredCourses.map((c) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {researchLabs.map((lab) => (
             <div
-              key={c.id}
-              className="glass-card flex flex-col justify-between overflow-hidden group p-5 space-y-4"
+              key={lab.id}
+              className="glass-card p-6 flex flex-col justify-between space-y-4 hover:border-cyan-500/40 transition-all duration-300"
             >
-              <div>
-                <div className="relative aspect-video rounded-xl overflow-hidden mb-4 bg-slate-900 border border-slate-800">
-                  <img
-                    src={c.image}
-                    alt={c.programme}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = getImageFallback(c.programme);
-                    }}
-                  />
-                  <div className="absolute top-2.5 left-2.5">
-                    <span className="text-[10px] font-mono font-bold bg-[#0B0F19]/90 text-cyan-300 px-2.5 py-0.5 rounded-full border border-cyan-500/30">
-                      {c.track || "B.C.A. (AI-ML)"}
-                    </span>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full border ${lab.color}`}>
+                    {lab.track}
+                  </span>
+                  <span className="text-xs font-mono text-slate-500 dark:text-slate-400">{lab.badge}</span>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 text-cyan-500">
+                    <lab.icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                      {lab.name}
+                    </h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                      {lab.focus}
+                    </p>
                   </div>
                 </div>
 
-                <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors line-clamp-1">
-                  {c.programme}
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-                  {c.description}
-                </p>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-600 dark:text-slate-400">
+                  <span className="text-cyan-600 dark:text-cyan-400 font-bold block mb-0.5">Hardware &amp; Tooling Rig:</span>
+                  {lab.hardware}
+                </div>
               </div>
 
               <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                <span className="font-mono text-slate-500 dark:text-slate-400 text-[11px]">{c.duration || "3 Years"}</span>
+                <span className="text-slate-500 dark:text-slate-400 font-mono text-[11px]">Academic &amp; Student Research</span>
                 <Link
-                  to={`/courses/${c.id}`}
-                  className="font-semibold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
+                  to="/labs"
+                  className="font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
                 >
-                  <span>Syllabus</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
+                  <span>Launch Practice Terminal</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </div>
@@ -278,12 +512,7 @@ export const Home = () => {
       </section>
 
       {/* ========================================================= */}
-      {/* 5. DISTINGUISHED FACULTY SECTION                          */}
-      {/* ========================================================= */}
-      <FacultySection />
-
-      {/* ========================================================= */}
-      {/* 6. PROJECTS & INNOVATION SHOWCASE                         */}
+      {/* SECTION 7 — STUDENT PROJECT SHOWCASE                      */}
       {/* ========================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
@@ -310,18 +539,18 @@ export const Home = () => {
             return (
               <div
                 key={proj.id}
-                className="glass-card p-6 flex flex-col justify-between space-y-4"
+                className="glass-card p-6 flex flex-col justify-between space-y-4 hover:border-cyan-500/40 transition-all duration-300"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyan-100 dark:bg-cyan-500/10 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-500/30">
                       {proj.category}
                     </span>
-                    <span className="text-xs font-mono text-slate-500 dark:text-slate-400">Team {proj.author}</span>
+                    <span className="text-xs font-mono text-slate-500 dark:text-slate-400">Team {proj.studentTeam || proj.author}</span>
                   </div>
 
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                    {proj.title || proj.name}
+                    {proj.name || proj.title}
                   </h3>
 
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -329,7 +558,7 @@ export const Home = () => {
                   </p>
 
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {proj.techStack?.map((t, idx) => (
+                    {(proj.technologies || proj.techStack)?.map((t, idx) => (
                       <span
                         key={idx}
                         className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-mono text-slate-700 dark:text-slate-300"
@@ -350,7 +579,7 @@ export const Home = () => {
                     }`}
                   >
                     <ThumbsUp className="w-3.5 h-3.5" />
-                    <span>{proj.upvotes} Upvotes</span>
+                    <span>{proj.likes || proj.upvotes || 0} Upvotes</span>
                   </button>
 
                   <Link
@@ -368,7 +597,262 @@ export const Home = () => {
       </section>
 
       {/* ========================================================= */}
-      {/* 7. UPCOMING EVENTS & HACKATHONS                           */}
+      {/* SECTION 8 — ACHIEVEMENTS & RECOGNITION (WALL OF FAME)     */}
+      {/* ========================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+          <div className="space-y-1.5">
+            <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+              Verified Honours &amp; Competition Triumphs
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+              Wall of Fame Spotlights
+            </h2>
+          </div>
+          <Link
+            to="/achievements"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
+          >
+            <span>View All Awards &amp; Honors</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {spotlightAchievements.map((ach) => (
+            <div
+              key={ach.id}
+              className="glass-card p-6 flex flex-col justify-between space-y-4 hover:border-amber-500/40 transition-all duration-300"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30">
+                    {ach.badge || "Championship"}
+                  </span>
+                  <span className="text-xs font-mono text-slate-500 dark:text-slate-400">{ach.year}</span>
+                </div>
+
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-snug">
+                  {ach.title}
+                </h3>
+
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {ach.description}
+                </p>
+
+                <div className="p-3 rounded-xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-500/20 text-xs font-medium text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                  <Trophy className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span>{ach.award}</span>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                <span className="text-slate-500 dark:text-slate-400 font-mono text-[11px]">{ach.team}</span>
+                <Link
+                  to="/achievements"
+                  className="font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
+                >
+                  <span>Read Story</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* SECTION 9 — DISTINGUISHED FACULTY DIRECTORY               */}
+      {/* ========================================================= */}
+      <FacultySection />
+
+      {/* ========================================================= */}
+      {/* SECTION 10 — STUDENT LIFE, CLUBS AND ACTIVITIES           */}
+      {/* ========================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+          <div className="space-y-1.5">
+            <span className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">
+              Technical Guilds &amp; Collaborative Communities
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+              Student Life &amp; Guilds
+            </h2>
+          </div>
+          <Link
+            to="/clubs-and-projects"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
+          >
+            <span>Explore All Student Guilds</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {clubs.map((club) => (
+            <div
+              key={club.id}
+              className="glass-card p-6 flex flex-col justify-between space-y-4 hover:border-cyan-500/40 transition-all duration-300"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-500/10 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-500/30">
+                    {club.badge || "Student Guild"}
+                  </span>
+                  <span className="text-xs font-mono text-slate-500 dark:text-slate-400">{club.membersCount} Active Engineers</span>
+                </div>
+
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  {club.name}
+                </h3>
+
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {club.description}
+                </p>
+
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {club.tags?.map((t, idx) => (
+                    <span
+                      key={idx}
+                      className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-mono text-slate-700 dark:text-slate-300"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
+                    <span>{club.schedule}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
+                    <span>{club.venue}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                <span className="text-slate-500 dark:text-slate-400 font-mono text-[11px]">{club.leads}</span>
+                <Link
+                  to="/clubs-and-projects"
+                  className="px-3.5 py-1.5 rounded-xl bg-cyan-500 text-slate-950 font-bold hover:bg-cyan-400 transition-colors shadow-sm"
+                >
+                  Join Guild &rarr;
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* SECTION 11 — INDUSTRY & CAREER DEVELOPMENT                */}
+      {/* ========================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="glass-panel p-8 sm:p-12 rounded-3xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
+          
+          <div className="max-w-3xl space-y-3 mb-10 text-left">
+            <span className="text-xs font-mono font-bold tracking-wider text-cyan-600 dark:text-cyan-400 uppercase">
+              Corporate &amp; Career Frameworks
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Bridging Academic Theory to Tier-1 Industry Standards
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+              Our students graduate with verified engineering portfolios. Through co-created corporate syllabi, faculty training for national bodies, and direct alumni recruitment pipelines, our outcomes are measurable.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {careerHighlights.map((c, idx) => (
+              <div
+                key={idx}
+                className="p-6 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 hover:border-cyan-500/40 transition-all duration-300 space-y-3"
+              >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
+                  <c.icon className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-mono font-bold text-cyan-600 dark:text-cyan-400 uppercase block mb-1">
+                    {c.org}
+                  </span>
+                  <h3 className="font-bold text-base text-slate-900 dark:text-white">
+                    {c.title}
+                  </h3>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  {c.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* SECTION 12 — ALUMNI NETWORK & MENTORSHIP                  */}
+      {/* ========================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+          <div className="space-y-1.5">
+            <span className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">
+              Graduates Shaping Global Technology
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+              Alumni Mentorship Network
+            </h2>
+          </div>
+          <Link
+            to="/alumni"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
+          >
+            <span>Alumni Directory</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {prominentAlumni.map((alum) => (
+            <div
+              key={alum.id}
+              className="glass-card p-5 flex flex-col justify-between space-y-4 hover:border-cyan-500/40 transition-all duration-300"
+            >
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center font-bold text-cyan-400 shrink-0">
+                    {alum.name.slice(0, 2).toUpperCase()}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-sm text-slate-900 dark:text-white truncate">{alum.name}</h3>
+                    <p className="text-xs text-cyan-600 dark:text-cyan-400 font-semibold truncate">{alum.currentRole}</p>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block">{alum.company}</span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed">
+                  {alum.bio || "Active alumni mentor supporting undergraduate engineers through capstone advisory and mock interview workshops."}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                <span className="text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-semibold">Available for Mentorship</span>
+                <Link
+                  to="/alumni?tab=mentorship"
+                  className="font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
+                >
+                  Book 1-on-1 &rarr;
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* SECTION 13 — UPCOMING EVENTS & HACKATHONS                 */}
       {/* ========================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
@@ -393,7 +877,7 @@ export const Home = () => {
           {featuredEvents.map((evt) => (
             <div
               key={evt.id}
-              className="glass-card p-6 flex flex-col justify-between space-y-4"
+              className="glass-card p-6 flex flex-col justify-between space-y-4 hover:border-cyan-500/40 transition-all duration-300"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -436,76 +920,17 @@ export const Home = () => {
       </section>
 
       {/* ========================================================= */}
-      {/* 8. ALUMNI NETWORK & IMPACT                                */}
-      {/* ========================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
-          <div className="space-y-1.5">
-            <span className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">
-              Graduates Shaping Tier-1 Technology
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-              Alumni Mentorship Network
-            </h2>
-          </div>
-          <Link
-            to="/alumni"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
-          >
-            <span>Alumni Directory</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {prominentAlumni.map((alum) => (
-            <div
-              key={alum.id}
-              className="glass-card p-5 flex flex-col justify-between space-y-4"
-            >
-              <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center font-bold text-cyan-400 shrink-0">
-                    {alum.name.slice(0, 2).toUpperCase()}
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-white truncate">{alum.name}</h3>
-                    <p className="text-xs text-cyan-600 dark:text-cyan-400 font-semibold truncate">{alum.currentRole}</p>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block">{alum.company}</span>
-                  </div>
-                </div>
-
-                <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed">
-                  {alum.bio || "Active alumni mentor supporting undergraduate engineers through capstone advisory and mock interview workshops."}
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                <span className="text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-semibold">Available for Mentorship</span>
-                <Link
-                  to="/alumni?tab=mentorship"
-                  className="font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
-                >
-                  Book 1-on-1 &rarr;
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ========================================================= */}
-      {/* 8.5. MEET FUTUREBOT 3D AI ASSISTANT SHOWCASE              */}
+      {/* SECTION 14.1 — MEET FUTUREBOT 3D AI COMPANION             */}
       {/* ========================================================= */}
       <FutureBotShowcaseSection />
 
       {/* ========================================================= */}
-      {/* 9. WEBSITE BUILDERS TEAM                                  */}
+      {/* SECTION 14.2 — STUDENT BUILDERS RECOGNITION               */}
       {/* ========================================================= */}
       <BuildersSection />
 
       {/* ========================================================= */}
-      {/* 10. FINAL CALL TO ACTION BANNER                           */}
+      {/* SECTION 14.3 — FINAL INSTITUTIONAL ADMISSIONS CTA         */}
       {/* ========================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative rounded-3xl p-8 sm:p-14 bg-gradient-to-r from-cyan-600 via-blue-700 to-indigo-800 text-white overflow-hidden shadow-2xl">
@@ -527,7 +952,7 @@ export const Home = () => {
             <div className="pt-3 flex flex-wrap items-center gap-4">
               <Link to="/courses">
                 <Button size="lg" className="bg-white text-slate-950 hover:bg-slate-100 font-bold shadow-lg">
-                  Explore Curriculums
+                  Explore Programmes
                 </Button>
               </Link>
               <Link to="/dashboard">
