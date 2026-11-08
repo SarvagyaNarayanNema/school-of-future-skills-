@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { initialLabs, LAB_CATEGORIES } from '../data/labs';
 import { useApp } from '../context/AppContext';
 import { Badge } from '../components/common/Badge';
+import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import {
   Terminal,
   Play,
@@ -57,20 +58,31 @@ export const Labs = () => {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div className="space-y-8 animate-in fade-in duration-300">
       
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[{ label: 'Virtual Tech Labs' }]} />
+
       {/* Header */}
-      <div className="space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-semibold text-cyan-600 dark:text-cyan-400">
-          <Terminal className="w-3.5 h-3.5" />
-          <span>Interactive Student Technology Workstations</span>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-semibold text-cyan-600 dark:text-cyan-400">
+            <Terminal className="w-3.5 h-3.5" />
+            <span>Interactive Technology Workstations</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Cloud Sandbox Labs
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl">
+            Safely practice algorithms, test JWT security claims, compute vector cosine similarities, and simulate edge IoT events.
+          </p>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Cloud Sandbox Labs
-        </h1>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
-          Safely practice algorithms, test JWT security claims, compute vector cosine similarities, and simulate edge IoT events right inside your browser.
-        </p>
+
+        <div className="flex items-center gap-2">
+          <span className="px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-[11px] font-mono text-slate-600 dark:text-slate-300">
+            Runtime: Browser V8 Client Worker
+          </span>
+        </div>
       </div>
 
       {/* Lab Category Filter Tabs */}

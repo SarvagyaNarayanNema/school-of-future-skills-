@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { initialAchievements, wallOfFameSpotlights, ACHIEVEMENT_CATEGORIES, ACHIEVEMENT_YEARS } from '../data/achievements';
 import { getImageFallback } from '../utils/assets';
+import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import {
   Trophy,
   Search,
@@ -114,6 +115,9 @@ export const Achievements = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
       
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[{ label: 'Achievements & Wall of Fame' }]} />
+
       {/* Header */}
       <div className="space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-xs font-semibold text-yellow-600 dark:text-yellow-400">

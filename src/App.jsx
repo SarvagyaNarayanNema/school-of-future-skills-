@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { Navbar } from './components/layout/Navbar';
+import { PublicHeader } from './components/layout/PublicHeader';
+import { PortalLayout } from './components/layout/PortalLayout';
 import { Footer } from './components/layout/Footer';
 import { FutureBot } from './components/layout/FutureBot';
 import { CommandPalette } from './components/common/CommandPalette';
@@ -42,46 +43,59 @@ const ScrollToTop = () => {
 
 export const App = () => {
   const { notificationDrawerOpen, setNotificationDrawerOpen } = useApp();
+  const location = useLocation();
+
+  const PORTAL_PREFIXES = ['/dashboard', '/assignments', '/labs', '/tech-zone', '/timetable', '/profile'];
+  const isPortal = PORTAL_PREFIXES.some(p => location.pathname === p || location.pathname.startsWith(p + '/'));
 
   return (
     <ErrorBoundary>
       <ScrollToTop />
-      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 antialiased tech-grid-pattern selection:bg-cyan-500 selection:text-slate-950 transition-colors duration-200">
+      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#080C16] text-slate-900 dark:text-slate-100 antialiased tech-grid-pattern selection:bg-cyan-500 selection:text-slate-950 transition-colors duration-200">
         
-        {/* Sticky Top Navbar */}
-        <Navbar />
+        {isPortal ? (
+          <PortalLayout>
+            <Routes>
+              {/* Student Portal & Learning Ecosystem Routes */}
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/assignments" element={<Assignments />} />
+              <Route path="/labs" element={<Labs />} />
+              <Route path="/tech-zone" element={<TechZone />} />
+              <Route path="/timetable" element={<Timetable />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </PortalLayout>
+        ) : (
+          <>
+            {/* Streamlined Public Collegiate Header */}
+            <PublicHeader />
 
-        {/* Dynamic Route Content */}
-        <main className="flex-1">
-          <Routes>
-            {/* Public Institutional Routes */}
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/courses" element={<Courses />} />
-            <Route path="/courses/:id" element={<CourseDetails />} />
-            <Route path="/achievements" element={<Achievements />} />
-            <Route path="/notices" element={<Notices />} />
-            <Route path="/clubs-and-projects" element={<ClubsAndProjects />} />
-            <Route path="/alumni" element={<Alumni />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/events/:id" element={<EventDetails />} />
-            <Route path="/projects" element={<Projects />} />
+            {/* Dynamic Public Route Content */}
+            <main className="flex-1">
+              <Routes>
+                {/* Public Institutional Routes */}
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/courses" element={<Courses />} />
+                <Route path="/courses/:id" element={<CourseDetails />} />
+                <Route path="/achievements" element={<Achievements />} />
+                <Route path="/notices" element={<Notices />} />
+                <Route path="/clubs-and-projects" element={<ClubsAndProjects />} />
+                <Route path="/alumni" element={<Alumni />} />
+                <Route path="/events" element={<Events />} />
+                <Route path="/events/:id" element={<EventDetails />} />
+                <Route path="/projects" element={<Projects />} />
 
-            {/* Student Portal & Learning Ecosystem Routes */}
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/assignments" element={<Assignments />} />
-            <Route path="/labs" element={<Labs />} />
-            <Route path="/tech-zone" element={<TechZone />} />
-            <Route path="/timetable" element={<Timetable />} />
-            <Route path="/profile" element={<Profile />} />
+                {/* Catch-all 404 Route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
 
-            {/* Catch-all 404 Route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
-
-        {/* Global Footer */}
-        <Footer />
+            {/* Global Comprehensive Footer */}
+            <Footer />
+          </>
+        )}
 
         {/* Notification Drawer */}
         <NotificationDrawer

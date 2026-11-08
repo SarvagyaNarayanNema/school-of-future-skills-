@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { initialNotices, NOTICE_PRIORITIES } from '../data/notices';
 import { useApp } from '../context/AppContext';
+import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import {
   Bell,
   Search,
@@ -111,6 +112,9 @@ export const Notices = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[{ label: 'Official Notices & Circulars' }]} />
+
       {/* Header */}
       <div className="space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-semibold text-amber-600 dark:text-amber-400">

@@ -3,6 +3,7 @@ import { initialEvents, EVENT_CATEGORIES } from '../data/events';
 import { EventCard } from '../components/cards/EventCard';
 import { EventRegisterModal } from '../components/modals/EventRegisterModal';
 import { EmptyState } from '../components/common/EmptyState';
+import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import { eventService } from '../services/eventService';
 import { Calendar, Search, Zap, CheckCircle2 } from 'lucide-react';
 
@@ -30,6 +31,9 @@ export const Events = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[{ label: 'Events & Hackathons' }]} />
+
       {/* Header */}
       <div className="space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-xs font-semibold text-purple-600 dark:text-purple-400">

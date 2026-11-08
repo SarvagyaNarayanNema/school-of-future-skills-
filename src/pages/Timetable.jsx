@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { timetableSchedule, DAYS_OF_WEEK } from '../data/timetable';
 import { Calendar, Clock, MapPin, User, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { Badge } from '../components/common/Badge';
+import { Breadcrumbs } from '../components/common/Breadcrumbs';
 
 export const Timetable = () => {
   const [activeDay, setActiveDay] = useState('Monday');
@@ -21,20 +22,23 @@ export const Timetable = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="space-y-8 animate-in fade-in duration-300">
       
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[{ label: 'Academic Timetable' }]} />
+
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-semibold text-cyan-600 dark:text-cyan-400">
             <Calendar className="w-3.5 h-3.5" />
-            <span>Academic Schedule & Room Allocations</span>
+            <span>Academic Schedule &amp; Room Allocations</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Interactive Weekly Timetable
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Class Schedule &amp; Lecture Halls
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-            Track classroom lectures, specialized cybersecurity labs, and hardware practical sessions.
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            Track daily classroom lectures, specialized cybersecurity war rooms, and code lab practicals.
           </p>
         </div>
 

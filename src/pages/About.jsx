@@ -3,6 +3,7 @@ import { initialFaculty, FACULTY_DEPARTMENTS } from '../data/faculty';
 import { FacultyCard } from '../components/cards/FacultyCard';
 import { BuildersSection } from '../components/sections/BuildersSection';
 import { EmptyState } from '../components/common/EmptyState';
+import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import {
   Sparkles,
   Target,
@@ -54,6 +55,11 @@ export const About = () => {
   return (
     <div className="space-y-16 pb-16">
       
+      {/* Breadcrumbs */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <Breadcrumbs items={[{ label: 'About FSIT & Leadership' }]} />
+      </div>
+
       {/* Header Banner */}
       <section className="relative overflow-hidden py-12 md:py-16 border-b border-slate-200 dark:border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">

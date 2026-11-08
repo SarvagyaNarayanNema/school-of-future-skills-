@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { studentClubs, initialTechClubs, initialStudentProjects } from '../data/clubsAndProjects';
 import { useApp } from '../context/AppContext';
 import { getImageFallback } from '../utils/assets';
+import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import {
   Users,
   Code2,
@@ -178,6 +179,9 @@ export const ClubsAndProjects = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[{ label: 'Clubs & Student Capstones' }]} />
+
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-3">

@@ -4,6 +4,7 @@ import { courseService } from '../services/courseService';
 import { useApp } from '../context/AppContext';
 import { Badge } from '../components/common/Badge';
 import { ProgressBar } from '../components/common/ProgressBar';
+import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import { CourseEnrollModal } from '../components/modals/CourseEnrollModal';
 import {
   ArrowLeft,
@@ -82,13 +83,19 @@ export const CourseDetails = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       
-      {/* Back button */}
-      <div>
+      {/* Navigation Breadcrumbs & Back */}
+      <div className="flex items-center justify-between">
+        <Breadcrumbs
+          items={[
+            { label: 'Programmes', to: '/courses' },
+            { label: course.title }
+          ]}
+        />
         <Link
           to="/courses"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-300 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Courses
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to Catalog
         </Link>
       </div>
 

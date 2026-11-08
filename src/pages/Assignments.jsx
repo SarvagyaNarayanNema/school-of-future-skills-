@@ -4,6 +4,8 @@ import { ASSIGNMENT_STATUSES } from '../data/assignments';
 import { AssignmentSubmitModal } from '../components/modals/AssignmentSubmitModal';
 import { Badge } from '../components/common/Badge';
 import { EmptyState } from '../components/common/EmptyState';
+import { Tabs } from '../components/common/Tabs';
+import { StatCard } from '../components/common/StatCard';
 import {
   Code2,
   Calendar,
@@ -13,7 +15,11 @@ import {
   FileCode,
   UploadCloud,
   Search,
-  Filter
+  Filter,
+  Check,
+  Send,
+  Layers,
+  Sparkles
 } from 'lucide-react';
 
 export const Assignments = () => {
@@ -23,29 +29,49 @@ export const Assignments = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSubmitModalAsg, setActiveSubmitModalAsg] = useState(null);
 
+  const pendingCount = assignments.filter(a => a.status === 'Pending' || a.status === 'Overdue').length;
+  const submittedCount = assignments.filter(a => a.status === 'Submitted').length;
+  const completedCount = assignments.filter(a => a.status === 'Completed' || a.status === 'Graded').length;
+
+  const statusTabs = [
+    { id: 'All', label: 'All Tasks', count: assignments.length },
+    { id: 'Pending', label: 'Pending', count: pendingCount },
+    { id: 'Submitted', label: 'Submitted', count: submittedCount },
+    { id: 'Completed', label: 'Completed', count: completedCount },
+  ];
+
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'Completed': return <Badge variant="emerald" size="xs">✓ Completed</Badge>;
-      case 'Submitted': return <Badge variant="cyan" size="xs">⏳ Submitted</Badge>;
-      case 'Late': return <Badge variant="rose" size="xs">⚠️ Late</Badge>;
-      default: return <Badge variant="amber" size="xs">● Pending</Badge>;
+      case 'Completed':
+      case 'Graded':
+        return <Badge variant="emerald" size="xs">✓ Completed</Badge>;
+      case 'Submitted':
+        return <Badge variant="cyan" size="xs">⏳ Submitted</Badge>;
+      case 'Late':
+      case 'Overdue':
+        return <Badge variant="rose" size="xs">⚠️ Overdue</Badge>;
+      default:
+        return <Badge variant="amber" size="xs">● Pending</Badge>;
     }
   };
 
   const getPriorityBadge = (priority) => {
     switch (priority) {
-      case 'High': return <span className="text-[10px] font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">High Priority</span>;
-      case 'Medium': return <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Medium Priority</span>;
-      default: return <span className="text-[10px] font-bold text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">Normal</span>;
+      case 'High':
+        return <span className="text-[10px] font-bold text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20 font-mono">High Priority</span>;
+      case 'Medium':
+        return <span className="text-[10px] font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 font-mono">Medium</span>;
+      default:
+        return <span className="text-[10px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-300 dark:border-slate-700 font-mono">Standard</span>;
     }
   };
 
   const filtered = (assignments || []).filter(asg => {
     const q = searchQuery.toLowerCase();
-    const matchesSearch = asg.title.toLowerCase().includes(q) ||
-                          asg.subject.toLowerCase().includes(q) ||
-                          asg.code.toLowerCase().includes(q) ||
-                          asg.description.toLowerCase().includes(q);
+    const matchesSearch = asg.title?.toLowerCase().includes(q) ||
+                          asg.subject?.toLowerCase().includes(q) ||
+                          asg.code?.toLowerCase().includes(q) ||
+                          asg.description?.toLowerCase().includes(q);
     const matchesStatus = selectedStatus === 'All' || asg.status === selectedStatus;
     const matchesPriority = selectedPriority === 'All' || asg.priority === selectedPriority;
 
@@ -53,41 +79,80 @@ export const Assignments = () => {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div className="space-y-8 animate-in fade-in duration-300">
       
-      {/* Header */}
-      <div className="space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-          <Code2 className="w-3.5 h-3.5" />
-          <span>Curriculum Deliverables & Code Assessments</span>
+      {/* Header Banner */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-semibold text-cyan-600 dark:text-cyan-400">
+            <Code2 className="w-3.5 h-3.5" />
+            <span>Curriculum Deliverables &amp; Code Assessments</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Assignment Manager
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            Submit solution zip files, review automated test results, and collect instructor grades.
+          </p>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Student Assignment Manager
-        </h1>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
-          Manage homework problems, submit code repositories, and review grading rubrics with automatic XP rewards.
-        </p>
+
+        <div className="flex items-center gap-3">
+          <div className="px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-mono font-bold">
+            ⚡ +100 XP per Submission
+          </div>
+        </div>
       </div>
 
-      {/* Filters Bar */}
-      <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-          <div className="md:col-span-6 relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search assignments by code, title, subject..."
-              className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500 shadow-sm"
-            />
-          </div>
+      {/* Summary Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <StatCard
+          icon={FileCode}
+          label="Pending Submissions"
+          value={pendingCount.toString()}
+          subtext="Action required before due dates"
+          color={pendingCount > 0 ? "amber" : "emerald"}
+        />
+        <StatCard
+          icon={UploadCloud}
+          label="Submitted Under Review"
+          value={submittedCount.toString()}
+          subtext="Waiting for faculty evaluation"
+          color="cyan"
+        />
+        <StatCard
+          icon={CheckCircle2}
+          label="Graded &amp; Finished"
+          value={completedCount.toString()}
+          subtext="Recorded to academic transcript"
+          color="blue"
+        />
+      </div>
 
-          <div className="md:col-span-3">
+      {/* Interactive Tabs & Search Filter Bar */}
+      <div className="glass-panel p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <Tabs
+            tabs={statusTabs}
+            activeTab={selectedStatus}
+            onChange={setSelectedStatus}
+          />
+
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <div className="relative w-full sm:w-64">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search assignments..."
+                className="w-full pl-9 pr-3.5 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500 shadow-sm"
+              />
+            </div>
+
             <select
               value={selectedPriority}
               onChange={(e) => setSelectedPriority(e.target.value)}
-              className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-emerald-500 shadow-sm"
+              className="w-full sm:w-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:border-cyan-500"
             >
               <option value="All">All Priorities</option>
               <option value="High">High Priority</option>
@@ -95,32 +160,20 @@ export const Assignments = () => {
               <option value="Low">Low Priority</option>
             </select>
           </div>
-
-          <div className="md:col-span-3">
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-emerald-500 shadow-sm"
-            >
-              {ASSIGNMENT_STATUSES.map(s => (
-                <option key={s} value={s}>{s === 'All' ? 'All Statuses' : s}</option>
-              ))}
-            </select>
-          </div>
         </div>
       </div>
 
-      {/* Assignment Cards List */}
+      {/* Assignment Deliverables List */}
       {filtered.length > 0 ? (
         <div className="space-y-4">
           {filtered.map((asg) => (
             <div
               key={asg.id}
-              className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
+              className="glass-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-6"
             >
-              <div className="space-y-2.5 max-w-2xl">
+              <div className="space-y-3 max-w-2xl">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-xs text-sky-600 dark:text-sky-400 font-semibold">{asg.code}</span>
+                  <span className="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">{asg.code}</span>
                   <span className="text-slate-400">•</span>
                   <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">{asg.subject}</span>
                   {getStatusBadge(asg.status)}
@@ -137,41 +190,41 @@ export const Assignments = () => {
 
                 <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 pt-1">
                   <span className="flex items-center gap-1.5 font-mono text-slate-700 dark:text-slate-300">
-                    <Clock className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-                    Due: {asg.dueDate} at {asg.dueTime}
+                    <Clock className="w-3.5 h-3.5 text-amber-500" />
+                    Due: <span className="font-semibold">{asg.dueDate}</span> at {asg.dueTime}
                   </span>
                   <span>Deliverables: {asg.deliverables}</span>
                 </div>
 
-                {/* Graded feedback badge if completed */}
+                {/* Grade and feedback */}
                 {asg.grade && (
-                  <div className="p-2.5 rounded-xl bg-emerald-950/20 border border-emerald-500/20 text-xs text-emerald-300">
-                    <span className="font-bold">Score: {asg.grade}</span> — "{asg.feedback}"
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-800 dark:text-emerald-300">
+                    <span className="font-bold">Evaluation Score: {asg.grade}</span> — "{asg.feedback}"
                   </div>
                 )}
 
-                {/* Existing submission pill */}
+                {/* Current submission metadata */}
                 {asg.submission && (
-                  <div className="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
-                    <span>Submitted archive: <span className="font-mono text-sky-400">{asg.submission.fileName}</span></span>
-                    <span className="text-slate-400 text-[11px]">{asg.submission.submittedAt}</span>
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 flex items-center justify-between">
+                    <span>Submitted file: <span className="font-mono text-cyan-500 font-semibold">{asg.submission.fileName}</span></span>
+                    <span className="text-slate-400 text-[11px] font-mono">{asg.submission.submittedAt}</span>
                   </div>
                 )}
               </div>
 
-              {/* Action Button */}
+              {/* Action Buttons */}
               <div className="shrink-0 flex flex-col sm:flex-row md:flex-col gap-2">
-                {asg.status === 'Completed' ? (
+                {asg.status === 'Completed' || asg.status === 'Graded' ? (
                   <button
                     disabled
-                    className="px-5 py-2.5 rounded-xl bg-slate-800 text-slate-400 text-xs font-semibold cursor-default"
+                    className="px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 text-xs font-semibold cursor-default"
                   >
-                    Graded & Archived
+                    Graded &amp; Recorded
                   </button>
                 ) : (
                   <button
                     onClick={() => setActiveSubmitModalAsg(asg)}
-                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition-colors"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/20 transition-all hover:scale-[1.02]"
                   >
                     <UploadCloud className="w-4 h-4" />
                     <span>{asg.status === 'Submitted' ? 'Resubmit Solution' : 'Submit Solution'}</span>
@@ -183,8 +236,8 @@ export const Assignments = () => {
         </div>
       ) : (
         <EmptyState
-          title="No assignments found"
-          description="Try changing status filters or searching with different terms."
+          title="No assignments match your filter"
+          description="Try switching the status tabs or clearing search criteria."
           onReset={() => {
             setSearchQuery('');
             setSelectedPriority('All');
@@ -194,12 +247,16 @@ export const Assignments = () => {
       )}
 
       {/* Assignment Submission Modal */}
-      <AssignmentSubmitModal
-        isOpen={!!activeSubmitModalAsg}
-        onClose={() => setActiveSubmitModalAsg(null)}
-        assignment={activeSubmitModalAsg}
-      />
+      {activeSubmitModalAsg && (
+        <AssignmentSubmitModal
+          isOpen={!!activeSubmitModalAsg}
+          onClose={() => setActiveSubmitModalAsg(null)}
+          assignment={activeSubmitModalAsg}
+        />
+      )}
 
     </div>
   );
 };
+
+export default Assignments;

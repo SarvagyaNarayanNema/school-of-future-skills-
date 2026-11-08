@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { initialAlumni, ALUMNI_ROLES, ALUMNI_BATCHES } from '../data/alumni';
 import { useApp } from '../context/AppContext';
 import { getAvatarFallback } from '../utils/assets';
+import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import {
   GraduationCap,
   Search,
@@ -136,6 +137,9 @@ export const Alumni = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[{ label: 'Alumni Network & Mentorship' }]} />
+
       {/* Page Header */}
       <div className="space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-600 dark:text-blue-400">

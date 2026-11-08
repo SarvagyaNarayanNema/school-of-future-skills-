@@ -7,6 +7,7 @@ import {
   codingChallenges
 } from '../data/quizzes';
 import { Badge } from '../components/common/Badge';
+import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import {
   Terminal,
   Shield,
@@ -180,8 +181,11 @@ export const TechZone = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div className="space-y-8 animate-in fade-in duration-300">
       
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[{ label: 'Emerging Tech Zone & Arena' }]} />
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-3">

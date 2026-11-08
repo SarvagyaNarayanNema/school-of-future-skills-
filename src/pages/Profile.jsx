@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Badge } from '../components/common/Badge';
 import { ProgressBar } from '../components/common/ProgressBar';
+import { Breadcrumbs } from '../components/common/Breadcrumbs';
 import {
   User,
   Mail,
@@ -73,8 +74,11 @@ export const Profile = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div className="space-y-8 animate-in fade-in duration-300">
       
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[{ label: 'Student Profile' }]} />
+
       {/* Top Profile Card */}
       <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-sky-500/30 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-sky-500/10 rounded-full blur-[90px] pointer-events-none" />
