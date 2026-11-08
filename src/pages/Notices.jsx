@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { initialNotices, NOTICE_PRIORITIES } from '../data/notices';
 import { useApp } from '../context/AppContext';
 import {
@@ -13,14 +14,65 @@ import {
   X,
   Clock,
   ArrowRight,
-  ShieldAlert
+  ShieldAlert,
+  Filter
 } from 'lucide-react';
 
 export const Notices = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { savedNotices, toggleSaveNotice, markNoticeRead, showToast } = useApp();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPriority, setSelectedPriority] = useState('All');
+
+  const filterParam = searchParams.get('filter') || '';
+  const urlQuery = searchParams.get('q') || '';
+
+  const computeInitialPriority = () => {
+    if (filterParam === 'urgent') return 'Urgent';
+    if (filterParam === 'academic') return 'Examination';
+    if (filterParam === 'events') return 'Hackathons';
+    if (filterParam === 'workshops' || filterParam === 'placements') return 'Workshops';
+    const directPrio = searchParams.get('priority');
+    if (directPrio && NOTICE_PRIORITIES.includes(directPrio)) return directPrio;
+    return 'All';
+  };
+
+  const [searchQuery, setSearchQuery] = useState(urlQuery);
+  const [selectedPriority, setSelectedPriority] = useState(computeInitialPriority);
   const [activeModalNotice, setActiveModalNotice] = useState(null);
+
+  useEffect(() => {
+    const computed = computeInitialPriority();
+    setSelectedPriority(computed);
+    if (urlQuery !== searchQuery) setSearchQuery(urlQuery);
+  }, [filterParam, urlQuery]);
+
+  const handlePriorityChange = (prio) => {
+    setSelectedPriority(prio);
+    const newParams = new URLSearchParams(searchParams);
+    if (prio !== 'All') {
+      newParams.set('priority', prio);
+    } else {
+      newParams.delete('priority');
+    }
+    newParams.delete('filter');
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const handleSearchChange = (val) => {
+    setSearchQuery(val);
+    const newParams = new URLSearchParams(searchParams);
+    if (val.trim()) {
+      newParams.set('q', val.trim());
+    } else {
+      newParams.delete('q');
+    }
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedPriority('All');
+    setSearchParams({}, { replace: true });
+  };
 
   const getPriorityBadge = (prio) => {
     switch (prio) {
@@ -81,27 +133,38 @@ export const Notices = () => {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search circulars by keyword, exam code, hackathon or author..."
             className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-amber-500"
           />
         </div>
 
-        {/* Priority Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none pt-2 border-t border-slate-200 dark:border-slate-800/80">
-          {NOTICE_PRIORITIES.map((prio) => (
+        {/* Priority Tabs & Reset */}
+        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 scrollbar-none pt-2 border-t border-slate-200 dark:border-slate-800/80">
+          <div className="flex items-center gap-1.5 overflow-x-auto">
+            {NOTICE_PRIORITIES.map((prio) => (
+              <button
+                key={prio}
+                onClick={() => handlePriorityChange(prio)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
+                  selectedPriority === prio
+                    ? 'bg-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/20'
+                    : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
+                }`}
+              >
+                {prio}
+              </button>
+            ))}
+          </div>
+
+          {(selectedPriority !== 'All' || searchQuery) && (
             <button
-              key={prio}
-              onClick={() => setSelectedPriority(prio)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
-                selectedPriority === prio
-                  ? 'bg-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/20'
-                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
-              }`}
+              onClick={clearFilters}
+              className="text-xs text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 shrink-0 font-medium ml-2"
             >
-              {prio}
+              <X className="w-3.5 h-3.5" /> Reset Filters
             </button>
-          ))}
+          )}
         </div>
 
       </div>

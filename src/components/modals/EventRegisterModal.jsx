@@ -6,9 +6,9 @@ import { CheckCircle2, Calendar, MapPin, Sparkles, Send } from 'lucide-react';
 export const EventRegisterModal = ({ isOpen, onClose, event, onRegistered }) => {
   const { user, earnPoints, showToast } = useApp();
   const [formData, setFormData] = useState({
-    name: user.name,
-    email: user.email,
-    rollNo: user.rollNo,
+    name: user?.name || 'Alex Morgan',
+    email: user?.email || 'alex.morgan@sgsu.ac.in',
+    rollNo: user?.rollNo || 'FS24-088',
     trackInterest: 'Standard Attendee',
     agreeTerms: true
   });

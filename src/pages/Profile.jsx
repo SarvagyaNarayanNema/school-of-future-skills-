@@ -19,16 +19,34 @@ import {
 import { Github, Linkedin } from '../components/common/BrandIcons';
 
 export const Profile = () => {
-  const { user, levelInfo, updateProfile, earnPoints } = useApp();
+  const {
+    user = {
+      name: "Alex Morgan",
+      email: "alex.morgan@sgsu.ac.in",
+      rollNo: "FS24-088",
+      department: "School of Future Skills & Information Technology",
+      year: "3rd Year (BCA AI-ML)",
+      points: 1940,
+      avatar: "AM",
+      bio: "Junior Systems & AI Researcher specializing in transformer attention optimizations.",
+      skills: ["Python", "PyTorch", "React 19", "FastAPI"],
+      github: "https://github.com/alex-morgan",
+      linkedin: "https://linkedin.com/in/alex-morgan-sgsu",
+      badges: []
+    },
+    levelInfo = { levelNumber: 4, title: "Neural Pioneer", progressPercent: 72 },
+    updateProfile,
+    earnPoints
+  } = useApp();
   const [isEditing, setIsEditing] = useState(false);
 
   // Edit fields
-  const [name, setName] = useState(user.name);
-  const [bio, setBio] = useState(user.bio);
-  const [skills, setSkills] = useState(user.skills);
+  const [name, setName] = useState(user?.name || '');
+  const [bio, setBio] = useState(user?.bio || '');
+  const [skills, setSkills] = useState(user?.skills || []);
   const [newSkill, setNewSkill] = useState('');
-  const [github, setGithub] = useState(user.github || '');
-  const [linkedin, setLinkedin] = useState(user.linkedin || '');
+  const [github, setGithub] = useState(user?.github || '');
+  const [linkedin, setLinkedin] = useState(user?.linkedin || '');
 
   const handleSave = (e) => {
     e.preventDefault();

@@ -16,20 +16,23 @@ export const eventService = {
   },
 
   getById: (id) => {
+    if (!id) return null;
     const list = eventService.getAll();
-    return list.find(e => e.id === id) || null;
+    return list.find(e => String(e.id) === String(id)) || null;
   },
 
   register: (eventId, registrantInfo = {}) => {
+    if (!eventId) return null;
     const regs = storage.get(REGISTRATIONS_KEY, []);
-    if (!regs.includes(eventId)) {
+    const strId = String(eventId);
+    if (!regs.map(String).includes(strId)) {
       regs.push(eventId);
       storage.set(REGISTRATIONS_KEY, regs);
     }
 
     const list = eventService.getAll();
     const updated = list.map(ev => {
-      if (ev.id === eventId) {
+      if (String(ev.id) === strId) {
         return {
           ...ev,
           registered: true,

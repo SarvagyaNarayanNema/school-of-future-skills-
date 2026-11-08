@@ -14,20 +14,23 @@ export const projectService = {
   },
 
   getById: (id) => {
+    if (!id) return null;
     const list = projectService.getAll();
-    return list.find(p => p.id === id) || null;
+    return list.find(p => String(p.id) === String(id)) || null;
   },
 
   upvote: (id) => {
+    if (!id) return null;
     const list = projectService.getAll();
     const upvotedIds = storage.get('user_upvoted_projects', []);
-    const hasUpvoted = upvotedIds.includes(id);
+    const strId = String(id);
+    const hasUpvoted = upvotedIds.map(String).includes(strId);
 
     const updated = list.map(p => {
-      if (p.id === id) {
+      if (String(p.id) === strId) {
         return {
           ...p,
-          upvotes: hasUpvoted ? p.upvotes - 1 : p.upvotes + 1,
+          upvotes: hasUpvoted ? Math.max(0, (p.upvotes || 1) - 1) : (p.upvotes || 0) + 1,
           hasUpvoted: !hasUpvoted
         };
       }
@@ -35,13 +38,13 @@ export const projectService = {
     });
 
     if (hasUpvoted) {
-      storage.set('user_upvoted_projects', upvotedIds.filter(x => x !== id));
+      storage.set('user_upvoted_projects', upvotedIds.filter(x => String(x) !== strId));
     } else {
       upvotedIds.push(id);
       storage.set('user_upvoted_projects', upvotedIds);
     }
 
     storage.set(STORAGE_KEY, updated);
-    return updated.find(p => p.id === id);
+    return updated.find(p => String(p.id) === strId);
   }
 };

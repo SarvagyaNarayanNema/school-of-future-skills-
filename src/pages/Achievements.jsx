@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { initialAchievements, wallOfFameSpotlights, ACHIEVEMENT_CATEGORIES, ACHIEVEMENT_YEARS } from '../data/achievements';
 import {
   Trophy,
@@ -10,13 +11,92 @@ import {
   Flame,
   CheckCircle2,
   Users,
-  Building2
+  Building2,
+  Filter,
+  X
 } from 'lucide-react';
 
 export const Achievements = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedYear, setSelectedYear] = useState('All');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Read URL params
+  const tabParam = searchParams.get('tab') || '';
+  const catParam = searchParams.get('cat') || '';
+  const urlQuery = searchParams.get('q') || '';
+  const urlYear = searchParams.get('year') || 'All';
+
+  // Determine category based on tab or cat
+  const computeInitialCategory = () => {
+    if (tabParam === 'hackathons') return 'Competitions';
+    if (tabParam === 'research' || catParam === 'papers' || catParam === 'patents' || catParam === 'conferences') return 'Academic';
+    if (tabParam === 'grants') return 'Startup';
+    const directCat = searchParams.get('category');
+    if (directCat && ACHIEVEMENT_CATEGORIES.includes(directCat)) return directCat;
+    return 'All';
+  };
+
+  const [searchQuery, setSearchQuery] = useState(urlQuery);
+  const [selectedCategory, setSelectedCategory] = useState(computeInitialCategory);
+  const [selectedYear, setSelectedYear] = useState(urlYear);
+
+  // Sync state if URL changes externally
+  useEffect(() => {
+    const computed = computeInitialCategory();
+    setSelectedCategory(computed);
+    if (urlQuery !== searchQuery) setSearchQuery(urlQuery);
+    if (urlYear !== selectedYear) setSelectedYear(urlYear);
+
+    // Scroll to Wall of Fame if requested
+    if (tabParam === 'fame') {
+      const fameEl = document.getElementById('wall-of-fame');
+      if (fameEl) {
+        fameEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [tabParam, catParam, urlQuery, urlYear]);
+
+  const handleCategoryChange = (cat) => {
+    setSelectedCategory(cat);
+    const newParams = new URLSearchParams(searchParams);
+    if (cat !== 'All') {
+      newParams.set('category', cat);
+    } else {
+      newParams.delete('category');
+    }
+    // clear legacy tab if directly selecting
+    newParams.delete('tab');
+    newParams.delete('cat');
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const handleSearchChange = (val) => {
+    setSearchQuery(val);
+    const newParams = new URLSearchParams(searchParams);
+    if (val.trim()) {
+      newParams.set('q', val.trim());
+    } else {
+      newParams.delete('q');
+    }
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const handleYearChange = (val) => {
+    setSelectedYear(val);
+    const newParams = new URLSearchParams(searchParams);
+    if (val !== 'All') {
+      newParams.set('year', val);
+    } else {
+      newParams.delete('year');
+    }
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedCategory('All');
+    setSelectedYear('All');
+    setSearchParams({}, { replace: true });
+  };
 
   const filteredAchievements = initialAchievements.filter(a => {
     const q = searchQuery.toLowerCase();
@@ -50,7 +130,7 @@ export const Achievements = () => {
       {/* ========================================================= */}
       {/* WALL OF FAME SPOTLIGHT BANNER                             */}
       {/* ========================================================= */}
-      <div className="space-y-4">
+      <div id="wall-of-fame" className="space-y-4">
         <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-yellow-600 dark:text-yellow-400">
           <Sparkles className="w-4 h-4 text-yellow-500 dark:text-yellow-400" />
           <span>Wall of Fame — Top University Performers</span>
@@ -110,7 +190,7 @@ export const Achievements = () => {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Search by student team, competition name, patent or keywords..."
               className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-yellow-500"
             />
@@ -119,7 +199,7 @@ export const Achievements = () => {
           <div className="md:col-span-4">
             <select
               value={selectedYear}
-              onChange={(e) => setSelectedYear(e.target.value)}
+              onChange={(e) => handleYearChange(e.target.value)}
               className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-yellow-500"
             >
               {ACHIEVEMENT_YEARS.map(yr => (
@@ -129,21 +209,32 @@ export const Achievements = () => {
           </div>
         </div>
 
-        {/* Category Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none pt-2 border-t border-slate-200 dark:border-slate-800/80">
-          {ACHIEVEMENT_CATEGORIES.map((cat) => (
+        {/* Category Tabs & Reset Filter */}
+        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 scrollbar-none pt-2 border-t border-slate-200 dark:border-slate-800/80">
+          <div className="flex items-center gap-1.5 overflow-x-auto">
+            {ACHIEVEMENT_CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => handleCategoryChange(cat)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
+                  selectedCategory === cat
+                    ? 'bg-yellow-500 text-slate-950 font-bold shadow-md shadow-yellow-500/20'
+                    : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {(selectedCategory !== 'All' || selectedYear !== 'All' || searchQuery) && (
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
-                selectedCategory === cat
-                  ? 'bg-yellow-500 text-slate-950 font-bold shadow-md shadow-yellow-500/20'
-                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
-              }`}
+              onClick={clearFilters}
+              className="text-xs text-yellow-600 dark:text-yellow-400 hover:underline flex items-center gap-1 shrink-0 font-medium ml-2"
             >
-              {cat}
+              <X className="w-3.5 h-3.5" /> Reset Filters
             </button>
-          ))}
+          )}
         </div>
 
       </div>

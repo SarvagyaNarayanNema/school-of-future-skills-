@@ -20,9 +20,14 @@ import {
 } from 'lucide-react';
 
 export const Dashboard = () => {
-  const { user, levelInfo, assignments, leaderboard } = useApp();
+  const {
+    user = { name: 'Alex Morgan', department: 'School of Future Skills & IT', rollNo: 'FS24-088', points: 1940 },
+    levelInfo = { levelNumber: 4, title: 'Neural Pioneer', progressPercent: 72 },
+    assignments = [],
+    leaderboard = []
+  } = useApp();
 
-  const userLeaderboardItem = leaderboard.find(l => l.isUser) || { rank: 6, points: user.points };
+  const userLeaderboardItem = leaderboard.find(l => l.isUser) || { rank: 6, points: user?.points || 1940 };
   const pendingAssignments = assignments.filter(a => a.status === 'Pending');
   const todayClasses = timetableSchedule["Monday"] || [];
 

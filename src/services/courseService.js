@@ -14,31 +14,34 @@ export const courseService = {
   },
 
   getById: (id) => {
+    if (!id) return null;
     const list = courseService.getAll();
-    return list.find(c => c.id === id) || null;
+    return list.find(c => String(c.id) === String(id)) || null;
   },
 
   enroll: (courseId) => {
+    if (!courseId) return null;
     const list = courseService.getAll();
     const updated = list.map(c => {
-      if (c.id === courseId) {
+      if (String(c.id) === String(courseId)) {
         return { ...c, enrolled: true, enrolledCount: (c.enrolledCount || 0) + 1, progress: c.progress || 5 };
       }
       return c;
     });
     storage.set(STORAGE_KEY, updated);
-    return updated.find(c => c.id === courseId);
+    return updated.find(c => String(c.id) === String(courseId)) || null;
   },
 
   updateProgress: (courseId, newProgress) => {
+    if (!courseId) return null;
     const list = courseService.getAll();
     const updated = list.map(c => {
-      if (c.id === courseId) {
+      if (String(c.id) === String(courseId)) {
         return { ...c, progress: Math.min(100, Math.max(0, newProgress)) };
       }
       return c;
     });
     storage.set(STORAGE_KEY, updated);
-    return updated.find(c => c.id === courseId);
+    return updated.find(c => String(c.id) === String(courseId)) || null;
   }
 };

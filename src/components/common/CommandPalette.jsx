@@ -15,7 +15,15 @@ import {
   GraduationCap,
   Code2,
   ArrowRight,
-  X
+  X,
+  LayoutDashboard,
+  Calendar,
+  Terminal,
+  Clock,
+  Sparkles,
+  User,
+  Info,
+  FileText
 } from 'lucide-react';
 
 export const CommandPalette = () => {
@@ -37,23 +45,28 @@ export const CommandPalette = () => {
 
   const q = query.toLowerCase().trim();
 
-  // Search across courses
+  // Search across courses (safe property access)
   const matchedCourses = initialCourses
-    .filter(c => c.title.toLowerCase().includes(q) || c.category.toLowerCase().includes(q) || c.technologies.some(t => t.toLowerCase().includes(q)))
-    .slice(0, 2)
+    .filter(c => {
+      const p = (c.programme || c.title || '').toLowerCase();
+      const s = (c.school || c.category || '').toLowerCase();
+      const tags = (c.tags || c.technologies || []);
+      return p.includes(q) || s.includes(q) || tags.some(t => t.toLowerCase().includes(q));
+    })
+    .slice(0, 3)
     .map(c => ({
       id: `course-${c.id}`,
       type: "Course",
-      title: c.title,
-      subtitle: `${c.category} • ${c.difficulty}`,
+      title: c.programme || c.title,
+      subtitle: `${c.school || c.category} • ${c.duration || 'Full Degree'}`,
       icon: BookOpen,
       iconColor: "text-cyan-400",
-      url: `/courses`
+      url: `/courses/${c.id}`
     }));
 
   // Search across notices
   const matchedNotices = initialNotices
-    .filter(n => n.title.toLowerCase().includes(q) || n.priority.toLowerCase().includes(q) || n.summary.toLowerCase().includes(q))
+    .filter(n => (n.title || '').toLowerCase().includes(q) || (n.priority || '').toLowerCase().includes(q) || (n.summary || '').toLowerCase().includes(q))
     .slice(0, 2)
     .map(n => ({
       id: `notice-${n.id}`,
@@ -67,7 +80,7 @@ export const CommandPalette = () => {
 
   // Search across achievements
   const matchedAchievements = initialAchievements
-    .filter(a => a.title.toLowerCase().includes(q) || a.team.toLowerCase().includes(q) || a.category.toLowerCase().includes(q))
+    .filter(a => (a.title || '').toLowerCase().includes(q) || (a.team || '').toLowerCase().includes(q) || (a.category || '').toLowerCase().includes(q))
     .slice(0, 2)
     .map(a => ({
       id: `ach-${a.id}`,
@@ -80,35 +93,35 @@ export const CommandPalette = () => {
     }));
 
   // Search across clubs & projects
-  const matchedClubs = initialTechClubs
-    .filter(c => c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q) || c.tags.some(t => t.toLowerCase().includes(q)))
+  const matchedClubs = (initialTechClubs || [])
+    .filter(c => (c.name || '').toLowerCase().includes(q) || (c.description || '').toLowerCase().includes(q) || (c.tags || []).some(t => t.toLowerCase().includes(q)))
     .slice(0, 2)
     .map(c => ({
       id: `club-${c.id}`,
       type: "Tech Club",
       title: c.name,
-      subtitle: `${c.activeMembers} Members • Lead: ${c.lead.split(' ')[0]}`,
+      subtitle: `${c.activeMembers || 0} Members • Lead: ${(c.lead || c.leads || '').split(' ')[0]}`,
       icon: Users,
       iconColor: "text-purple-400",
-      url: `/clubs-and-projects`
+      url: `/clubs-and-projects?view=clubs`
     }));
 
-  const matchedProjects = initialStudentProjects
-    .filter(p => p.name.toLowerCase().includes(q) || p.studentTeam.toLowerCase().includes(q) || p.technologies.some(t => t.toLowerCase().includes(q)))
+  const matchedProjects = (initialStudentProjects || [])
+    .filter(p => (p.name || '').toLowerCase().includes(q) || (p.studentTeam || '').toLowerCase().includes(q) || (p.technologies || []).some(t => t.toLowerCase().includes(q)))
     .slice(0, 2)
     .map(p => ({
       id: `proj-${p.id}`,
       type: "Student Project",
       title: p.name,
-      subtitle: `${p.category} • ${p.studentTeam}`,
+      subtitle: `${p.category || 'Engineering'} • ${p.studentTeam || 'Student Team'}`,
       icon: Code2,
       iconColor: "text-emerald-400",
-      url: `/clubs-and-projects`
+      url: `/clubs-and-projects?view=projects`
     }));
 
   // Search across alumni
-  const matchedAlumni = initialAlumni
-    .filter(al => al.name.toLowerCase().includes(q) || al.company.toLowerCase().includes(q) || al.currentRole.toLowerCase().includes(q))
+  const matchedAlumni = (initialAlumni || [])
+    .filter(al => (al.name || '').toLowerCase().includes(q) || (al.company || '').toLowerCase().includes(q) || (al.currentRole || '').toLowerCase().includes(q))
     .slice(0, 2)
     .map(al => ({
       id: `alumni-${al.id}`,
@@ -120,13 +133,21 @@ export const CommandPalette = () => {
       url: `/alumni`
     }));
 
-  // Default Quick Navigation when empty
+  // Default Quick Navigation when query is empty
   const defaultShortcuts = [
-    { id: "nav-courses", type: "Navigation", title: "All Courses", subtitle: "Explore AI, Cyber Security, Cloud, Web, Data Science", icon: BookOpen, iconColor: "text-cyan-400", url: "/courses" },
-    { id: "nav-achievements", type: "Navigation", title: "Wall of Fame & Achievements", subtitle: "Hackathon champions, patents & research honors", icon: Trophy, iconColor: "text-yellow-400", url: "/achievements" },
-    { id: "nav-notices", type: "Navigation", title: "Official Notice Board", subtitle: "Hackathon updates, exam dates & circulars", icon: Bell, iconColor: "text-amber-400", url: "/notices" },
-    { id: "nav-cp", type: "Navigation", title: "Student Clubs & Projects", subtitle: "Join tech guilds & explore open-source capstones", icon: Users, iconColor: "text-purple-400", url: "/clubs-and-projects" },
-    { id: "nav-alumni", type: "Navigation", title: "Alumni Mentorship Directory", subtitle: "Book 1-on-1 mentorship with leaders at Google, AWS & Stripe", icon: GraduationCap, iconColor: "text-blue-400", url: "/alumni" }
+    { id: "nav-dash", type: "Portal", title: "Student Dashboard", subtitle: "XP, progression, course status & enrolled tracks", icon: LayoutDashboard, iconColor: "text-cyan-400", url: "/dashboard" },
+    { id: "nav-assignments", type: "Portal", title: "Assignments & Submissions", subtitle: "View deadlines, submission status & upload deliverables", icon: FileText, iconColor: "text-purple-400", url: "/assignments" },
+    { id: "nav-events", type: "Ecosystem", title: "Upcoming Events & Hackathons", subtitle: "Register for workshops, hackathons and tech talks", icon: Calendar, iconColor: "text-emerald-400", url: "/events" },
+    { id: "nav-labs", type: "Portal", title: "Interactive Virtual Labs", subtitle: "Hands-on terminal, AI GPU workstations and lab modules", icon: Terminal, iconColor: "text-indigo-400", url: "/labs" },
+    { id: "nav-tech-zone", type: "Portal", title: "Tech Zone Playground", subtitle: "Live code sandbox, benchmarks and developer challenges", icon: Sparkles, iconColor: "text-amber-400", url: "/tech-zone" },
+    { id: "nav-timetable", type: "Portal", title: "Academic Timetable", subtitle: "Daily schedule, room numbers and faculty allocations", icon: Clock, iconColor: "text-sky-400", url: "/timetable" },
+    { id: "nav-profile", type: "Portal", title: "Student Profile", subtitle: "Skills, badges, portfolio links and account details", icon: User, iconColor: "text-rose-400", url: "/profile" },
+    { id: "nav-courses", type: "Catalog", title: "All Academic Programmes", subtitle: "45 degree and diploma curricula across 17 schools", icon: BookOpen, iconColor: "text-cyan-400", url: "/courses" },
+    { id: "nav-achievements", type: "Honors", title: "Wall of Fame & Achievements", subtitle: "Hackathon champions, patents & research honors", icon: Trophy, iconColor: "text-yellow-400", url: "/achievements" },
+    { id: "nav-notices", type: "Announcements", title: "Official Notice Board", subtitle: "Hackathon updates, exam dates & circulars", icon: Bell, iconColor: "text-amber-400", url: "/notices" },
+    { id: "nav-cp", type: "Community", title: "Student Clubs & Projects", subtitle: "Join tech guilds & explore open-source capstones", icon: Users, iconColor: "text-purple-400", url: "/clubs-and-projects" },
+    { id: "nav-alumni", type: "Network", title: "Alumni Mentorship Directory", subtitle: "Book 1-on-1 mentorship with leaders at Google, AWS & Stripe", icon: GraduationCap, iconColor: "text-blue-400", url: "/alumni" },
+    { id: "nav-about", type: "Institutional", title: "About FSIT & Leadership", subtitle: "Faculty dossier, creators and school mission", icon: Info, iconColor: "text-teal-400", url: "/about" }
   ];
 
   const results = q ? [

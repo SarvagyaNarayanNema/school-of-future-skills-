@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { studentClubs, initialTechClubs, initialStudentProjects } from '../data/clubsAndProjects';
 import { useApp } from '../context/AppContext';
 import {
@@ -20,6 +21,7 @@ import {
 } from 'lucide-react';
 
 export const ClubsAndProjects = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const {
     joinedClubs,
     joinClub,
@@ -31,12 +33,63 @@ export const ClubsAndProjects = () => {
     showToast
   } = useApp();
 
-  const [activeTab, setActiveTab] = useState('clubs'); // 'clubs' | 'projects'
-  const [searchQuery, setSearchQuery] = useState('');
+  const viewParam = searchParams.get('view') || '';
+  const actionParam = searchParams.get('action') || '';
+  const clubParam = searchParams.get('club') || '';
+  const urlQuery = searchParams.get('q') || '';
+
+  const initialTab = viewParam === 'projects' ? 'projects' : 'clubs';
+  const [activeTab, setActiveTab] = useState(initialTab);
+  const [searchQuery, setSearchQuery] = useState(urlQuery);
 
   // Modal states
   const [activeJoinClubModal, setActiveJoinClubModal] = useState(null);
-  const [isSubmitProjectModalOpen, setIsSubmitProjectModalOpen] = useState(false);
+  const [isSubmitProjectModalOpen, setIsSubmitProjectModalOpen] = useState(actionParam === 'submit');
+
+  useEffect(() => {
+    if (viewParam === 'projects' && activeTab !== 'projects') {
+      setActiveTab('projects');
+    } else if (viewParam === 'clubs' && activeTab !== 'clubs') {
+      setActiveTab('clubs');
+    }
+
+    if (actionParam === 'submit') {
+      setIsSubmitProjectModalOpen(true);
+    }
+
+    if (clubParam) {
+      const clubsList = studentClubs || initialTechClubs;
+      const targetClub = clubsList.find(c =>
+        c.id === clubParam || (c.name || '').toLowerCase().replace(/\s+/g, '-').includes(clubParam.toLowerCase())
+      );
+      if (targetClub) {
+        setActiveJoinClubModal(targetClub);
+      }
+    }
+
+    if (urlQuery && urlQuery !== searchQuery) {
+      setSearchQuery(urlQuery);
+    }
+  }, [viewParam, actionParam, clubParam, urlQuery]);
+
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('view', newTab);
+    newParams.delete('action');
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const handleSearchChange = (val) => {
+    setSearchQuery(val);
+    const newParams = new URLSearchParams(searchParams);
+    if (val.trim()) {
+      newParams.set('q', val.trim());
+    } else {
+      newParams.delete('q');
+    }
+    setSearchParams(newParams, { replace: true });
+  };
 
   // Join Club Form State
   const [joinForm, setJoinForm] = useState({
@@ -157,7 +210,7 @@ export const ClubsAndProjects = () => {
           {/* Tab Selector */}
           <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800 self-start">
             <button
-              onClick={() => setActiveTab('clubs')}
+              onClick={() => handleTabChange('clubs')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-colors ${
                 activeTab === 'clubs'
                   ? 'bg-purple-600 dark:bg-purple-500 text-white shadow-md'
@@ -168,7 +221,7 @@ export const ClubsAndProjects = () => {
               <span>Technical Clubs ({clubsList.length})</span>
             </button>
             <button
-              onClick={() => setActiveTab('projects')}
+              onClick={() => handleTabChange('projects')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-colors ${
                 activeTab === 'projects'
                   ? 'bg-cyan-500 text-slate-950 shadow-md font-extrabold'
@@ -186,7 +239,7 @@ export const ClubsAndProjects = () => {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder={activeTab === 'clubs' ? "Search tech clubs, leads, stacks..." : "Search project repositories..."}
               className="w-full pl-9 pr-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-purple-500"
             />

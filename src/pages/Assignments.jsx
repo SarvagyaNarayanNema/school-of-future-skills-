@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 
 export const Assignments = () => {
-  const { assignments } = useApp();
+  const { assignments = [] } = useApp();
   const [selectedStatus, setSelectedStatus] = useState('All');
   const [selectedPriority, setSelectedPriority] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -40,7 +40,7 @@ export const Assignments = () => {
     }
   };
 
-  const filtered = assignments.filter(asg => {
+  const filtered = (assignments || []).filter(asg => {
     const q = searchQuery.toLowerCase();
     const matchesSearch = asg.title.toLowerCase().includes(q) ||
                           asg.subject.toLowerCase().includes(q) ||

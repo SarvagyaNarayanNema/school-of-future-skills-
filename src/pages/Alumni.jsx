@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { initialAlumni, ALUMNI_ROLES, ALUMNI_BATCHES } from '../data/alumni';
 import { useApp } from '../context/AppContext';
 import {
@@ -17,11 +18,25 @@ import {
 } from 'lucide-react';
 
 export const Alumni = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { requestMentorship, mentorshipRequests, showToast } = useApp();
-  
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedRole, setSelectedRole] = useState('All Roles');
-  const [selectedBatch, setSelectedBatch] = useState('All Batches');
+
+  const tabParam = searchParams.get('tab') || '';
+  const serviceParam = searchParams.get('service') || '';
+  const urlQuery = searchParams.get('q') || '';
+  const urlRole = searchParams.get('role') || 'All Roles';
+  const urlBatch = searchParams.get('batch') || 'All Batches';
+
+  const computeTopic = () => {
+    if (serviceParam === 'resume') return 'Resume Review';
+    if (serviceParam === 'interview') return 'Mock Technical Interview';
+    if (serviceParam === 'referral') return 'Referral & Career Guidance';
+    return 'Resume Review';
+  };
+
+  const [searchQuery, setSearchQuery] = useState(urlQuery);
+  const [selectedRole, setSelectedRole] = useState(urlRole);
+  const [selectedBatch, setSelectedBatch] = useState(urlBatch);
 
   // Modal State
   const [activeMentorshipAlumni, setActiveMentorshipAlumni] = useState(null);
@@ -29,9 +44,64 @@ export const Alumni = () => {
     name: '',
     email: '',
     year: 'Year 3 (Pre-final)',
-    topic: 'Resume Review',
+    topic: computeTopic(),
     notes: ''
   });
+
+  useEffect(() => {
+    if (serviceParam) {
+      setMentorshipForm(prev => ({ ...prev, topic: computeTopic() }));
+    }
+    if (urlQuery && urlQuery !== searchQuery) {
+      setSearchQuery(urlQuery);
+    }
+    if (urlRole && urlRole !== selectedRole) {
+      setSelectedRole(urlRole);
+    }
+    if (urlBatch && urlBatch !== selectedBatch) {
+      setSelectedBatch(urlBatch);
+    }
+  }, [serviceParam, urlQuery, urlRole, urlBatch]);
+
+  const handleSearchChange = (val) => {
+    setSearchQuery(val);
+    const newParams = new URLSearchParams(searchParams);
+    if (val.trim()) {
+      newParams.set('q', val.trim());
+    } else {
+      newParams.delete('q');
+    }
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const handleRoleChange = (val) => {
+    setSelectedRole(val);
+    const newParams = new URLSearchParams(searchParams);
+    if (val !== 'All Roles') {
+      newParams.set('role', val);
+    } else {
+      newParams.delete('role');
+    }
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const handleBatchChange = (val) => {
+    setSelectedBatch(val);
+    const newParams = new URLSearchParams(searchParams);
+    if (val !== 'All Batches') {
+      newParams.set('batch', val);
+    } else {
+      newParams.delete('batch');
+    }
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedRole('All Roles');
+    setSelectedBatch('All Batches');
+    setSearchParams({}, { replace: true });
+  };
 
   const handleMentorshipSubmit = (e) => {
     e.preventDefault();
@@ -90,7 +160,7 @@ export const Alumni = () => {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Search by company (e.g. DeepMind), role, tech stack or senior name..."
               className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
             />
@@ -100,7 +170,7 @@ export const Alumni = () => {
           <div className="md:col-span-3">
             <select
               value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}
+              onChange={(e) => handleRoleChange(e.target.value)}
               className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-blue-500"
             >
               {ALUMNI_ROLES.map(role => (
@@ -113,7 +183,7 @@ export const Alumni = () => {
           <div className="md:col-span-3">
             <select
               value={selectedBatch}
-              onChange={(e) => setSelectedBatch(e.target.value)}
+              onChange={(e) => handleBatchChange(e.target.value)}
               className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-blue-500"
             >
               {ALUMNI_BATCHES.map(b => (
@@ -123,6 +193,17 @@ export const Alumni = () => {
           </div>
 
         </div>
+
+        {(selectedRole !== 'All Roles' || selectedBatch !== 'All Batches' || searchQuery) && (
+          <div className="flex items-center justify-end pt-2 border-t border-slate-200 dark:border-slate-800">
+            <button
+              onClick={clearFilters}
+              className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-medium"
+            >
+              <X className="w-3.5 h-3.5" /> Reset All Filters
+            </button>
+          </div>
+        )}
 
       </div>
 

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import { initialCourses } from '../data/courses';
 import { useApp } from '../context/AppContext';
 import {
@@ -13,10 +14,14 @@ import {
   Check,
   Award,
   FileText,
-  Sparkles
+  Sparkles,
+  ArrowRight,
+  Filter,
+  ExternalLink
 } from 'lucide-react';
 
 export const Courses = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const {
     enrolledCourses = [],
     bookmarkedCourses = [],
@@ -24,9 +29,59 @@ export const Courses = () => {
     showToast
   } = useApp();
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedDuration, setSelectedDuration] = useState('All');
+  // Read URL query parameters
+  const trackParam = searchParams.get('track') || '';
+  const domainParam = searchParams.get('domain') || '';
+  const subParam = searchParams.get('sub') || '';
+  const filterParam = searchParams.get('filter') || '';
+  const urlQuery = searchParams.get('q') || '';
+  const urlDuration = searchParams.get('duration') || 'All';
+
+  const [searchQuery, setSearchQuery] = useState(urlQuery);
+  const [selectedDuration, setSelectedDuration] = useState(urlDuration);
   const [activeCourseModal, setActiveCourseModal] = useState(null);
+
+  // Sync state when URL params change externally
+  useEffect(() => {
+    if (urlQuery !== searchQuery) {
+      setSearchQuery(urlQuery);
+    }
+  }, [urlQuery]);
+
+  useEffect(() => {
+    if (urlDuration !== selectedDuration) {
+      setSelectedDuration(urlDuration);
+    }
+  }, [urlDuration]);
+
+  // Handle local search change and update URL params
+  const handleSearchChange = (val) => {
+    setSearchQuery(val);
+    const newParams = new URLSearchParams(searchParams);
+    if (val.trim()) {
+      newParams.set('q', val.trim());
+    } else {
+      newParams.delete('q');
+    }
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const handleDurationChange = (val) => {
+    setSelectedDuration(val);
+    const newParams = new URLSearchParams(searchParams);
+    if (val !== 'All') {
+      newParams.set('duration', val);
+    } else {
+      newParams.delete('duration');
+    }
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const clearAllFilters = () => {
+    setSearchQuery('');
+    setSelectedDuration('All');
+    setSearchParams({}, { replace: true });
+  };
 
   // Submit inquiry
   const handleInquireProgramme = (course) => {
@@ -35,17 +90,57 @@ export const Courses = () => {
     }
   };
 
-  // Live search across the 45 official programmes by name or school
+  // Determine active human-readable tag from URL
+  const activeUrlFilterLabel = (() => {
+    if (domainParam === 'ai-ml') return 'Domain: Artificial Intelligence & ML';
+    if (domainParam === 'cyber-defense') return 'Domain: Cyber Defense & Security';
+    if (domainParam === 'cloud-architecture') return 'Domain: Cloud Architecture & DevOps';
+    if (domainParam === 'web3') return 'Domain: Web3 Engineering';
+    if (subParam === 'aws') return 'Track: AWS Solutions & Cloud Architecture';
+    if (subParam === 'k8s') return 'Track: Docker & Kubernetes Infrastructure';
+    if (subParam === 'serverless') return 'Track: Serverless Systems';
+    if (trackParam === 'undergrad') return 'Curriculum: Undergraduate Degree Tracks';
+    if (trackParam === 'bootcamps') return 'Curriculum: Industry Bootcamps';
+    if (trackParam === 'certifications') return 'Curriculum: Industry Certifications';
+    if (filterParam === 'specializations') return 'Category: Advanced Specializations';
+    return null;
+  })();
+
+  // Live search and URL filter matching across courses
   const filteredCourses = initialCourses.filter(c => {
     const q = searchQuery.toLowerCase().trim();
-    const matchesSearch = !q ||
-      c.programme.toLowerCase().includes(q) ||
-      c.school.toLowerCase().includes(q) ||
-      c.degreeLevel.toLowerCase().includes(q);
+    const pName = (c.programme || '').toLowerCase();
+    const school = (c.school || '').toLowerCase();
+    const deg = (c.degreeLevel || '').toLowerCase();
+    const desc = (c.description || '').toLowerCase();
 
-    const matchesDuration = selectedDuration === 'All' || c.duration.toLowerCase().includes(selectedDuration.toLowerCase());
+    // Query text match
+    const matchesSearch = !q || pName.includes(q) || school.includes(q) || deg.includes(q) || desc.includes(q);
 
-    return matchesSearch && matchesDuration;
+    // Duration match
+    const matchesDuration = selectedDuration === 'All' || (c.duration || '').toLowerCase().includes(selectedDuration.toLowerCase());
+
+    // URL parameter match
+    let matchesUrlParam = true;
+    if (domainParam === 'ai-ml') {
+      matchesUrlParam = pName.includes('ai') || pName.includes('intelligence') || pName.includes('machine learning') || pName.includes('data science') || desc.includes('artificial intelligence');
+    } else if (domainParam === 'cyber-defense') {
+      matchesUrlParam = pName.includes('cyber') || pName.includes('security') || desc.includes('cyber') || desc.includes('security');
+    } else if (domainParam === 'cloud-architecture') {
+      matchesUrlParam = pName.includes('cloud') || pName.includes('computer science') || desc.includes('cloud') || desc.includes('systems');
+    } else if (domainParam === 'web3') {
+      matchesUrlParam = pName.includes('web') || pName.includes('software') || pName.includes('bca') || pName.includes('computer');
+    } else if (subParam === 'aws' || subParam === 'k8s' || subParam === 'serverless') {
+      matchesUrlParam = pName.includes('cloud') || pName.includes('computer') || pName.includes('information technology') || desc.includes('cloud');
+    } else if (trackParam === 'undergrad') {
+      matchesUrlParam = deg.includes('undergraduate') || (c.duration && (c.duration.includes('4') || c.duration.includes('3')));
+    } else if (trackParam === 'bootcamps' || trackParam === 'certifications') {
+      matchesUrlParam = (c.duration && c.duration.includes('2')) || deg.includes('diploma');
+    } else if (filterParam === 'specializations') {
+      matchesUrlParam = pName.includes('honors') || pName.includes('specialization') || pName.includes('ai') || pName.includes('data');
+    }
+
+    return matchesSearch && matchesDuration && matchesUrlParam;
   });
 
   return (
@@ -66,7 +161,23 @@ export const Courses = () => {
       </div>
 
       {/* Search & Duration Filter Toolbar */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+        {/* Active URL Filter Indicator Banner */}
+        {activeUrlFilterLabel && (
+          <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/25 text-xs text-cyan-700 dark:text-cyan-300">
+            <div className="flex items-center gap-2">
+              <Filter className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+              <span className="font-semibold">{activeUrlFilterLabel}</span>
+            </div>
+            <button
+              onClick={clearAllFilters}
+              className="text-[11px] font-mono hover:underline flex items-center gap-1 text-cyan-600 dark:text-cyan-400"
+            >
+              <X className="w-3 h-3" /> Clear Filter
+            </button>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
           
           {/* Live Search Box: Filter by Programme name or School */}
@@ -75,7 +186,7 @@ export const Courses = () => {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Search 45 academic programmes by name (e.g. B.C.A., CSE, AI-ML, Pharmacy) or School..."
               className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500 shadow-sm"
             />
@@ -85,7 +196,7 @@ export const Courses = () => {
           <div className="md:col-span-3">
             <select
               value={selectedDuration}
-              onChange={(e) => setSelectedDuration(e.target.value)}
+              onChange={(e) => handleDurationChange(e.target.value)}
               className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-cyan-500 shadow-sm"
             >
               <option value="All">All Durations (45 Programmes)</option>
@@ -101,15 +212,12 @@ export const Courses = () => {
       {/* Programme Count Metric */}
       <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1 -mt-2">
         <span>Showing <strong className="text-slate-900 dark:text-white font-mono">{filteredCourses.length}</strong> of {initialCourses.length} programmes</span>
-        {(selectedDuration !== 'All' || searchQuery) && (
+        {(selectedDuration !== 'All' || searchQuery || activeUrlFilterLabel) && (
           <button
-            onClick={() => {
-              setSearchQuery('');
-              setSelectedDuration('All');
-            }}
+            onClick={clearAllFilters}
             className="text-cyan-600 dark:text-cyan-400 hover:underline font-medium"
           >
-            Reset Search
+            Reset All Filters
           </button>
         )}
       </div>
@@ -187,15 +295,22 @@ export const Courses = () => {
 
                 </div>
 
-                {/* Card CTA Action */}
-                <div className="pt-3 border-t border-slate-200 dark:border-slate-800/80 mt-2">
+                {/* Card CTA Actions */}
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-800/80 mt-2 grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setActiveCourseModal(c)}
-                    className="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white text-xs font-semibold text-center transition-all duration-200 border border-slate-300 dark:border-slate-700 hover:border-cyan-500/40 flex items-center justify-center gap-2 group-hover:bg-slate-200 dark:group-hover:bg-slate-800"
+                    className="py-2.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white text-xs font-semibold text-center transition-all duration-200 border border-slate-300 dark:border-slate-700 hover:border-cyan-500/40 flex items-center justify-center gap-1.5"
                   >
                     <BookOpen className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
-                    <span>View Curriculum & Details</span>
+                    <span>Quick View</span>
                   </button>
+                  <Link
+                    to={`/courses/${c.id}`}
+                    className="py-2.5 px-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 hover:text-cyan-800 dark:hover:text-cyan-200 text-xs font-semibold text-center transition-all duration-200 border border-cyan-500/30 hover:border-cyan-500/50 flex items-center justify-center gap-1.5"
+                  >
+                    <span>Full Details</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
 
               </div>
@@ -465,18 +580,28 @@ export const Courses = () => {
             </div>
 
             {/* Modal Bottom Actions Bar */}
-            <div className="flex items-center justify-between pt-6 mt-6 border-t border-slate-800">
-              <button
-                onClick={() => toggleBookmarkCourse(activeCourseModal.id, activeCourseModal.programme)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors"
-              >
-                <Bookmark className={`w-4 h-4 ${bookmarkedCourses.includes(activeCourseModal.id) ? 'fill-cyan-400 text-cyan-400' : 'text-slate-400'}`} />
-                <span>{bookmarkedCourses.includes(activeCourseModal.id) ? "Bookmarked in Your Portal" : "Bookmark Programme"}</span>
-              </button>
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-6 mt-6 border-t border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => toggleBookmarkCourse(activeCourseModal.id, activeCourseModal.programme)}
+                  className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-300 dark:border-slate-700 transition-colors"
+                >
+                  <Bookmark className={`w-4 h-4 ${bookmarkedCourses.includes(activeCourseModal.id) ? 'fill-cyan-400 text-cyan-400' : 'text-slate-400'}`} />
+                  <span>{bookmarkedCourses.includes(activeCourseModal.id) ? "Bookmarked" : "Bookmark Programme"}</span>
+                </button>
+
+                <Link
+                  to={`/courses/${activeCourseModal.id}`}
+                  className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-colors shadow-md shadow-cyan-500/20"
+                >
+                  <span>Open Dedicated Page</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </Link>
+              </div>
 
               <button
                 onClick={() => setActiveCourseModal(null)}
-                className="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors border border-slate-700"
+                className="px-6 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors border border-slate-300 dark:border-slate-700"
               >
                 Close View
               </button>

@@ -1,21 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
-import { UploadCloud, CheckCircle2, FileCode, Send } from 'lucide-react';
+import { UploadCloud, CheckCircle2, FileCode, Send, Paperclip } from 'lucide-react';
 
 export const AssignmentSubmitModal = ({ isOpen, onClose, assignment }) => {
   const { submitAssignment, showToast } = useApp();
   const [fileName, setFileName] = useState('');
+  const [fileSize, setFileSize] = useState('');
   const [comments, setComments] = useState('');
   const [fileAttached, setFileAttached] = useState(false);
+  const fileInputRef = useRef(null);
 
   if (!assignment) return null;
 
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFileName(file.name);
+      const sizeStr = file.size > 1024 * 1024
+        ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+        : `${(file.size / 1024).toFixed(1)} KB`;
+      setFileSize(sizeStr);
+      setFileAttached(true);
+      showToast(`Selected file: ${file.name} (${sizeStr})`, 'info');
+    }
+  };
+
   const handleSimulateFilePick = () => {
-    const generatedName = `solution_${assignment.code.toLowerCase().replace('-', '_')}_submission.zip`;
-    setFileName(generatedName);
-    setFileAttached(true);
-    showToast(`Attached file: ${generatedName}`, 'info');
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
   const handleSubmit = (e) => {
@@ -27,9 +41,13 @@ export const AssignmentSubmitModal = ({ isOpen, onClose, assignment }) => {
 
     submitAssignment(assignment.id, {
       fileName,
-      fileSize: "2.1 MB",
+      fileSize: fileSize || "1.8 MB",
       comments
     });
+    setFileName('');
+    setFileSize('');
+    setComments('');
+    setFileAttached(false);
     onClose();
   };
 
@@ -42,7 +60,16 @@ export const AssignmentSubmitModal = ({ isOpen, onClose, assignment }) => {
           <p className="text-sky-600 dark:text-sky-400 mt-1">Deliverables: {assignment.deliverables}</p>
         </div>
 
-        {/* File upload simulated dropzone */}
+        {/* Real File Input (Hidden) */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          className="hidden"
+          onChange={handleFileChange}
+          accept=".zip,.tar.gz,.pdf,.cpp,.py,.ipynb,.js,.jsx,.ts,.tsx,.json,.txt"
+        />
+
+        {/* File upload dropzone */}
         <div>
           <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Deliverable File</label>
           <div
@@ -57,13 +84,13 @@ export const AssignmentSubmitModal = ({ isOpen, onClose, assignment }) => {
               <div className="space-y-1">
                 <CheckCircle2 className="w-8 h-8 text-emerald-500 dark:text-emerald-400 mx-auto" />
                 <p className="text-xs font-medium text-emerald-600 dark:text-emerald-300">{fileName}</p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">2.1 MB • Ready for review (click to re-attach)</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">{fileSize || "Ready for review"} • Click to change file</p>
               </div>
             ) : (
               <div className="space-y-1">
                 <UploadCloud className="w-8 h-8 text-slate-400 mx-auto" />
-                <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Click to choose or attach project archive</p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">Supports .zip, .tar.gz, .cpp, .py, .pdf</p>
+                <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Click to browse or drop project archive</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Supports .zip, .tar.gz, .ipynb, .cpp, .py, .pdf</p>
               </div>
             )}
           </div>

@@ -14,13 +14,15 @@ export const noticeService = {
   },
 
   getById: (id) => {
+    if (!id) return null;
     const list = noticeService.getAll();
-    return list.find(n => n.id === id) || null;
+    return list.find(n => String(n.id) === String(id)) || null;
   },
 
   markAsRead: (id) => {
+    if (!id) return noticeService.getAll();
     const list = noticeService.getAll();
-    const updated = list.map(n => (n.id === id ? { ...n, isUnread: false } : n));
+    const updated = list.map(n => (String(n.id) === String(id) ? { ...n, isUnread: false } : n));
     storage.set(STORAGE_KEY, updated);
     return updated;
   }

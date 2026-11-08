@@ -9,7 +9,9 @@ import {
   Moon,
   Menu,
   X,
-  ArrowRight
+  ArrowRight,
+  Bell,
+  LayoutDashboard
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { NAVIGATION_ITEMS } from '../../data/navigationData';
@@ -27,7 +29,7 @@ import { getAssetUrl } from '../../utils/assets';
  * 6. Visuals: Dark glassmorphic theme, Lucide icons, glowing cyan accents, and clear status badges.
  */
 export const CascadingNavbar = () => {
-  const { theme, toggleTheme, setCommandPaletteOpen } = useApp();
+  const { theme, toggleTheme, setCommandPaletteOpen, unreadNotifCount = 0, setNotificationDrawerOpen } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -515,6 +517,22 @@ export const CascadingNavbar = () => {
         {/* RIGHT UTILITIES: Search, Theme Toggle, Mobile Hamburger    */}
         {/* ========================================================= */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Notifications Trigger */}
+          <button
+            type="button"
+            onClick={() => setNotificationDrawerOpen && setNotificationDrawerOpen(true)}
+            className="relative p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-300 dark:border-slate-700/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+            aria-label="Open notifications"
+            title="Notifications"
+          >
+            <Bell className="w-4 h-4 text-slate-700 dark:text-slate-300" />
+            {unreadNotifCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-[10px] font-mono font-bold text-white flex items-center justify-center shadow-sm">
+                {unreadNotifCount}
+              </span>
+            )}
+          </button>
+
           {/* Quick Search Trigger */}
           <button
             type="button"
@@ -540,6 +558,15 @@ export const CascadingNavbar = () => {
               <Moon className="w-4 h-4 text-cyan-600" />
             )}
           </button>
+
+          {/* Student Portal / Dashboard CTA */}
+          <Link
+            to="/dashboard"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs shadow-[0_0_15px_rgba(0,210,255,0.25)] hover:scale-[1.02] transition-all duration-200"
+          >
+            <LayoutDashboard className="w-3.5 h-3.5" />
+            <span>Portal</span>
+          </Link>
 
           {/* Mobile Hamburger Drawer Toggle (< 768px) */}
           <button
@@ -723,6 +750,77 @@ export const CascadingNavbar = () => {
                 </div>
               );
             })}
+          </div>
+
+          {/* Student Ecosystem Hub Links */}
+          <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold px-2">Student Hub &amp; Tools</span>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleNavigate('/dashboard')}
+                className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between"
+              >
+                <span>Dashboard</span>
+                <ArrowRight className="w-3.5 h-3.5 text-cyan-500" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleNavigate('/assignments')}
+                className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between"
+              >
+                <span>Assignments</span>
+                <ArrowRight className="w-3.5 h-3.5 text-cyan-500" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleNavigate('/events')}
+                className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between"
+              >
+                <span>Events</span>
+                <ArrowRight className="w-3.5 h-3.5 text-cyan-500" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleNavigate('/labs')}
+                className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between"
+              >
+                <span>Labs</span>
+                <ArrowRight className="w-3.5 h-3.5 text-cyan-500" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleNavigate('/tech-zone')}
+                className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between"
+              >
+                <span>Tech Zone</span>
+                <ArrowRight className="w-3.5 h-3.5 text-cyan-500" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleNavigate('/timetable')}
+                className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between"
+              >
+                <span>Timetable</span>
+                <ArrowRight className="w-3.5 h-3.5 text-cyan-500" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleNavigate('/profile')}
+                className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between"
+              >
+                <span>Profile</span>
+                <ArrowRight className="w-3.5 h-3.5 text-cyan-500" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleNavigate('/about')}
+                className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between"
+              >
+                <span>About FSIT</span>
+                <ArrowRight className="w-3.5 h-3.5 text-cyan-500" />
+              </button>
+            </div>
           </div>
 
           {/* Mobile Footer Quick Actions */}
