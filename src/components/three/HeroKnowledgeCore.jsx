@@ -288,7 +288,7 @@ export const HeroKnowledgeCore = () => {
       />
 
       {/* Floating Status Orbit Chip */}
-      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 z-20 px-3 py-1 rounded-full bg-slate-900/90 border border-cyan-500/30 text-[10px] font-mono text-cyan-300 shadow-lg backdrop-blur-md flex items-center gap-1.5 whitespace-nowrap">
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 px-3 py-1 rounded-full bg-slate-900/90 border border-cyan-500/30 text-[10px] font-mono text-cyan-300 shadow-lg backdrop-blur-md flex items-center gap-1.5 whitespace-nowrap">
         <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
         <span>INTERACTIVE SPATIAL CORE</span>
       </div>

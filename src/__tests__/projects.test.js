@@ -57,3 +57,4 @@ describe('Department Projects Catalog & Architecture', () => {
     expect(all[0].name).toBe("Dimpy's COSMOS");
   });
 });
+

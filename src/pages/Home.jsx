@@ -56,41 +56,98 @@ export const Home = () => {
   const { prefersReducedMotion } = useReducedMotion();
 
   const heroRef = useRef(null);
+  const leftColRef = useRef(null);
+  const rightColRef = useRef(null);
+  const badgeRef = useRef(null);
   const headlineLeftRef = useRef(null);
   const headlineRightRef = useRef(null);
+  const paragraphRef = useRef(null);
+  const ctaRef = useRef(null);
+  const pillarsRef = useRef(null);
 
-  // GSAP Subtle Entrance & Scroll Kinematics for Cinematic Hero
+  // GSAP Refined Entrance & Responsive Scroll Kinematics for Asymmetric Hero
   useEffect(() => {
     if (prefersReducedMotion || !headlineLeftRef.current || !headlineRightRef.current) return;
 
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+
+    // On mobile devices, disable entrance animations so content is immediately readable
+    if (isMobile) return;
+
     const ctx = gsap.context(() => {
-      // 1. Entrance animation
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 1.0 } });
-      tl.from(headlineLeftRef.current, { x: -35, opacity: 0 })
-        .from(headlineRightRef.current, { x: 35, opacity: 0 }, '<0.15');
-
-      // 2. Subtle scroll-controlled separation
-      gsap.to(headlineLeftRef.current, {
-        x: -24,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.2,
-        },
+      // 1. Initial Page-Load Entrance Sequence (Fast, clean, non-blocking for tablet & desktop)
+      const tl = gsap.timeline({
+        defaults: { ease: 'power3.out', duration: 0.65 },
+        onComplete: () => {
+          gsap.set(
+            [
+              badgeRef.current,
+              headlineLeftRef.current,
+              headlineRightRef.current,
+              paragraphRef.current,
+              ctaRef.current?.children,
+              pillarsRef.current?.children,
+              rightColRef.current
+            ].filter(Boolean),
+            { clearProps: 'opacity,transform,translate,scale,rotate' }
+          );
+        }
       });
 
-      gsap.to(headlineRightRef.current, {
-        x: 24,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.2,
-        },
-      });
+      if (badgeRef.current) {
+        tl.from(badgeRef.current, { y: -14, opacity: 0, duration: 0.5 });
+      }
+
+      tl.from(headlineLeftRef.current, { x: -30, opacity: 0, duration: 0.65 }, '-=0.3')
+        .from(headlineRightRef.current, { x: -20, opacity: 0, duration: 0.65 }, '-=0.45');
+
+      if (paragraphRef.current) {
+        tl.from(paragraphRef.current, { y: 16, opacity: 0, duration: 0.55 }, '-=0.4');
+      }
+
+      if (ctaRef.current?.children) {
+        tl.from(ctaRef.current.children, { y: 14, opacity: 0, stagger: 0.08, duration: 0.5 }, '-=0.35');
+      }
+
+      if (pillarsRef.current?.children) {
+        tl.from(pillarsRef.current.children, { y: 10, opacity: 0, stagger: 0.06, duration: 0.45 }, '-=0.25');
+      }
+
+      if (rightColRef.current) {
+        tl.from(rightColRef.current, { x: 30, scale: 0.97, opacity: 0, duration: 0.75, ease: 'power2.out' }, 0.1);
+      }
+
+      // 2. Responsive Scroll-Based Kinematics (Desktop only for optimal performance)
+      if (isDesktop && heroRef.current) {
+        if (leftColRef.current) {
+          gsap.to(leftColRef.current, {
+            x: -24,
+            opacity: 0.75,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 1.2,
+            },
+          });
+        }
+
+        if (rightColRef.current) {
+          gsap.to(rightColRef.current, {
+            y: 35,
+            scale: 0.98,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 1.2,
+            },
+          });
+        }
+      }
     }, heroRef);
 
     return () => ctx.revert();
@@ -226,70 +283,183 @@ export const Home = () => {
     <div className="space-y-24 md:space-y-32 pb-24">
       
       {/* ========================================================= */}
-      {/* SECTION 2 — CINEMATIC HERO                                */}
+      {/* SECTION 2 — ASYMMETRIC SPLIT-SCREEN CINEMATIC HERO        */}
       {/* ========================================================= */}
       <section
         ref={heroRef}
-        className="relative overflow-hidden pt-12 md:pt-20 pb-16 lg:pb-24 border-b border-slate-200 dark:border-slate-800/60"
+        className="relative overflow-hidden pt-8 md:pt-14 lg:pt-16 pb-14 lg:pb-20 border-b border-slate-200 dark:border-slate-800/60"
       >
-        {/* Ambient Glow Orbs */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-cyan-500/15 via-blue-600/15 to-purple-600/10 blur-[130px] rounded-full pointer-events-none" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none" />
+        {/* Ambient Subtle Gradients */}
+        <div className="absolute top-1/4 left-1/4 -translate-y-1/2 w-[550px] h-[350px] bg-gradient-to-tr from-cyan-500/15 via-blue-600/10 to-transparent blur-[140px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 right-10 w-[500px] h-[400px] bg-gradient-to-bl from-purple-600/15 via-cyan-500/10 to-transparent blur-[130px] rounded-full pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 xl:gap-12 items-center">
             
-            {/* Institutional Badge Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-50/90 dark:bg-slate-900/90 border border-cyan-500/30 text-xs text-cyan-800 dark:text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
-              <span className="flex h-2 w-2 rounded-full bg-cyan-500 animate-ping" />
-              <span className="font-semibold tracking-wide">Scope Global Skills University</span>
-              <span className="text-slate-500 dark:text-slate-400 hidden sm:inline">• School of Future Skills &amp; IT</span>
-            </div>
-
-            {/* Master Headline with Smooth GSAP Split-and-Merge Kinematics */}
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.08] flex flex-wrap items-center justify-center gap-x-4">
-              <span ref={headlineLeftRef} className="inline-block will-change-transform">
-                Learn. Build.
-              </span>
-              <span
-                ref={headlineRightRef}
-                className="inline-block bg-gradient-to-r from-cyan-600 via-sky-500 to-blue-600 dark:from-cyan-400 dark:via-sky-300 dark:to-blue-400 bg-clip-text text-transparent will-change-transform"
+            {/* ---------------------------------------------------- */}
+            {/* LEFT SIDE — CONTENT COMPOSITION (~48%)               */}
+            {/* ---------------------------------------------------- */}
+            <div ref={leftColRef} className="lg:col-span-6 xl:col-span-6 space-y-6 text-left will-change-transform">
+              
+              {/* Institutional Identity Badge */}
+              <div
+                ref={badgeRef}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-50/90 dark:bg-slate-900/90 border border-cyan-500/30 text-xs text-cyan-800 dark:text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.15)]"
               >
-                Innovate. Lead.
-              </span>
-            </h1>
+                <span className="flex h-2 w-2 rounded-full bg-cyan-500 animate-ping" />
+                <span className="font-semibold tracking-wide">Scope Global Skills University</span>
+                <span className="text-slate-400 dark:text-slate-500">•</span>
+                <span className="text-slate-600 dark:text-slate-400 font-medium">School of Future Skills &amp; IT</span>
+              </div>
 
-            {/* Supporting Editorial Paragraph */}
-            <p className="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
-              Transform curiosity into capability through technology-driven education, hands-on research, innovation and real-world projects. Master computer science, artificial intelligence, and cyber defense in a dedicated engineering ecosystem.
-            </p>
+              {/* Dominant Asymmetric Headline */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-[4.25rem] font-black tracking-tight text-slate-900 dark:text-white leading-[1.05] space-y-1">
+                <span ref={headlineLeftRef} className="block text-slate-900 dark:text-white will-change-transform">
+                  Learn. Build.
+                </span>
+                <span
+                  ref={headlineRightRef}
+                  className="block bg-gradient-to-r from-cyan-500 via-sky-400 to-blue-600 dark:from-cyan-400 dark:via-sky-300 dark:to-blue-500 bg-clip-text text-transparent will-change-transform"
+                >
+                  Innovate. Lead.
+                </span>
+              </h1>
 
-            {/* Primary Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-              <Link to="/courses" className="w-full sm:w-auto">
-                <Button size="lg" variant="primary" icon={ArrowRight} iconPosition="right" className="w-full">
-                  Explore Programmes
-                </Button>
-              </Link>
+              {/* Supporting Editorial Message */}
+              <div ref={paragraphRef} className="space-y-3">
+                <p className="text-lg sm:text-xl font-medium text-slate-800 dark:text-slate-200 leading-snug">
+                  Where technology, creativity and practical learning shape tomorrow's innovators.
+                </p>
+                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
+                  Transform curiosity into capability through hands-on research, engineering capstones, and industry-partnered software creation in a dedicated technical ecosystem.
+                </p>
+              </div>
 
-              <Link to="/about" className="w-full sm:w-auto">
-                <Button size="lg" variant="secondary" icon={Sparkles} className="w-full">
-                  Discover Our Department
-                </Button>
-              </Link>
+              {/* Functional Dual Action CTAs */}
+              <div ref={ctaRef} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1">
+                <Link to="/courses" className="w-full sm:w-auto">
+                  <Button size="lg" variant="primary" icon={ArrowRight} iconPosition="right" className="w-full sm:w-auto shadow-lg shadow-cyan-500/25">
+                    Explore Programmes
+                  </Button>
+                </Link>
+
+                <Link to="/about" className="w-full sm:w-auto">
+                  <Button size="lg" variant="secondary" icon={Sparkles} className="w-full sm:w-auto">
+                    Discover Our Department
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Institutional Highlights — Three Pillars */}
+              <div
+                ref={pillarsRef}
+                className="pt-6 border-t border-slate-200/80 dark:border-slate-800/80 grid grid-cols-1 sm:grid-cols-3 gap-3"
+              >
+                <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-100/60 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800/60">
+                  <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/25 flex items-center justify-center shrink-0">
+                    <GraduationCap className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+                  </div>
+                  <div>
+                    <span className="block text-xs font-bold text-slate-900 dark:text-white leading-tight">Academic Excellence</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">UGC &amp; AICTE Aligned</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-100/60 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800/60">
+                  <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/25 flex items-center justify-center shrink-0">
+                    <Cpu className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div>
+                    <span className="block text-xs font-bold text-slate-900 dark:text-white leading-tight">Research &amp; Innovation</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">4 Specialized Labs</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-100/60 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800/60">
+                  <div className="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/25 flex items-center justify-center shrink-0">
+                    <Code2 className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+                  </div>
+                  <div>
+                    <span className="block text-xs font-bold text-slate-900 dark:text-white leading-tight">Student Projects</span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">Live Deployments</span>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-            {/* Trust Indicators */}
-            <div className="pt-4 flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs text-slate-600 dark:text-slate-400 font-medium">
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-cyan-500" /> Industry Capstones</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-cyan-500" /> Alumni Mentorship</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-cyan-500" /> Research Laboratories</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-cyan-500" /> Autonomous RAG Assistant</span>
-            </div>
+            {/* ---------------------------------------------------- */}
+            {/* RIGHT SIDE — HERO VISUAL EXPERIENCE (~52%)           */}
+            {/* ---------------------------------------------------- */}
+            <div ref={rightColRef} className="lg:col-span-6 xl:col-span-6 will-change-transform">
+              <div className="relative rounded-3xl bg-gradient-to-br from-slate-900/95 via-slate-950/95 to-cyan-950/40 border border-cyan-500/30 shadow-2xl shadow-cyan-500/10 p-5 sm:p-7 overflow-hidden group">
+                
+                {/* Visual Ambient Glows */}
+                <div className="absolute top-0 right-0 w-72 h-72 bg-cyan-500/15 rounded-full blur-[90px] pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/15 rounded-full blur-[80px] pointer-events-none" />
 
-            {/* 3D Technology Centerpiece */}
-            <div className="pt-6 sm:pt-10 max-w-md mx-auto">
-              <HeroKnowledgeCore />
+                {/* Decorative Technical Coordinates Header */}
+                <div className="relative z-20 flex items-center justify-between pb-3 border-b border-slate-800/80 text-[11px] font-mono text-slate-400">
+                  <div className="flex items-center gap-2 text-cyan-400">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                    <span className="font-bold tracking-wider">FSIT // TECH-CORE</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="hidden sm:inline text-slate-500">SYS.ONLINE</span>
+                    <span className="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-semibold">
+                      4 LABS ACTIVE
+                    </span>
+                  </div>
+                </div>
+
+                {/* Main 3D Technology Core — Interactive Spatial Visualization */}
+                <div className="relative z-10 py-2 sm:py-4 flex items-center justify-center">
+                  <HeroKnowledgeCore />
+                </div>
+
+                {/* Floating Telemetry & Real Student Innovation Stack */}
+                <div className="relative z-20 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-4 bg-slate-950/60 -mx-5 -mb-5 sm:-mx-7 sm:-mb-7 p-4 sm:px-6 backdrop-blur-md">
+                  <div className="flex items-center gap-3">
+                    <div className="flex -space-x-2 overflow-hidden">
+                      <img
+                        src={getAssetUrl("/projects/dimpy-cosmos.png")}
+                        alt="Dimpy's COSMOS"
+                        className="inline-block h-7 w-7 rounded-full ring-2 ring-cyan-500 object-cover shadow"
+                        title="Dimpy's COSMOS (3D WebXR)"
+                      />
+                      <img
+                        src={getAssetUrl("/projects/pixelmefaizan.png")}
+                        alt="PixelMeFaizan"
+                        className="inline-block h-7 w-7 rounded-full ring-2 ring-purple-500 object-cover shadow"
+                        title="PixelMeFaizan (AI/ML)"
+                      />
+                      <img
+                        src={getAssetUrl("/projects/binary-battle-club.png")}
+                        alt="Binary Battle Club"
+                        className="inline-block h-7 w-7 rounded-full ring-2 ring-sky-500 object-cover shadow"
+                        title="Binary Battle Club (Coding Guild)"
+                      />
+                    </div>
+                    <div>
+                      <span className="block text-xs font-bold text-white leading-tight">
+                        Live Digital Creations
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        COSMOS • BBC • Portfolios
+                      </span>
+                    </div>
+                  </div>
+
+                  <Link
+                    to="/projects"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 hover:text-cyan-300 border border-cyan-500/30 text-xs font-bold transition-colors shrink-0"
+                  >
+                    <span>Inspect</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
+
+              </div>
             </div>
 
           </div>
