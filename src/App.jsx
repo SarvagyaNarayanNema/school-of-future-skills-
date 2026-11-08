@@ -7,6 +7,7 @@ import { CommandPalette } from './components/common/CommandPalette';
 import { NotificationDrawer } from './components/layout/NotificationDrawer';
 import { ToastContainer } from './components/common/ToastContainer';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { FuturisticBackground } from './components/background/FuturisticBackground';
 import { useApp } from './context/AppContext';
 
 // Public Institutional Pages
@@ -39,13 +40,16 @@ export const App = () => {
   return (
     <ErrorBoundary>
       <ScrollToTop />
-      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#080C16] text-slate-900 dark:text-slate-100 antialiased tech-grid-pattern selection:bg-cyan-500 selection:text-slate-950 transition-colors duration-200">
+      <div className="relative min-h-screen flex flex-col bg-slate-50 dark:bg-[#060913] text-slate-900 dark:text-slate-100 antialiased tech-grid-pattern selection:bg-cyan-500 selection:text-slate-950 transition-colors duration-200">
         
+        {/* Advanced Multi-Layer Futuristic Immersive Background */}
+        <FuturisticBackground />
+
         {/* Streamlined Public Collegiate Header */}
         <PublicHeader />
 
         {/* Dynamic Public Route Content */}
-        <main id="main-content" className="flex-1">
+        <main id="main-content" className="flex-1 relative z-10">
           <Routes>
             {/* Public Departmental Routes */}
             <Route path="/" element={<Home />} />

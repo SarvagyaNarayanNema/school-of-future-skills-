@@ -8,7 +8,7 @@ export const Footer = () => {
   const builders = websiteBuilders;
 
   return (
-    <footer className="border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0B0F19] text-slate-600 dark:text-slate-400 text-sm mt-20 transition-colors">
+    <footer className="relative z-10 border-t border-slate-200 dark:border-slate-800/80 bg-white/95 dark:bg-[#060913]/90 backdrop-blur-md text-slate-600 dark:text-slate-400 text-sm mt-20 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-10">
           

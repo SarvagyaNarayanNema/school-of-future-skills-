@@ -18,9 +18,9 @@
   }
 
   .dark {
-    --bg-canvas: #080c16;
-    --bg-surface: #0f172a;
-    --bg-surface-elevated: #17233d;
+    --bg-canvas: #060913;
+    --bg-surface: #0a0f1d;
+    --bg-surface-elevated: #111a2e;
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
@@ -128,10 +128,11 @@
 }
 
 .dark .tech-grid-pattern {
-  background-image: radial-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
-                    radial-gradient(rgba(139, 92, 246, 0.04) 1px, transparent 1px);
-  background-size: 32px 32px;
-  background-position: 0 0, 16px 16px;
+  background-image: 
+    radial-gradient(rgba(6, 182, 212, 0.12) 1px, transparent 1px),
+    radial-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+  background-size: 36px 36px, 72px 72px;
+  background-position: 0 0, 18px 18px;
 }
 
 /* FutureBot Animations */

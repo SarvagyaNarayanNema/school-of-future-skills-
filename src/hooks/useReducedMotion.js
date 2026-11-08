@@ -34,7 +34,9 @@ export function useReducedMotion() {
 
   return {
     reducedMotion: prefersReducedMotion,
+    prefersReducedMotion: prefersReducedMotion,
     isMobile: isMobileDevice,
+    isTouchDevice: isMobileDevice,
     shouldSimplifyEffects: prefersReducedMotion || isMobileDevice,
   };
 }
