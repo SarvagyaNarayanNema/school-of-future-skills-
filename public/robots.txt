@@ -22,3 +22,4 @@ Disallow: /api/
 Disallow: /uploads/
 
 Sitemap: https://sarvagyanarayannema.github.io/school-of-future-skills/sitemap.xml
+
