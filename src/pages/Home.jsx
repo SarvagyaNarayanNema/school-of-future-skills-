@@ -955,9 +955,9 @@ export const Home = () => {
                   Explore Programmes
                 </Button>
               </Link>
-              <Link to="/dashboard">
+              <Link to="/about">
                 <Button size="lg" variant="outline" className="text-white border-white/40 hover:bg-white/10 font-bold">
-                  Access Student Portal
+                  Discover Department Leadership
                 </Button>
               </Link>
             </div>

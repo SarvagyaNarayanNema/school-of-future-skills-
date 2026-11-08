@@ -6,7 +6,6 @@ import {
   Moon,
   Menu,
   X,
-  LayoutDashboard,
   Sparkles,
   ChevronDown,
   ArrowRight,
@@ -42,10 +41,11 @@ export const PublicHeader = () => {
     { label: 'Home', path: '/' },
     { label: 'About', path: '/about' },
     { label: 'Programmes', path: '/courses' },
+    { label: 'Faculty', path: '/about#faculty' },
     { label: 'Research & Labs', path: '/labs' },
     { label: 'Achievements', path: '/achievements' },
-    { label: 'Faculty', path: '/about#faculty' },
     { label: 'Student Life', path: '/clubs-and-projects' },
+    { label: 'Events', path: '/events' },
     { label: 'Alumni', path: '/alumni' },
   ];
 
@@ -152,14 +152,13 @@ export const PublicHeader = () => {
               )}
             </button>
 
-            {/* STUDENT PORTAL CTA BUTTON */}
+            {/* EXPLORE PROGRAMMES CTA BUTTON */}
             <Link
-              to="/dashboard"
+              to="/courses"
               className="relative group inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs shadow-[0_0_18px_rgba(6,182,212,0.35)] hover:shadow-[0_0_26px_rgba(6,182,212,0.55)] transition-all hover:scale-[1.02]"
             >
-              <LayoutDashboard className="w-4 h-4 text-slate-950" />
-              <span>Student Portal</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse hidden sm:inline-block" />
+              <BookOpen className="w-4 h-4 text-slate-950" />
+              <span>Explore Programmes</span>
             </Link>
 
             {/* Mobile Hamburger Button */}
@@ -197,11 +196,11 @@ export const PublicHeader = () => {
 
           <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
             <Link
-              to="/dashboard"
+              to="/courses"
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-md transition-all"
             >
-              <LayoutDashboard className="w-4 h-4" />
-              <span>Access Student Portal Terminal</span>
+              <BookOpen className="w-4 h-4" />
+              <span>Explore Academic Programmes</span>
             </Link>
           </div>
         </div>

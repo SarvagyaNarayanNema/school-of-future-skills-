@@ -16,7 +16,6 @@ import {
   Code2,
   ArrowRight,
   X,
-  LayoutDashboard,
   Calendar,
   Terminal,
   Clock,
@@ -133,21 +132,17 @@ export const CommandPalette = () => {
       url: `/alumni`
     }));
 
-  // Default Quick Navigation when query is empty
+  // Default Quick Navigation when query is empty (Public Department Directory)
   const defaultShortcuts = [
-    { id: "nav-dash", type: "Portal", title: "Student Dashboard", subtitle: "XP, progression, course status & enrolled tracks", icon: LayoutDashboard, iconColor: "text-cyan-400", url: "/dashboard" },
-    { id: "nav-assignments", type: "Portal", title: "Assignments & Submissions", subtitle: "View deadlines, submission status & upload deliverables", icon: FileText, iconColor: "text-purple-400", url: "/assignments" },
-    { id: "nav-events", type: "Ecosystem", title: "Upcoming Events & Hackathons", subtitle: "Register for workshops, hackathons and tech talks", icon: Calendar, iconColor: "text-emerald-400", url: "/events" },
-    { id: "nav-labs", type: "Portal", title: "Interactive Virtual Labs", subtitle: "Hands-on terminal, AI GPU workstations and lab modules", icon: Terminal, iconColor: "text-indigo-400", url: "/labs" },
-    { id: "nav-tech-zone", type: "Portal", title: "Tech Zone Playground", subtitle: "Live code sandbox, benchmarks and developer challenges", icon: Sparkles, iconColor: "text-amber-400", url: "/tech-zone" },
-    { id: "nav-timetable", type: "Portal", title: "Academic Timetable", subtitle: "Daily schedule, room numbers and faculty allocations", icon: Clock, iconColor: "text-sky-400", url: "/timetable" },
-    { id: "nav-profile", type: "Portal", title: "Student Profile", subtitle: "Skills, badges, portfolio links and account details", icon: User, iconColor: "text-rose-400", url: "/profile" },
-    { id: "nav-courses", type: "Catalog", title: "All Academic Programmes", subtitle: "45 degree and diploma curricula across 17 schools", icon: BookOpen, iconColor: "text-cyan-400", url: "/courses" },
-    { id: "nav-achievements", type: "Honors", title: "Wall of Fame & Achievements", subtitle: "Hackathon champions, patents & research honors", icon: Trophy, iconColor: "text-yellow-400", url: "/achievements" },
-    { id: "nav-notices", type: "Announcements", title: "Official Notice Board", subtitle: "Hackathon updates, exam dates & circulars", icon: Bell, iconColor: "text-amber-400", url: "/notices" },
-    { id: "nav-cp", type: "Community", title: "Student Clubs & Projects", subtitle: "Join tech guilds & explore open-source capstones", icon: Users, iconColor: "text-purple-400", url: "/clubs-and-projects" },
-    { id: "nav-alumni", type: "Network", title: "Alumni Mentorship Directory", subtitle: "Book 1-on-1 mentorship with leaders at Google, AWS & Stripe", icon: GraduationCap, iconColor: "text-blue-400", url: "/alumni" },
-    { id: "nav-about", type: "Institutional", title: "About FSIT & Leadership", subtitle: "Faculty dossier, creators and school mission", icon: Info, iconColor: "text-teal-400", url: "/about" }
+    { id: "nav-courses", type: "Academic", title: "All Degree Programmes", subtitle: "Explore BCA (AI-ML), Cloud Security, Data Science & Full Stack", icon: BookOpen, iconColor: "text-cyan-400", url: "/courses" },
+    { id: "nav-about", type: "Department", title: "About FSIT & Leadership", subtitle: "Department overview, vision, and Head of School leadership", icon: Info, iconColor: "text-teal-400", url: "/about" },
+    { id: "nav-faculty", type: "Leadership", title: "Faculty & Mentor Directory", subtitle: "Official faculty qualifications, research profiles and contacts", icon: User, iconColor: "text-blue-400", url: "/about#faculty" },
+    { id: "nav-labs", type: "Research", title: "Research & Laboratory Facilities", subtitle: "Explore specialized research facilities & sandbox modules", icon: Terminal, iconColor: "text-indigo-400", url: "/labs" },
+    { id: "nav-achievements", type: "Honors", title: "Wall of Fame & Achievements", subtitle: "Global Cyber Siege champions, patents & research publications", icon: Trophy, iconColor: "text-yellow-400", url: "/achievements" },
+    { id: "nav-events", type: "Events", title: "Campus Events & Hackathons", subtitle: "National coding blitzes, workshops and guest lecture summits", icon: Calendar, iconColor: "text-emerald-400", url: "/events" },
+    { id: "nav-cp", type: "Community", title: "Student Guilds & Projects", subtitle: "Binary Battle Club, Cyber Warriors & open-source capstones", icon: Users, iconColor: "text-purple-400", url: "/clubs-and-projects" },
+    { id: "nav-alumni", type: "Network", title: "Alumni Network & Impact", subtitle: "Graduates at Google DeepMind, AWS, CrowdStrike & Microsoft", icon: GraduationCap, iconColor: "text-blue-400", url: "/alumni" },
+    { id: "nav-notices", type: "Announcements", title: "Official Circulars & Notices", subtitle: "Public departmental circulars, schedules and announcements", icon: Bell, iconColor: "text-amber-400", url: "/notices" }
   ];
 
   const results = q ? [
