@@ -96,7 +96,7 @@ export const CascadingNavbar = () => {
     setActiveTopId(item.id);
 
     // Screen Boundary Detection: check if dropdown with child columns would overflow viewport
-    const btnEl = activeNavButtonRef.current[item.id];
+    const btnEl = activeNavButtonRef.current?.[item.id];
     if (btnEl) {
       const rect = btnEl.getBoundingClientRect();
       // Estimated width of Level 1 (280px) + Level 2 (280px) + Level 3 (280px) = ~840px
@@ -244,7 +244,11 @@ export const CascadingNavbar = () => {
             return (
               <div
                 key={item.id}
-                ref={(el) => (activeNavButtonRef.current[item.id] = el)}
+                ref={(el) => {
+                  if (activeNavButtonRef.current) {
+                    activeNavButtonRef.current[item.id] = el;
+                  }
+                }}
                 className="relative"
                 onMouseEnter={() => handleTopItemMouseEnter(item)}
               >

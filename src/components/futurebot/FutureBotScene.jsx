@@ -20,8 +20,8 @@ export const FutureBotScene = ({
   interactive = true,
   onClick,
   className = '',
-  cameraDistance = 4.6,
-  cameraY = 0.35,
+  cameraDistance = 4.3,
+  cameraY = 0.45,
 }) => {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -107,7 +107,7 @@ export const FutureBotScene = ({
     // 2. Camera
     const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 50);
     camera.position.set(0, cameraY, cameraDistance);
-    camera.lookAt(0, 0.15, 0);
+    camera.lookAt(0, 0.35, 0);
 
     // 3. Renderer with antialiasing and alpha transparency
     let renderer;

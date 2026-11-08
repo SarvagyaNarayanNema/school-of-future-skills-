@@ -27,7 +27,8 @@ import {
   Mic,
   MicOff,
   Volume2,
-  VolumeX
+  VolumeX,
+  Minimize2
 } from 'lucide-react';
 import { askFutureBot, getBotConfig, saveBotConfig } from '../../services/rag/futureBotService';
 import { getAssetUrl, getBotAvatarFallback } from '../../utils/assets';
@@ -99,17 +100,29 @@ I can help you with:
   const [toastMessage, setToastMessage] = useState(null);
   const [availableVoices, setAvailableVoices] = useState([]);
 
-  // Draggable 3D Robot Avatar States & Physics
-  const [robotPos, setRobotPos] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const dragInfoRef = useRef({
-    startX: 0,
-    startY: 0,
-    originX: 0,
-    originY: 0,
-    hasMoved: false,
-    pointerId: null
-  });
+  // Docked 3D Robot Mascot Emote & Minimize States
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [emoteOverride, setEmoteOverride] = useState(null);
+  const emoteTimerRef = useRef(null);
+
+  const handleTriggerEmote = (emoteId) => {
+    if (isTyping || isSpeaking) return;
+    if (emoteTimerRef.current) clearTimeout(emoteTimerRef.current);
+
+    if (emoteId === 'listening') {
+      if (!isListening) toggleVoiceRecognition();
+      setEmoteOverride('listening');
+    } else if (emoteId === 'idle') {
+      if (isListening) toggleVoiceRecognition();
+      setEmoteOverride(null);
+    } else {
+      if (isListening) toggleVoiceRecognition();
+      setEmoteOverride(emoteId);
+      emoteTimerRef.current = setTimeout(() => {
+        setEmoteOverride(null);
+      }, 2600);
+    }
+  };
 
   const chatEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -119,13 +132,15 @@ I can help you with:
 
   // Derive 3D Character emotional state
   const characterState = useFutureBotState({
-    isOpen,
+    isOpen: isOpen && !isMinimized,
     isListening,
     isTyping,
     isSpeaking,
     hasError,
     hasSuccess,
   });
+
+  const effectiveCharacterState = emoteOverride || characterState;
 
   // Synchronize with AppContext futureBotOpen
   useEffect(() => {
@@ -548,67 +563,6 @@ I can help you with:
     startVoiceListening();
   };
 
-  // Draggable 3D Robot Avatar Pointer Event Handlers
-  const handlePointerDown = (e) => {
-    if (e.button !== 0 && e.pointerType === 'mouse') return;
-
-    dragInfoRef.current = {
-      startX: e.clientX,
-      startY: e.clientY,
-      originX: robotPos.x,
-      originY: robotPos.y,
-      hasMoved: false,
-      pointerId: e.pointerId
-    };
-
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch (err) {}
-  };
-
-  const handlePointerMove = (e) => {
-    if (dragInfoRef.current.pointerId !== e.pointerId) return;
-
-    const dx = e.clientX - dragInfoRef.current.startX;
-    const dy = e.clientY - dragInfoRef.current.startY;
-    const dist = Math.hypot(dx, dy);
-
-    if (dist >= 6) {
-      if (!isDragging) setIsDragging(true);
-      dragInfoRef.current.hasMoved = true;
-
-      // Bound within reasonable offsets inside chat window
-      const nextX = Math.max(-280, Math.min(120, dragInfoRef.current.originX + dx));
-      const nextY = Math.max(-100, Math.min(300, dragInfoRef.current.originY + dy));
-
-      setRobotPos({ x: nextX, y: nextY });
-    }
-  };
-
-  const handlePointerUp = (e) => {
-    if (dragInfoRef.current.pointerId !== e.pointerId) return;
-
-    try {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    } catch (err) {}
-
-    dragInfoRef.current.pointerId = null;
-
-    if (dragInfoRef.current.hasMoved) {
-      setIsDragging(false);
-    } else {
-      setIsDragging(false);
-      toggleVoiceRecognition();
-    }
-  };
-
-  const handlePointerCancel = (e) => {
-    if (dragInfoRef.current.pointerId === e.pointerId) {
-      dragInfoRef.current.pointerId = null;
-      setIsDragging(false);
-    }
-  };
-
   const handleSendMessage = async (queryText, fromVoice = false) => {
     const query = (queryText || inputVal).trim();
     if (!query || isTyping) return;
@@ -824,26 +778,153 @@ I can help you with:
       {/* ========================================================= */}
       {/* 1. FLOATING 3D BOT LAUNCHER BUTTON                         */}
       {/* ========================================================= */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <FutureBotLauncher
-          isOpen={isOpen}
-          state={characterState}
-          onClick={() => {
-            if (isOpen) {
-              handleCloseModal();
-            } else {
-              setIsOpen(true);
-              if (setFutureBotOpen) setFutureBotOpen(true);
-            }
-          }}
-        />
-      </div>
+      {(!isOpen || isMinimized) && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <FutureBotLauncher
+            isOpen={isOpen && !isMinimized}
+            state={effectiveCharacterState}
+            onClick={() => {
+              if (isMinimized) {
+                setIsMinimized(false);
+              } else {
+                setIsOpen(true);
+                if (setFutureBotOpen) setFutureBotOpen(true);
+              }
+            }}
+          />
+        </div>
+      )}
 
       {/* ========================================================= */}
-      {/* 2. CHAT WINDOW / MODAL CONTAINER                          */}
+      {/* 2. COORDINATED CHAT & 3D MASCOT CONTAINER (ZERO DRAGGING) */}
       {/* ========================================================= */}
-      {isOpen && (
-        <div className="fixed inset-0 sm:inset-auto sm:bottom-24 sm:right-6 z-50 w-full sm:w-[520px] md:w-[580px] h-full sm:h-[640px] sm:max-h-[86vh] bg-white dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 sm:border sm:border-slate-200 dark:sm:border-slate-700/80 sm:rounded-3xl shadow-[0_12px_50px_rgba(0,0,0,0.25)] dark:shadow-[0_12px_50px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
+      {isOpen && !isMinimized && (
+        <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 z-50 flex flex-col sm:flex-row items-end gap-3 pointer-events-none animate-in slide-in-from-bottom-5 duration-300">
+          
+          {/* ========================================================= */}
+          {/* DESKTOP ATTACHED 3D MASCOT COMPANION WING (LEFT DOCKED)   */}
+          {/* ========================================================= */}
+          <div className="hidden lg:flex flex-col w-64 h-[640px] bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-xl border border-slate-200 dark:border-cyan-500/30 rounded-3xl shadow-2xl p-4 overflow-hidden pointer-events-auto justify-between shrink-0">
+            {/* Top Mascot Header & Status */}
+            <div>
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-slate-800">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                  <span className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider font-mono">
+                    FutureBot 3D
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/25 uppercase">
+                  {effectiveCharacterState}
+                </span>
+              </div>
+
+              {/* 3D Character Mascot Stage */}
+              <div className="relative w-full h-64 flex items-center justify-center my-2">
+                <FutureBotScene
+                  state={effectiveCharacterState}
+                  size="xl"
+                  cameraDistance={4.2}
+                  cameraY={0.4}
+                  interactive={true}
+                  className="w-full h-full"
+                />
+              </div>
+
+              {/* Live Audio Reactive Waveform Indicator */}
+              <div className="flex items-center justify-center gap-1 py-1.5 px-3 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <span className={`w-1 bg-cyan-400 rounded-full ${isListening || isSpeaking ? 'animate-soundwave-1' : 'h-2'}`} />
+                <span className={`w-1 bg-cyan-400 rounded-full ${isListening || isSpeaking ? 'animate-soundwave-2' : 'h-3'}`} />
+                <span className={`w-1 bg-cyan-400 rounded-full ${isListening || isSpeaking ? 'animate-soundwave-3' : 'h-1.5'}`} />
+                <span className={`w-1 bg-cyan-400 rounded-full ${isListening || isSpeaking ? 'animate-soundwave-4' : 'h-2.5'}`} />
+                <span className={`w-1 bg-cyan-400 rounded-full ${isListening || isSpeaking ? 'animate-soundwave-5' : 'h-2'}`} />
+                <span className="text-[10px] font-mono text-slate-600 dark:text-slate-300 ml-2 font-medium">
+                  {isListening ? 'Listening...' : isSpeaking ? 'Speaking...' : isTyping ? 'Synthesizing...' : 'Standing By'}
+                </span>
+              </div>
+            </div>
+
+            {/* Quick Interactive Emote & Speech Triggers */}
+            <div className="space-y-2 pt-3 border-t border-slate-200/80 dark:border-slate-800">
+              <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-semibold px-1">
+                Mascot Reactions
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => handleTriggerEmote('idle')}
+                  className={`px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                    effectiveCharacterState === 'idle'
+                      ? 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/40'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800'
+                  }`}
+                >
+                  ⚡ Idle
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTriggerEmote('greeting')}
+                  className={`px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                    effectiveCharacterState === 'greeting'
+                      ? 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/40'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800'
+                  }`}
+                >
+                  👋 Wave
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTriggerEmote('thinking')}
+                  className={`px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                    effectiveCharacterState === 'thinking'
+                      ? 'bg-purple-500/20 text-purple-600 dark:text-purple-300 border border-purple-500/40'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800'
+                  }`}
+                >
+                  🧠 Think
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTriggerEmote('listening')}
+                  className={`px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                    effectiveCharacterState === 'listening'
+                      ? 'bg-rose-500/20 text-rose-600 dark:text-rose-300 border border-rose-500/40'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800'
+                  }`}
+                >
+                  🎙️ Listen
+                </button>
+              </div>
+
+              {/* Tap to Voice Conversation Quick Button */}
+              <button
+                type="button"
+                onClick={toggleVoiceRecognition}
+                className={`w-full py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+                  isListening
+                    ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/30 animate-pulse'
+                    : 'bg-gradient-to-r from-cyan-500/15 to-blue-500/15 hover:from-cyan-500/25 hover:to-blue-500/25 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30'
+                }`}
+              >
+                {isListening ? (
+                  <>
+                    <MicOff className="w-3.5 h-3.5" />
+                    <span>Stop Voice</span>
+                  </>
+                ) : (
+                  <>
+                    <Mic className="w-3.5 h-3.5 text-cyan-500" />
+                    <span>Start Voice Chat</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* ========================================================= */}
+          {/* MAIN CHAT WINDOW CONTAINER (RIGHT PANEL)                  */}
+          {/* ========================================================= */}
+          <div className="w-full sm:w-[500px] md:w-[540px] h-full sm:h-[640px] sm:max-h-[88vh] bg-white dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 sm:border sm:border-slate-200 dark:sm:border-slate-700/80 sm:rounded-3xl shadow-[0_12px_50px_rgba(0,0,0,0.25)] dark:shadow-[0_12px_50px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden pointer-events-auto">
           
           {/* Header */}
           <div className="p-3.5 sm:p-4 bg-slate-100/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
@@ -851,7 +932,7 @@ I can help you with:
               <div className="relative shrink-0">
                 <div className="w-10 h-10 rounded-full bg-slate-900 border border-cyan-500/40 overflow-hidden flex items-center justify-center shadow-inner">
                   <FutureBotScene
-                    state={characterState}
+                    state={effectiveCharacterState}
                     size="xs"
                     cameraDistance={3.8}
                     cameraY={0.65}
@@ -905,6 +986,14 @@ I can help you with:
                 className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
               >
                 <Sliders className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsMinimized(true)}
+                title="Minimize Assistant"
+                className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+              >
+                <Minimize2 className="w-4 h-4" />
               </button>
               <button
                 type="button"
@@ -1010,136 +1099,10 @@ I can help you with:
                       </div>
                     )}
 
-                    {/* Content Rendering: Special Welcome Card with Interactive 3D Robot Avatar on the right */}
+                    {/* Content Rendering: Special Welcome Card or Standard Message */}
                     {isWelcome ? (
-                      <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-5">
-                        
-                        {/* Left Side: Greeting text */}
-                        <div className="flex-1 space-y-2 order-2 md:order-1 text-left">
-                          {renderFormattedContent(m.text)}
-                        </div>
-
-                        {/* Right Side: Draggable 3D Robot Avatar Interactive Voice Hub */}
-                        <div
-                          onPointerDown={handlePointerDown}
-                          onPointerMove={handlePointerMove}
-                          onPointerUp={handlePointerUp}
-                          onPointerCancel={handlePointerCancel}
-                          onDoubleClick={() => setRobotPos({ x: 0, y: 0 })}
-                          style={{
-                            transform: `translate3d(${robotPos.x}px, ${robotPos.y}px, 0) scale(${isDragging ? 1.08 : 1}) rotate(${isDragging ? '5deg' : '0deg'})`,
-                            transition: isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                            touchAction: 'none'
-                          }}
-                          className={`flex flex-col items-center shrink-0 order-1 md:order-2 self-center md:self-start pt-1 select-none ${
-                            isDragging ? 'cursor-grabbing z-30' : 'cursor-grab'
-                          }`}
-                          title="Tap to Voice Chat • Drag to Move • Double click to Reset"
-                        >
-                          {/* Floating Pill Badge */}
-                          <div
-                            className={`mb-2 px-3 py-1 rounded-full text-[10px] font-mono font-bold transition-all duration-300 shadow-md flex items-center gap-1.5 whitespace-nowrap select-none pointer-events-none ${
-                              isDragging
-                                ? 'bg-cyan-500 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.8)] scale-105'
-                                : isListening
-                                ? 'bg-rose-500 text-white animate-pulse shadow-[0_0_15px_rgba(244,63,94,0.6)]'
-                                : isSpeaking
-                                ? 'bg-cyan-500 text-slate-950 animate-bounce shadow-[0_0_15px_rgba(6,182,212,0.6)]'
-                                : 'bg-gradient-to-r from-cyan-500/20 via-sky-500/20 to-blue-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30'
-                            }`}
-                          >
-                            {isDragging ? (
-                              <>
-                                <Sparkles className="w-3 h-3 text-slate-950" />
-                                <span>Dragging Avatar...</span>
-                              </>
-                            ) : isListening ? (
-                              <>
-                                <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-                                <span>Listening... Tap to Interrupt</span>
-                              </>
-                            ) : isSpeaking ? (
-                              <>
-                                <Volume2 className="w-3 h-3 text-slate-950" />
-                                <span>Speaking... Tap to Interrupt</span>
-                              </>
-                            ) : (
-                              <>
-                                <Mic className="w-3 h-3 text-cyan-600 dark:text-cyan-400" />
-                                <span>🎙️ Tap to Voice Chat</span>
-                              </>
-                            )}
-                          </div>
-
-                          {/* 3D Robot Avatar with subtle bobbing float & ripple effect */}
-                          <div className="relative group flex items-center justify-center">
-                            
-                            {/* Active Soundwave Ripple Effect Rings when listening */}
-                            {isListening && (
-                              <>
-                                <span className="absolute w-28 h-28 sm:w-32 sm:h-32 rounded-full border-2 border-cyan-400 opacity-75 animate-ping pointer-events-none" />
-                                <span className="absolute w-36 h-36 rounded-full border border-cyan-300 opacity-50 animate-pulse pointer-events-none" />
-                                <span className="absolute inset-0 bg-cyan-400/20 rounded-full blur-xl pointer-events-none" />
-                              </>
-                            )}
-
-                            {/* Ambient glow when hovering or active */}
-                            <div
-                              className={`absolute -inset-2 rounded-full blur-xl transition-opacity duration-500 pointer-events-none ${
-                                isDragging
-                                  ? 'bg-cyan-400/60 opacity-100'
-                                  : isListening
-                                  ? 'bg-rose-500/40 opacity-100'
-                                  : isSpeaking
-                                  ? 'bg-cyan-400/50 opacity-100'
-                                  : 'bg-gradient-to-tr from-cyan-500/30 via-sky-400/30 to-purple-500/30 opacity-70 group-hover:opacity-100'
-                              }`}
-                            />
-
-                            <div
-                              className="relative z-10 w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 flex items-center justify-center transition-transform duration-300"
-                            >
-                              <FutureBotScene
-                                state={characterState}
-                                size="lg"
-                                className="w-full h-full"
-                                cameraDistance={4.4}
-                                cameraY={0.3}
-                                interactive={true}
-                              />
-                            </div>
-                          </div>
-
-                          {/* Dynamic Audio Waveform indicator below robot when listening or speaking */}
-                          {(isListening || isSpeaking) && (
-                            <div className="flex items-center gap-1 mt-2.5 px-3 py-1 rounded-full bg-slate-900/90 border border-cyan-500/40 shadow-inner">
-                              <span className="w-1 bg-cyan-400 rounded-full animate-soundwave-1" />
-                              <span className="w-1 bg-cyan-400 rounded-full animate-soundwave-2" />
-                              <span className="w-1 bg-cyan-400 rounded-full animate-soundwave-3" />
-                              <span className="w-1 bg-cyan-400 rounded-full animate-soundwave-4" />
-                              <span className="w-1 bg-cyan-400 rounded-full animate-soundwave-5" />
-                              <span className="text-[9px] font-mono font-bold text-cyan-300 ml-1.5 uppercase">
-                                {isListening ? 'Listening' : 'Speaking'}
-                              </span>
-                            </div>
-                          )}
-
-                          {/* Position Reset Hint if dragged */}
-                          {(robotPos.x !== 0 || robotPos.y !== 0) && (
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setRobotPos({ x: 0, y: 0 });
-                              }}
-                              className="mt-1.5 text-[9px] font-mono text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1 bg-cyan-500/10 px-2 py-0.5 rounded-full border border-cyan-500/20"
-                            >
-                              <RotateCcw className="w-2.5 h-2.5" />
-                              <span>Reset avatar position</span>
-                            </button>
-                          )}
-
-                        </div>
+                      <div className="space-y-3 text-left">
+                        {renderFormattedContent(m.text)}
                       </div>
                     ) : (
                       <div>
@@ -1356,6 +1319,7 @@ I can help you with:
             </button>
           </form>
 
+        </div>
         </div>
       )}
 
