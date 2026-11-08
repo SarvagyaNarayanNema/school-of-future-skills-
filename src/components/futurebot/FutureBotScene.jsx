@@ -27,7 +27,7 @@ export const FutureBotScene = ({
   const canvasRef = useRef(null);
   const isWebGL = useWebGLSupport();
   const { prefersReducedMotion, isTouchDevice } = useReducedMotion();
-  const { isIntersecting, ref: intersectionRef } = useIntersectionObserver({ threshold: 0.1 });
+  const isIntersecting = useIntersectionObserver(containerRef, { threshold: 0.1 });
 
   const [hasContextError, setHasContextError] = useState(false);
   const characterRef = useRef(null);
@@ -213,12 +213,6 @@ export const FutureBotScene = ({
     };
   }, [isWebGL, hasContextError, isIntersecting, prefersReducedMotion, cameraDistance, cameraY]);
 
-  // Combine container refs
-  const setContainerRefs = useCallback((node) => {
-    containerRef.current = node;
-    intersectionRef.current = node;
-  }, [intersectionRef]);
-
   // Dimension classes based on size prop
   const sizeClasses = {
     xs: 'w-10 h-10',
@@ -243,7 +237,7 @@ export const FutureBotScene = ({
 
   return (
     <div
-      ref={setContainerRefs}
+      ref={containerRef}
       onMouseMove={handlePointerMove}
       onTouchMove={handleTouchMove}
       onMouseLeave={handlePointerLeave}

@@ -9,17 +9,20 @@ export function useIntersectionObserver(targetRef, options = { threshold: 0.05 }
 
   useEffect(() => {
     if (!targetRef?.current) return;
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      setIsVisible(true);
+      return;
+    }
 
     const observer = new IntersectionObserver(([entry]) => {
-      setIsVisible(entry.isIntersecting);
+      if (entry) {
+        setIsVisible(entry.isIntersecting);
+      }
     }, options);
 
     observer.observe(targetRef.current);
 
     return () => {
-      if (targetRef?.current) {
-        observer.unobserve(targetRef.current);
-      }
       observer.disconnect();
     };
   }, [targetRef, options.threshold]);
