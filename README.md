@@ -1,118 +1,138 @@
-# Future Skills — Interactive Student Technology Platform
+# School of Future Skills & Information Technology (FSIT)
+## Scope Global Skills University — Enterprise Digital Learning & Innovation Platform
 
-An advanced, modern, production-grade student technology platform built for university departments focusing on emerging technologies. Combines a university technology portal, student dashboard, interactive learning sandboxes, tech community showcase, event registration platform, and gamified coding hub.
-
----
-
-## 🚀 Key Features & Capabilities
-
-### 1. Global Navigation & Layout
-- **Branding**: Future Skills — *"Learn. Build. Innovate. Lead."*
-- **Global Search**: Command Palette triggered via `Ctrl + K` or search bar across Courses, Notices, Events, Projects, Achievements, and Faculty.
-- **Theme Switcher**: Dark Mode and Light Mode hybrid support with smooth CSS transition variables.
-- **Notification Drawer**: Real-time notifications with unread counts, mark all as read, and clear actions.
-- **Responsive Navigation**: Desktop sticky header, mobile drawer menu, and mobile card conversions.
-
-### 2. Homepage & Interactive Student Hub
-- **Hero Section**: Futuristic tech aesthetic with glowing gradients, particle-style badges, live terminal telemetry snippet, and quick CTAs.
-- **Quick Access Dashboard**: Shortcuts to Courses, Timetable, Notices, Assignments, Labs, and Events.
-- **Upcoming Highlights**: Dynamic cards spotlighting the Project of the Month, Urgent Notice, Flagship Hackathon, and Featured Course.
-- **Floating AI Assistant (FutureBot 🤖)**: Interactive student assistant with quick actions ("Find a Course", "Check Notices", "Upcoming Events", "Find Assignments", "Open Tech Zone") and intelligent keyword question answering.
-
-### 3. Courses & Curriculum
-- **8 Core Specialization Tracks**:
-  1. Cyber Security (Network Security, Ethical Hacking, Cyber Defense)
-  2. AI / ML (Deep Learning, Generative AI, Computer Vision)
-  3. Data Science (Statistical Modeling, Analytics, Visualizations)
-  4. Programming (Data Structures, Algorithms, C++, Python)
-  5. Web Development (Full-Stack React, Node.js, REST/GraphQL)
-  6. Cloud Computing (Kubernetes, Docker, DevOps, Terraform)
-  7. IoT (Microcontrollers, ESP32, MQTT Telemetry)
-  8. Digital Marketing (Technical Product Marketing, Growth Analytics)
-- **Course Detail Pages**: Interactive lesson checklists that increment course progress bars and award student XP upon completion.
-
-### 4. Interactive Notice Board
-- **Categorized Circulars**: Latest Announcements, Circulars, Exam Notices, Workshop Updates, Internship Opportunities, Competitions/Hackathons.
-- **Notice Details Modal**: Full text circular viewing, priority tagging, and PDF attachment download simulators.
-
-### 5. Event Discovery & Registration
-- **Event Types**: Hackathons (InnovateX 48h), Technical Workshops, Colloquiums, Tech Fests, Competitions, Guest Lectures.
-- **Registration Flow**: Functional registration form with live seat availability counters, validation, confirmation state, and +100 XP rewards.
-
-### 6. Student Projects Showcase
-- **Heading**: *"Built by Students. Powered by Ideas."*
-- **Project of the Month**: Large featured spotlight card with architectural highlights.
-- **Interactive Upvoting**: Persistent upvote counters stored in `localStorage`.
-- **Filters**: Category filters, technology tags, and GitHub / Live Demo direct links.
-
-### 7. Hall of Fame & Achievements
-- **Categories**: Hackathon Winners, Professional Certifications, Internships, Competition Achievements, and Student Innovations.
-- **Filters**: Category and graduation year filtering.
-
-### 8. Tech Zone (Gamified Arena)
-- **Daily Tech Challenge**: Daily question with instant scoring, architectural explanation, and XP reward.
-- **Interactive Coding Challenges**: Code editor simulator with problem statement, test cases, and in-browser evaluation against test vectors.
-- **Cybersecurity & AI/ML Quizzes**: Interactive 5-question quizzes with instant answer feedback and badge unlocks.
-- **Binary Breaker Mini-Game**: Interactive bit-toggling game translating 4-bit binary values to target decimals.
-- **Live Leaderboard**: Real-time ranks, roll numbers, points, and challenges completed, updating dynamically as the user completes activities.
-
-### 9. Timetable & Schedule
-- **Interactive Schedule**: Monday through Saturday time slots with color-coded subjects, faculty names, room codes, and current class indicator.
-- **Mobile Card Transformation**: Optimized cards layout on mobile devices.
-
-### 10. Student Assignments & Labs
-- **Assignment Manager**: Filter by status (Pending, Submitted, Late, Completed) and priority. Includes modal file upload simulator and submission state persistence.
-- **Cloud Sandbox Labs**: Interactive browser workstations across 6 tracks (Programming, Web Dev, AI/ML, Cyber, IoT, Cloud) with problem statements, starter code, and test runners.
-
-### 11. Student Profile & Dashboard
-- **Profile Dashboard**: Displays level title (e.g., Level 7 — Technology Explorer), verified XP points, technical skill tags, and badge showcase.
-- **Editable Mode**: Allows modifying student name, bio, social links, and adding/removing technical skills with persistent `localStorage` storage.
+An enterprise-grade, full-stack educational technology platform combining an institutional portal, student dashboard, interactive 3D AI assistant (FutureBot), course and curriculum engine, assignment submission workflow, and gamified student XP ecosystem.
 
 ---
 
-## 🛠 Technology Stack
+## 🏛️ System Architecture
 
-- **Framework**: React 18+ (Vite)
-- **Routing**: React Router v6
-- **Styling**: Tailwind CSS with custom cyber palette & glassmorphism
-- **Icons**: Lucide React + Custom SVG Brand Vectors
-- **Gamification**: Canvas Confetti for unlocks and XP celebrations
-- **State & Storage**: React Context API + Safe LocalStorage utility wrapper
-- **Service Layer**: Clean data service abstraction (`src/services/`) ready for Supabase or backend REST API integration
-
----
-
-## 💻 Getting Started
-
-### Install Dependencies
-```bash
-npm install
 ```
-
-### Run Development Server
-```bash
-npm run dev
-```
-
-### Build for Production
-```bash
-npm run build
-```
-
-### Preview Production Build
-```bash
-npm run preview
+                       ┌────────────────────────────────────────┐
+                       │          Client Web Browser            │
+                       │   React 18 + Vite + Three.js + Tailwind│
+                       └───────────────────┬────────────────────┘
+                                           │
+                        HTTPS / REST APIs  │  JWT Bearer Authentication
+                                           ▼
+                       ┌────────────────────────────────────────┐
+                       │        FastAPI Application Server      │
+                       │   Security Middleware, Rate Limiter,   │
+                       │     Magic-Byte File Verification       │
+                       └───────────┬────────────────┬───────────┘
+                                   │                │
+                    SQLAlchemy ORM │                │ RAG Retrieval
+                                   ▼                ▼
+       ┌───────────────────────────────┐   ┌───────────────────────────────┐
+       │   PostgreSQL / SQLite Engine  │   │  Indexed Knowledge Chunks     │
+       │   25 Relational Tables        │   │  SGSU Academic Documents      │
+       └───────────────────────────────┘   └───────────────────────────────┘
 ```
 
 ---
 
-## 🔌 Future Backend Integration (Supabase Ready)
+## 🚀 Key Features
 
-The application is structured with a dedicated service layer in `src/services/` that mirrors database queries:
-- `courseService.js` ➔ `supabase.from('courses')`
-- `eventService.js` ➔ `supabase.from('events')` and `supabase.from('event_registrations')`
-- `noticeService.js` ➔ `supabase.from('notices')`
-- `projectService.js` ➔ `supabase.from('projects')`
-- `achievementService.js` ➔ `supabase.from('achievements')`
+### 1. Dual-Layout Public & Student Portal
+- **Public Collegiate Site**: Modern dark-navy & electric-cyan university design with high-contrast typography, faculty dossiers, showcase sections, program guides, and interactive project galleries.
+- **Authenticated Student Dashboard**: Real-time course progress tracking, assignment submission queue, academic timetable, event RSVP manager, and XP leaderboard.
 
-Authentication and PostgreSQL Row-Level Security (RLS) can be enabled by connecting `@supabase/supabase-js` without refactoring UI components.
+### 2. FutureBot 3D AI Assistant
+- **Interactive Procedural Mascot**: Developed in Three.js and React Three Fiber with glossy pearl materials, illuminated cyan visor expressions, and responsive animation state machines (`idle`, `greeting`, `listening`, `thinking`, `responding`, `success`, `error`).
+- **RAG Intelligence Pipeline**: Grounded on indexed university documentation, circulars, and course catalogs with built-in prompt-injection mitigation and security advisory guards.
+
+### 3. Academic Engine & Workflows
+- **Programmes & Curriculum**: 8 core technology specialization tracks with modular syllabi and progress checklists.
+- **Assignment System**: Secure file submission supporting PDF, ZIP, DOCX, and source code with magic-byte validation and anti-traversal storage isolation.
+- **Gamification & XP**: Dynamic level calculations, achievement unlocks, streak counters, and live university leaderboard.
+
+---
+
+## 🔒 Security Hardening
+
+- **Authentication & RBAC**: Signed HMAC-SHA256 JWTs with server-side token revocation and blacklisting on logout.
+- **Rate Limiting**: Sliding-window rate limiter (15 requests/minute per client IP) on authentication and password-reset endpoints.
+- **Account Enumeration Defense**: Consistent, timing-mitigated responses on `/api/auth/password-reset`.
+- **Upload Validation**: Two-layer verification combining MIME type whitelist and file header magic bytes (`PDF`, `PNG`, `JPEG`, `ZIP`, `DOCX`, and clean UTF-8 code).
+- **Prompt Injection Filter**: Multi-pattern regex defense sanitizing adversarial instructions (`system override`, `ignore previous instructions`, `reveal prompt`).
+- **HTTP Security Headers**: Automatic injection of `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `X-XSS-Protection`, `Referrer-Policy`, and restrictive `Permissions-Policy`.
+
+---
+
+## 🧪 Automated Testing
+
+### Frontend Unit Tests (Vitest)
+Executes 10 automated unit tests covering asset resolution, SVG data URI RFC-2397 compliance, and FutureBot state machines.
+```bash
+npm test
+# Or run with Vitest directly
+npx vitest run
+```
+
+### Backend & End-to-End User Journey Tests (Pytest)
+Executes 23 automated integration and journey tests covering auth, RBAC, courses, assignments, events, health probes, and the 4 primary user workflows:
+1. Public Visitor Journey (Catalog browsing, details, events, RAG query)
+2. Student Portal Journey (Sign in, assignments, event RSVP, token revocation)
+3. Faculty Journey (Sign in, course inspection, assignment workflow)
+4. Administrator Journey (Sign in, readiness check, leaderboard, session revocation)
+
+```bash
+python -m pytest backend/tests/ -v
+```
+
+---
+
+## 💾 Database Disaster Recovery & Backup
+
+The platform includes an automated backup and restoration engine located at `backend/app/db/backup.py`.
+
+### Create a Timestamped Backup
+```bash
+python backend/app/db/backup.py
+```
+Backups are compressed with gzip and stored under `backend/backups/fsit_backup_<timestamp>.sql.gz`.
+
+### Test Non-Destructive Backup & Recovery
+```bash
+python backend/app/db/backup.py test
+```
+Verifies table structure and record integrity across all 25 tables in an isolated test environment.
+
+### Restore Database
+```bash
+python backend/app/db/backup.py restore backend/backups/<backup_filename>.sql.gz
+```
+
+---
+
+## 🐳 Production Deployment (Docker)
+
+### 1. Configure Production Secrets
+Copy `.env.example` to `.env` and configure your credentials:
+```bash
+cp .env.example .env
+```
+
+### 2. Launch with Docker Compose
+Orchestrates PostgreSQL 16, FastAPI backend with 4 Uvicorn workers, and Nginx Alpine frontend with automatic gzip and asset caching:
+```bash
+docker-compose -f docker-compose.prod.yml up -d --build
+```
+
+### 3. Verify Health Probes
+- **Liveness Probe**: `GET http://localhost:8000/api/health` -> `{"status": "healthy"}`
+- **Readiness Probe**: `GET http://localhost:8000/api/health/ready` -> `{"status": "ready", "database": "connected"}`
+
+---
+
+## 👥 Platform Engineering Team (Website Builders)
+
+- **Sarvagya Narayan Nema** — *Lead Full-Stack Developer & Platform Architect*
+- **Dimpy Rai** — *Frontend UI/UX & Curriculum Designer*
+- **Hemant** — *Backend & Systems Developer*
+- **Soumya Malviya** — *Integration & Testing Specialist*
+
+---
+
+## 📜 License
+Academic & Institutional Rights Reserved © Scope Global Skills University (SGSU).

@@ -150,7 +150,7 @@ export const BuildersSection = () => {
                     className="w-full h-full object-cover object-top"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = getAvatarFallback(builder.name, builder.roleBadge || 'Builder');
+                      e.target.src = getAvatarFallback(selectedBuilder.name, selectedBuilder.roleBadge || 'Builder');
                     }}
                   />
                 </div>

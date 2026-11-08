@@ -290,7 +290,15 @@ export const PortalLayout = ({ children }) => {
             <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-slate-900 p-0.5 border border-cyan-500/40">
-                  <img src={getAssetUrl("/fsit-neon-logo.png")} alt="FSIT" className="w-full h-full object-contain" />
+                  <img
+                    src={getAssetUrl("/fsit-neon-logo.png")}
+                    alt="FSIT"
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = getLogoFallback();
+                    }}
+                  />
                 </div>
                 <span className="font-extrabold text-xs uppercase">Student Portal</span>
               </div>
@@ -398,3 +406,4 @@ export const PortalLayout = ({ children }) => {
 };
 
 export default PortalLayout;
+

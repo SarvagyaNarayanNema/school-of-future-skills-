@@ -7,6 +7,7 @@ import { initialTechClubs, initialStudentProjects } from '../data/clubsAndProjec
 import { initialAlumni } from '../data/alumni';
 import { FacultySection } from '../components/sections/FacultySection';
 import { BuildersSection } from '../components/sections/BuildersSection';
+import { FutureBotShowcaseSection } from '../components/sections/FutureBotShowcaseSection';
 import { StatCard } from '../components/common/StatCard';
 import { Button } from '../components/common/Button';
 import { getImageFallback } from '../utils/assets';
@@ -555,6 +556,11 @@ export const Home = () => {
           ))}
         </div>
       </section>
+
+      {/* ========================================================= */}
+      {/* 8.5. MEET FUTUREBOT 3D AI ASSISTANT SHOWCASE              */}
+      {/* ========================================================= */}
+      <FutureBotShowcaseSection />
 
       {/* ========================================================= */}
       {/* 9. WEBSITE BUILDERS TEAM                                  */}

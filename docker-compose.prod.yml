@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # 1. PostgreSQL Production Database
+  # ============================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: fsit-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-fsit_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fsit_secure_prod_password_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-futureskills_prod}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-fsit_admin} -d ${POSTGRES_DB:-futureskills_prod}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fsit-network
+
+  # ============================================================================
+  # 2. FastAPI Backend Service
+  # ============================================================================
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: fsit-backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-fsit_admin}:${POSTGRES_PASSWORD:-fsit_secure_prod_password_2026}@postgres:5432/${POSTGRES_DB:-futureskills_prod}
+      - SECRET_KEY=${SECRET_KEY:-prod_super_secret_jwt_key_sgsu_futureskills_2026_enterprise}
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=120
+      - CORS_ORIGINS=http://localhost,http://localhost:3000,http://localhost:80,https://sgsuniversity.ac.in
+      - UPLOAD_DIR=/app/backend/uploads
+    volumes:
+      - backend_uploads:/app/backend/uploads
+      - backend_backups:/app/backend/backups
+    ports:
+      - "8000:8000"
+    networks:
+      - fsit-network
+
+  # ============================================================================
+  # 3. Frontend Web Service (Nginx)
+  # ============================================================================
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: fsit-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - fsit-network
+
+networks:
+  fsit-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  backend_uploads:
+  backend_backups:

@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /courses
+Allow: /courses/*
+Allow: /achievements
+Allow: /notices
+Allow: /clubs-and-projects
+Allow: /alumni
+Allow: /events
+Allow: /events/*
+Allow: /projects
+
+# Disallow private student portal pages, profiles, and backend APIs
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /assignments
+Disallow: /timetable
+Disallow: /tech-zone
+Disallow: /labs
+Disallow: /api/
+Disallow: /uploads/
+
+Sitemap: https://sarvagyanarayannema.github.io/school-of-future-skills/sitemap.xml

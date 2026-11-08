@@ -62,7 +62,7 @@ export function getAvatarFallback(name = 'FSIT', role = 'Faculty') {
     <text x="200" y="460" text-anchor="middle" fill="#64748B" font-family="monospace" font-size="10" letter-spacing="1">SCHOOL OF FUTURE SKILLS</text>
   </svg>`;
 
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
 /**
@@ -80,7 +80,7 @@ export function getLogoFallback() {
     <path d="M30 25 L70 25 L70 35 L45 35 L45 45 L65 45 L65 55 L45 55 L45 75 L30 75 Z" fill="#38BDF8"/>
     <circle cx="72" cy="72" r="8" fill="#F43F5E"/>
   </svg>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
 /**
@@ -102,7 +102,7 @@ export function getBotAvatarFallback() {
     <circle cx="100" cy="38" r="8" fill="#F43F5E"/>
     <line x1="100" y1="46" x2="100" y2="52" stroke="#00D2FF" stroke-width="3"/>
   </svg>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
 /**
@@ -123,7 +123,7 @@ export function getImageFallback(title = 'Future Skills') {
     <text x="50%" y="48%" text-anchor="middle" dominant-baseline="central" fill="#38BDF8" font-family="system-ui, sans-serif" font-weight="700" font-size="28" letter-spacing="1.5">${cleanTitle}</text>
     <text x="50%" y="60%" text-anchor="middle" fill="#94A3B8" font-family="monospace" font-size="14">SCHOOL OF FUTURE SKILLS &amp; IT</text>
   </svg>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
 export default getAssetUrl;

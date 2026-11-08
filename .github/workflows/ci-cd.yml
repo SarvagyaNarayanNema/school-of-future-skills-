@@ -1,0 +1,72 @@
+name: Production CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  # ============================================================================
+  # 1. Frontend Test & Build Verification
+  # ============================================================================
+  frontend-verification:
+    name: Frontend Unit Tests & Production Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Frontend Dependencies
+        run: npm ci
+
+      - name: Run Vitest Unit Tests
+        run: npx vitest run
+
+      - name: Run Production Bundle Build
+        run: npm run build
+
+      - name: Upload Production Dist Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist/
+          retention-days: 7
+
+  # ============================================================================
+  # 2. Backend Security & Integration Tests
+  # ============================================================================
+  backend-verification:
+    name: Backend Pytest & E2E Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Backend Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest httpx
+
+      - name: Execute Full Pytest Suite (Unit + E2E User Journeys)
+        run: |
+          python -m pytest backend/tests/ -v
+
+      - name: Test Database Backup & Recovery Engine
+        run: |
+          python backend/app/db/backup.py test

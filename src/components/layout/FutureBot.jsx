@@ -31,6 +31,9 @@ import {
 } from 'lucide-react';
 import { askFutureBot, getBotConfig, saveBotConfig } from '../../services/rag/futureBotService';
 import { getAssetUrl, getBotAvatarFallback } from '../../utils/assets';
+import { FutureBotScene, FutureBotLauncher } from '../futurebot';
+import { useFutureBotState } from '../../hooks/useFutureBotState';
+import { useApp } from '../../context/AppContext';
 
 /**
  * SGSU FutureBot 🤖 - Official AI University Intelligence Assistant
@@ -44,7 +47,10 @@ import { getAssetUrl, getBotAvatarFallback } from '../../utils/assets';
  * - Configurable Multi-Provider AI (Autonomous Local Engine, Gemini, OpenAI)
  */
 export const FutureBot = () => {
+  const { futureBotOpen, setFutureBotOpen } = useApp();
   const [isOpen, setIsOpen] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [hasSuccess, setHasSuccess] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: "bot-welcome",
@@ -110,6 +116,36 @@ I can help you with:
   const recognitionRef = useRef(null);
   const toastTimerRef = useRef(null);
   const navigate = useNavigate();
+
+  // Derive 3D Character emotional state
+  const characterState = useFutureBotState({
+    isOpen,
+    isListening,
+    isTyping,
+    isSpeaking,
+    hasError,
+    hasSuccess,
+  });
+
+  // Synchronize with AppContext futureBotOpen
+  useEffect(() => {
+    if (futureBotOpen !== undefined && futureBotOpen !== isOpen) {
+      setIsOpen(futureBotOpen);
+    }
+  }, [futureBotOpen]);
+
+  // Global event listener for custom 'futurebot-query'
+  useEffect(() => {
+    const handleCustomQuery = (e) => {
+      if (e.detail && e.detail.query) {
+        setIsOpen(true);
+        if (setFutureBotOpen) setFutureBotOpen(true);
+        handleSend(e.detail.query);
+      }
+    };
+    window.addEventListener('futurebot-query', handleCustomQuery);
+    return () => window.removeEventListener('futurebot-query', handleCustomQuery);
+  }, []);
 
   // Web Speech API references
   const SpeechRecognition = typeof window !== 'undefined'
@@ -593,6 +629,8 @@ I can help you with:
 
     try {
       const response = await askFutureBot(query, newHistory);
+      setHasSuccess(true);
+      setHasError(false);
       setMessages(prev => [
         ...prev,
         {
@@ -612,6 +650,8 @@ I can help you with:
         speakText(response.text, response.voiceText, navIntent ? navIntent.announcement : null);
       }
     } catch (err) {
+      setHasError(true);
+      setHasSuccess(false);
       const errText = "I encountered a temporary connection issue. Please consult official SGSU guidelines directly at https://sgsuniversity.ac.in/ or call admissions at +91-755-6766100.";
       setMessages(prev => [
         ...prev,
@@ -662,6 +702,7 @@ I can help you with:
     stopSpeaking();
     setIsListening(false);
     setIsOpen(false);
+    if (setFutureBotOpen) setFutureBotOpen(false);
   };
 
   const handleSaveSettings = (e) => {
@@ -781,32 +822,22 @@ I can help you with:
   return (
     <>
       {/* ========================================================= */}
-      {/* 1. FLOATING CIRCULAR BOT LAUNCHER BUTTON (FAB)             */}
+      {/* 1. FLOATING 3D BOT LAUNCHER BUTTON                         */}
       {/* ========================================================= */}
-      <button
-        onClick={() => {
-          if (isOpen) {
-            handleCloseModal();
-          } else {
-            setIsOpen(true);
-          }
-        }}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-slate-900 border-2 border-cyan-500/50 shadow-2xl hover:shadow-[0_0_25px_rgba(0,210,255,0.6)] flex items-center justify-center overflow-hidden cursor-pointer hover:scale-105 active:scale-95 transition-all duration-300 p-1 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-        aria-label="Toggle SGSU FutureBot AI Assistant"
-      >
-        <div className="relative w-full h-full rounded-full overflow-hidden flex items-center justify-center">
-          <img
-            src={getAssetUrl("/bot-avatar.png")}
-            alt="SGSU FutureBot"
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = getBotAvatarFallback();
-            }}
-          />
-        </div>
-        <span className="absolute top-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-slate-900 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-      </button>
+      <div className="fixed bottom-6 right-6 z-50">
+        <FutureBotLauncher
+          isOpen={isOpen}
+          state={characterState}
+          onClick={() => {
+            if (isOpen) {
+              handleCloseModal();
+            } else {
+              setIsOpen(true);
+              if (setFutureBotOpen) setFutureBotOpen(true);
+            }
+          }}
+        />
+      </div>
 
       {/* ========================================================= */}
       {/* 2. CHAT WINDOW / MODAL CONTAINER                          */}
@@ -818,15 +849,13 @@ I can help you with:
           <div className="p-3.5 sm:p-4 bg-slate-100/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
               <div className="relative shrink-0">
-                <div className="w-10 h-10 rounded-full bg-slate-900 border border-cyan-500/40 overflow-hidden flex items-center justify-center p-0.5 shadow-inner">
-                  <img
-                    src={getAssetUrl("/bot-avatar.png")}
-                    alt="SGSU FutureBot Avatar"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = getBotAvatarFallback();
-                    }}
+                <div className="w-10 h-10 rounded-full bg-slate-900 border border-cyan-500/40 overflow-hidden flex items-center justify-center shadow-inner">
+                  <FutureBotScene
+                    state={characterState}
+                    size="xs"
+                    cameraDistance={3.8}
+                    cameraY={0.65}
+                    interactive={false}
                   />
                 </div>
                 <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-slate-900 shadow-sm ${
@@ -1068,30 +1097,15 @@ I can help you with:
                             />
 
                             <div
-                              className={`relative z-10 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-3xl flex items-center justify-center transition-transform duration-300 ${
-                                isDragging ? '' : 'animate-bot-float hover:scale-105 active:scale-95'
-                              } ${
-                                isListening
-                                  ? 'ring-4 ring-cyan-400 ring-offset-2 ring-offset-slate-900 rounded-full'
-                                  : ''
-                              }`}
-                              style={{
-                                filter: isDragging
-                                  ? 'drop-shadow(0 0 30px rgba(6,182,212,0.95))'
-                                  : isListening
-                                  ? 'drop-shadow(0 0 25px rgba(6,182,212,0.95))'
-                                  : 'drop-shadow(0 0 15px rgba(6,182,212,0.6))'
-                              }}
+                              className="relative z-10 w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 flex items-center justify-center transition-transform duration-300"
                             >
-                              <img
-                                src={getAssetUrl("/bot-avatar.png")}
-                                alt="3D SGSU FutureBot Robot Avatar"
-                                draggable={false}
-                                className="w-full h-full object-contain select-none pointer-events-none transition-transform duration-300 group-hover:scale-110"
-                                onError={(e) => {
-                                  e.target.onerror = null;
-                                  e.target.src = getBotAvatarFallback();
-                                }}
+                              <FutureBotScene
+                                state={characterState}
+                                size="lg"
+                                className="w-full h-full"
+                                cameraDistance={4.4}
+                                cameraY={0.3}
+                                interactive={true}
                               />
                             </div>
                           </div>

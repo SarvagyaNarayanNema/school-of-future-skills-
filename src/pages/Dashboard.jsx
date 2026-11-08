@@ -6,8 +6,10 @@ import { ProgressBar } from '../components/common/ProgressBar';
 import { StatCard } from '../components/common/StatCard';
 import { Button } from '../components/common/Button';
 import { AssignmentSubmitModal } from '../components/modals/AssignmentSubmitModal';
+import { FutureBotScene } from '../components/futurebot';
 import {
   Sparkles,
+  Bot,
   BookOpen,
   Calendar,
   CheckCircle2,
@@ -288,6 +290,44 @@ export const Dashboard = () => {
         {/* Right Column: Schedule & Quick Hubs (4 cols) */}
         <div className="lg:col-span-4 space-y-6">
           
+          {/* FutureBot AI Academic Assistant Card */}
+          <div className="glass-panel p-5 rounded-2xl border border-cyan-500/30 bg-gradient-to-b from-cyan-500/5 to-transparent relative overflow-hidden space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-cyan-500/40 p-1 flex items-center justify-center shrink-0 shadow-inner">
+                <FutureBotScene
+                  size="sm"
+                  cameraDistance={4.2}
+                  cameraY={0.65}
+                  interactive={true}
+                />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <h3 className="text-xs font-bold font-mono uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+                    AI Study Companion
+                  </h3>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                </div>
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-snug">
+                  FutureBot Assistant
+                </h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                  Ready to assist with homework &amp; labs
+                </p>
+              </div>
+            </div>
+
+            <Button
+              size="sm"
+              variant="primary"
+              icon={Bot}
+              className="w-full text-xs shadow-md shadow-cyan-500/10"
+              onClick={() => setFutureBotOpen && setFutureBotOpen(true)}
+            >
+              Ask FutureBot
+            </Button>
+          </div>
+
           {/* Today's Schedule Card */}
           <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">

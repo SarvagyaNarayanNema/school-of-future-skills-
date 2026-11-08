@@ -72,7 +72,7 @@ export const App = () => {
             <PublicHeader />
 
             {/* Dynamic Public Route Content */}
-            <main className="flex-1">
+            <main id="main-content" className="flex-1">
               <Routes>
                 {/* Public Institutional Routes */}
                 <Route path="/" element={<Home />} />
