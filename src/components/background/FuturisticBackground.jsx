@@ -139,3 +139,4 @@ export const FuturisticBackground = () => {
 };
 
 export default FuturisticBackground;
+

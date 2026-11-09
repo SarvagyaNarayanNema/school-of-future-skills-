@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { initialProjects, PROJECT_CATEGORIES } from '../data/projects';
 import { ProjectCard } from '../components/cards/ProjectCard';
+import { LiveWebsiteThumbnail } from '../components/cards/LiveWebsiteThumbnail';
 import { EmptyState } from '../components/common/EmptyState';
 import { projectService } from '../services/projectService';
 import { useApp } from '../context/AppContext';
@@ -92,13 +93,15 @@ export const Projects = () => {
 
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Visual Preview */}
-            <div className="lg:col-span-6 rounded-2xl overflow-hidden border border-cyan-500/20 shadow-2xl bg-slate-950 aspect-[16/10] relative">
-              <img
-                src={getAssetUrl(spotlightProject.image)}
-                alt={spotlightProject.name}
-                className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+            <div className="lg:col-span-6 rounded-2xl overflow-hidden border border-cyan-500/20 shadow-2xl bg-slate-950 relative">
+              <LiveWebsiteThumbnail
+                project={spotlightProject}
+                aspectRatio="aspect-[16/10]"
+                instanceId="spotlight-project-preview"
+                showCategoryBadge={false}
+                showStatusBadge={false}
               />
-              <div className="absolute top-3 left-3 flex items-center gap-2">
+              <div className="absolute top-3 left-3 flex items-center gap-2 z-30 pointer-events-none">
                 <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cyan-500 text-slate-950 text-xs font-black uppercase tracking-wider shadow-lg">
                   <Sparkles className="w-3.5 h-3.5" />
                   Featured Spotlight

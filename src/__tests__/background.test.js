@@ -80,3 +80,4 @@ describe('Futuristic Background Layer System', () => {
     expect(currentX).toBeLessThanOrEqual(18);
   });
 });
+

@@ -13,6 +13,7 @@ import { FacultySection } from '../components/sections/FacultySection';
 import { BuildersSection } from '../components/sections/BuildersSection';
 import { FutureBotShowcaseSection } from '../components/sections/FutureBotShowcaseSection';
 import { HeroKnowledgeCore } from '../components/three/HeroKnowledgeCore';
+import { LiveWebsiteThumbnail } from '../components/cards/LiveWebsiteThumbnail';
 import { StatCard } from '../components/common/StatCard';
 import { Button } from '../components/common/Button';
 import { getImageFallback, getAssetUrl } from '../utils/assets';
@@ -716,24 +717,13 @@ export const Home = () => {
                 className="glass-card overflow-hidden rounded-2xl flex flex-col justify-between hover:border-cyan-500/40 transition-all duration-300 group hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/10"
               >
                 <div>
-                  {/* Screenshot Thumbnail */}
-                  <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-950 border-b border-slate-200 dark:border-slate-800/80">
-                    <img
-                      src={getAssetUrl(proj.image)}
-                      alt={proj.name}
-                      loading="lazy"
-                      className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
-                      <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-950/80 text-cyan-300 border border-cyan-500/30 backdrop-blur-md">
-                        {proj.category}
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 backdrop-blur-md">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        Verified Live
-                      </span>
-                    </div>
-                  </div>
+                  {/* Interactive Live Website Hover Preview Thumbnail */}
+                  <LiveWebsiteThumbnail
+                    project={proj}
+                    aspectRatio="aspect-[16/9]"
+                    showCategoryBadge={true}
+                    showStatusBadge={true}
+                  />
 
                   {/* Body */}
                   <div className="p-5 space-y-3">

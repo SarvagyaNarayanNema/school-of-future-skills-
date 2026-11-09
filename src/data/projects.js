@@ -8,13 +8,12 @@
 
 export const PROJECT_CATEGORIES = [
   "All Projects",
-  "Personal Portfolios",
-  "Web Applications",
   "3D & Interactive Experiences",
+  "Personal Portfolios",
   "Technology Communities",
+  "Web Applications",
   "Education & Management",
-  "Commercial Websites",
-  "Department Platforms"
+  "Commercial Websites"
 ];
 
 export const initialProjects = [
@@ -24,6 +23,7 @@ export const initialProjects = [
     category: "3D & Interactive Experiences",
     url: "https://dimpycosmos.lovable.app/",
     isAvailable: true,
+    supportsLivePreview: true,
     linkVerificationStatus: "Verified Active (HTTP 200)",
     publicationStatus: "Production Live",
     creators: "Dimpy (Student Innovator)",
@@ -49,6 +49,7 @@ export const initialProjects = [
     category: "Personal Portfolios",
     url: "https://pixelmefaizan.vercel.app/",
     isAvailable: true,
+    supportsLivePreview: true,
     linkVerificationStatus: "Verified Active (HTTP 200)",
     publicationStatus: "Production Live",
     creators: "Syed Faizan Ali (BCA AI & ML, SGSU Bhopal)",
@@ -74,6 +75,7 @@ export const initialProjects = [
     category: "Personal Portfolios",
     url: "https://sarvagyanarayannema.netlify.app/",
     isAvailable: true,
+    supportsLivePreview: true,
     linkVerificationStatus: "Verified Active (HTTP 200)",
     publicationStatus: "Production Live",
     creators: "Sarvagya Narayan Nema (Student Technologist)",
@@ -99,6 +101,7 @@ export const initialProjects = [
     category: "Technology Communities",
     url: "https://binarybattleclub.vercel.app/",
     isAvailable: true,
+    supportsLivePreview: true,
     linkVerificationStatus: "Verified Active (HTTP 200)",
     publicationStatus: "Production Live",
     creators: "Binary Battle Student Council (SGSU)",
@@ -124,6 +127,7 @@ export const initialProjects = [
     category: "Web Applications",
     url: "https://magenta-flan-77eae8.netlify.app/",
     isAvailable: true,
+    supportsLivePreview: true,
     linkVerificationStatus: "Verified Active (HTTP 200)",
     publicationStatus: "Production Live",
     creators: "Department Student Builders",
@@ -149,6 +153,7 @@ export const initialProjects = [
     category: "Education & Management",
     url: "https://project-cpp.netlify.app/",
     isAvailable: true,
+    supportsLivePreview: true,
     linkVerificationStatus: "Verified Active (HTTP 200)",
     publicationStatus: "Production Live",
     creators: "Department Student Builders",
@@ -174,6 +179,7 @@ export const initialProjects = [
     category: "Commercial Websites",
     url: "https://aashima-mall.netlify.app/",
     isAvailable: true,
+    supportsLivePreview: true,
     linkVerificationStatus: "Verified Active (HTTP 200)",
     publicationStatus: "Production Live",
     creators: "Student Web Studio (Commercial Client Project)",
@@ -192,55 +198,5 @@ export const initialProjects = [
     ],
     upvotes: 315,
     stars: 198
-  },
-  {
-    id: "proj-school-of-future-skills",
-    name: "School of Future Skills (V1 Platform)",
-    category: "Department Platforms",
-    url: "https://schooloffutureskills.netlify.app/",
-    isAvailable: true,
-    linkVerificationStatus: "Verified Active (HTTP 200)",
-    publicationStatus: "Production Live (Historical V1 Platform)",
-    creators: "Department Engineering Team",
-    studentTeam: "FSIT Digital Systems Core",
-    year: "Institutional Deployment",
-    status: "Production Live",
-    featured: false,
-    isProjectOfMonth: false,
-    image: "/projects/school-of-future-skills.png",
-    description: "Departmental digital platform and student learning ecosystem featuring emerging curriculum pathways, hackathon arenas, laboratory challenges, project catalogs, and campus technical initiatives for Scope Global Skills University.",
-    technologies: ["React", "Vite", "Tailwind CSS", "FastAPI"],
-    highlights: [
-      "Core historical student portal deployment on Netlify",
-      "Hackathon challenge arena and syllabus explorer",
-      "Modular responsive departmental digital portal"
-    ],
-    upvotes: 489,
-    stars: 342
-  },
-  {
-    id: "proj-aegis-3d",
-    name: "Aegis 3D",
-    category: "3D & Interactive Experiences",
-    url: "",
-    isAvailable: false,
-    linkVerificationStatus: "Verification Pending / Offline",
-    publicationStatus: "In Development / Verification Required",
-    creators: "Department WebXR Research Lab",
-    studentTeam: "WebXR Research Cohort",
-    year: "Research Initiative",
-    status: "Verification Pending",
-    featured: false,
-    isProjectOfMonth: false,
-    image: "/projects/aegis-3d.svg",
-    description: "Experimental 3D visualization and WebXR architectural engine for procedural graphics and spatial simulation. Currently undergoing internal performance benchmarking and departmental verification prior to public URL deployment.",
-    technologies: ["Three.js", "WebXR", "GLSL"],
-    highlights: [
-      "Spatial WebXR simulation and real-time shader pipelines",
-      "Hardware-accelerated procedural geometry rendering",
-      "Internal departmental verification currently in progress"
-    ],
-    upvotes: 192,
-    stars: 87
   }
 ];

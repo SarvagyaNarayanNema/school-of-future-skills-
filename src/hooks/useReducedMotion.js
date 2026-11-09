@@ -19,9 +19,11 @@ export function useReducedMotion() {
 
     mediaQuery.addEventListener('change', handleMediaChange);
 
-    // Detect mobile touch screen width
+    // Detect mobile screen width (< 768px)
     const checkMobile = () => {
-      setIsMobileDevice(window.innerWidth < 768 || 'ontouchstart' in window);
+      const isSmallScreen = window.innerWidth < 768;
+      const isTouchOnly = window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches && window.innerWidth < 1024;
+      setIsMobileDevice(isSmallScreen || isTouchOnly);
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);

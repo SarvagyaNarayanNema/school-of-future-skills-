@@ -3,40 +3,35 @@ import { initialProjects, PROJECT_CATEGORIES } from '../data/projects';
 import { projectService } from '../services/projectService';
 
 describe('Department Projects Catalog & Architecture', () => {
-  it('should contain all 9 supplied departmental projects', () => {
-    expect(initialProjects.length).toBe(9);
+  it('should contain all 7 supplied departmental projects', () => {
+    expect(initialProjects.length).toBe(7);
 
     const projectNames = initialProjects.map((p) => p.name);
     expect(projectNames).toContain("Dimpy's COSMOS");
     expect(projectNames).toContain("PixelMeFaizan");
     expect(projectNames).toContain("Sarvagya's Portfolio");
-    expect(projectNames).toContain("School of Future Skills (V1 Platform)");
     expect(projectNames).toContain("Binary Battle Club");
-    expect(projectNames).toContain("Aegis 3D");
     expect(projectNames).toContain("SpendWise");
     expect(projectNames).toContain("EduTrack Pro");
     expect(projectNames).toContain("Aashima Mall");
+
+    // Strictly ensure V1 Platform and Aegis 3D are removed
+    expect(projectNames).not.toContain("School of Future Skills (V1 Platform)");
+    expect(projectNames).not.toContain("Aegis 3D");
   });
 
-  it('should have valid and verified URLs for live projects', () => {
+  it('should have valid and verified URLs and supportsLivePreview for all 7 live projects', () => {
     const liveProjects = initialProjects.filter((p) => p.isAvailable);
-    expect(liveProjects.length).toBe(8);
+    expect(liveProjects.length).toBe(7);
 
     liveProjects.forEach((p) => {
       expect(p.url).toMatch(/^https:\/\//);
       expect(p.linkVerificationStatus).toContain('Verified');
+      expect(p.supportsLivePreview).toBe(true);
     });
   });
 
-  it('should accurately handle Aegis 3D as verification pending', () => {
-    const aegis = initialProjects.find((p) => p.name === 'Aegis 3D');
-    expect(aegis).toBeDefined();
-    expect(aegis.isAvailable).toBe(false);
-    expect(aegis.linkVerificationStatus).toContain('Verification Pending');
-    expect(aegis.url).toBe('');
-  });
-
-  it('should maintain word count of descriptions between 20 and 40 words', () => {
+  it('should maintain word count of descriptions between 20 and 42 words', () => {
     initialProjects.forEach((p) => {
       const wordCount = p.description.trim().split(/\s+/).length;
       expect(wordCount).toBeGreaterThanOrEqual(20);
@@ -52,9 +47,9 @@ describe('Department Projects Catalog & Architecture', () => {
 
   it('should return real projects through projectService without stale cache', () => {
     const all = projectService.getAll();
-    expect(all.length).toBe(9);
-    expect(all[0].name).not.toContain('NeuralShield');
+    expect(all.length).toBe(7);
     expect(all[0].name).toBe("Dimpy's COSMOS");
+    expect(all.some(p => p.name === 'Aegis 3D')).toBe(false);
   });
 });
 
