@@ -45,7 +45,7 @@ export const PublicHeader = () => {
     { label: 'Research & Labs', path: '/labs' },
     { label: 'Projects', path: '/projects' },
     { label: 'Achievements', path: '/achievements' },
-    { label: 'Student Life', path: '/clubs-and-projects' },
+    { label: 'Student Clubs', path: '/clubs-and-projects' },
     { label: 'Events', path: '/events' },
     { label: 'Alumni', path: '/alumni' },
   ];

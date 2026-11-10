@@ -211,3 +211,4 @@ export const FeaturedDestinationStage = ({
 };
 
 export default FeaturedDestinationStage;
+

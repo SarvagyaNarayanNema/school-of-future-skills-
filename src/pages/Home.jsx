@@ -243,7 +243,7 @@ export const Home = () => {
   // Section 8: Achievements & Recognition Spotlights
   const spotlightAchievements = wallOfFameSpotlights.slice(0, 2);
 
-  // Section 10: Student Life & Technical Guilds
+  // Section 10: Student Clubs & Technical Guilds
   const clubs = studentClubs.slice(0, 2);
 
   // Section 11: Industry Collaboration & Career Development
@@ -856,7 +856,7 @@ export const Home = () => {
       <FacultySection />
 
       {/* ========================================================= */}
-      {/* SECTION 10 — STUDENT LIFE, CLUBS AND ACTIVITIES           */}
+      {/* SECTION 10 — STUDENT CLUBS, ACTIVITIES AND GUILDS        */}
       {/* ========================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
@@ -865,7 +865,7 @@ export const Home = () => {
               Technical Guilds &amp; Collaborative Communities
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-              Student Life &amp; Guilds
+              Student Clubs &amp; Guilds
             </h2>
           </div>
           <Link
