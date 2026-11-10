@@ -2,23 +2,13 @@ import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { initialProjects } from '../data/projects';
-import { AUTO_ADVANCE_DELAY_MS, TRANSITION_DURATION_MS } from '../components/showcase/InfiniteProjectShowcase';
+import { AUTO_ADVANCE_INTERVAL_MS, TRANSITION_DURATION_MS } from '../components/showcase/FeaturedDestinationStage';
 
-describe('True Cyclic 3D Project Carousel System', () => {
-  it('confirms exactly 7 verified department projects exist in correct initial order', () => {
+describe('Original Project Cards Physical FLIP Transfer System', () => {
+  it('TEST 1 — FIRST PROJECT: verifies 7 original projects and initial active index is 0 (Dimpy)', () => {
     expect(initialProjects.length).toBe(7);
-    const expectedOrder = [
-      "Dimpy's COSMOS",
-      "PixelMeFaizan",
-      "Sarvagya's Portfolio",
-      "Binary Battle Club",
-      "SpendWise",
-      "EduTrack Pro",
-      "Aashima Mall"
-    ];
-    initialProjects.forEach((p, idx) => {
-      expect(p.name).toBe(expectedOrder[idx]);
-    });
+    expect(initialProjects[0].name).toBe("Dimpy's COSMOS");
+    expect(initialProjects[0].id).toBe("proj-dimpy-cosmos");
   });
 
   it('guarantees V1 platform and Aegis 3D remain permanently removed', () => {
@@ -27,129 +17,94 @@ describe('True Cyclic 3D Project Carousel System', () => {
     expect(ids).not.toContain('proj-aegis-3d');
   });
 
-  it('TEST A — FORWARD: verifies 6 consecutive Next clicks and wrap-around to project 1', () => {
+  it('TEST 2 — NEXT PROJECT: verifies forward transition sequence (Dimpy -> PixelMeFaizan)', () => {
+    let activeIdx = 0;
     const total = 7;
-    let activeIdx = 0; // Starts with Dimpy's COSMOS
     const next = () => (activeIdx = (activeIdx + 1) % total);
 
     expect(initialProjects[activeIdx].name).toBe("Dimpy's COSMOS");
-
     next();
     expect(initialProjects[activeIdx].name).toBe("PixelMeFaizan");
-
     next();
     expect(initialProjects[activeIdx].name).toBe("Sarvagya's Portfolio");
-
     next();
     expect(initialProjects[activeIdx].name).toBe("Binary Battle Club");
-
     next();
     expect(initialProjects[activeIdx].name).toBe("SpendWise");
-
     next();
     expect(initialProjects[activeIdx].name).toBe("EduTrack Pro");
-
     next();
     expect(initialProjects[activeIdx].name).toBe("Aashima Mall");
-
-    // 7th click wraps back to Dimpy's COSMOS
-    next();
-    expect(initialProjects[activeIdx].name).toBe("Dimpy's COSMOS");
   });
 
-  it('TEST B — BACKWARD: verifies reverse rotation from project 1 wraps to 7, then 6', () => {
+  it('TEST 3 — PREVIOUS PROJECT: verifies backward transition sequence (PixelMeFaizan -> Dimpy)', () => {
+    let activeIdx = 1; // PixelMeFaizan
     const total = 7;
-    let activeIdx = 0; // Starts with Dimpy's COSMOS
     const prev = () => (activeIdx = (activeIdx - 1 + total) % total);
 
-    expect(initialProjects[activeIdx].name).toBe("Dimpy's COSMOS");
-
-    // Press LEFT once -> Aashima Mall
-    prev();
-    expect(initialProjects[activeIdx].name).toBe("Aashima Mall");
-
-    // Press LEFT again -> EduTrack Pro
-    prev();
-    expect(initialProjects[activeIdx].name).toBe("EduTrack Pro");
-
-    // Continue reverse sequence
-    prev();
-    expect(initialProjects[activeIdx].name).toBe("SpendWise");
-    prev();
-    expect(initialProjects[activeIdx].name).toBe("Binary Battle Club");
-    prev();
-    expect(initialProjects[activeIdx].name).toBe("Sarvagya's Portfolio");
-    prev();
     expect(initialProjects[activeIdx].name).toBe("PixelMeFaizan");
     prev();
     expect(initialProjects[activeIdx].name).toBe("Dimpy's COSMOS");
   });
 
-  it('TEST C & D — AUTOPLAY: verifies 7000ms delay and pause configuration', () => {
-    expect(AUTO_ADVANCE_DELAY_MS).toBe(7000);
-    expect(TRANSITION_DURATION_MS).toBe(650);
+  it('TEST 4 — LAST PROJECT WRAP-AROUND: Right from Aashima Mall returns to Dimpy', () => {
+    const total = 7;
+    let activeIdx = 6; // Aashima Mall
+    expect(initialProjects[activeIdx].name).toBe("Aashima Mall");
 
-    const componentPath = path.resolve(__dirname, '../components/showcase/InfiniteProjectShowcase.jsx');
-    const source = fs.readFileSync(componentPath, 'utf-8');
+    activeIdx = (activeIdx + 1) % total;
+    expect(initialProjects[activeIdx].name).toBe("Dimpy's COSMOS");
 
-    // Confirms autoplay uses AUTO_ADVANCE_DELAY_MS
-    expect(source).toContain('AUTO_ADVANCE_DELAY_MS');
+    // Also verify Left from Dimpy wraps to Aashima Mall
+    activeIdx = (activeIdx - 1 + total) % total;
+    expect(initialProjects[activeIdx].name).toBe("Aashima Mall");
+  });
+
+  it('TEST 5 — AUTOMATIC TRANSFER: verifies exactly 2,000ms advance interval and 700ms transition duration', () => {
+    expect(AUTO_ADVANCE_INTERVAL_MS).toBe(2000);
+    expect(TRANSITION_DURATION_MS).toBe(700);
+
+    const projectsPagePath = path.resolve(__dirname, '../pages/Projects.jsx');
+    const source = fs.readFileSync(projectsPagePath, 'utf-8');
+
+    // Confirms Projects.jsx uses AUTO_ADVANCE_INTERVAL_MS
+    expect(source).toContain('AUTO_ADVANCE_INTERVAL_MS');
     // Confirms pause on hover and inactive tab
     expect(source).toContain('onMouseEnter');
-    expect(source).toContain('onMouseLeave');
     expect(source).toContain('visibilitychange');
   });
 
-  it('TEST E — DIRECT THUMBNAIL SELECTION: verifies thumbnail calculation and order update', () => {
-    const total = initialProjects.length;
+  it('TEST 6 — ORIGINAL GRID: verifies in-place placeholder renders in the exact card position', () => {
+    const projectsPagePath = path.resolve(__dirname, '../pages/Projects.jsx');
+    const source = fs.readFileSync(projectsPagePath, 'utf-8');
 
-    // Helper that returns thumbnails for a given activeIndex
-    const getThumbnails = (activeIdx) => {
-      const res = [];
-      for (let i = 1; i < total; i++) {
-        res.push(initialProjects[(activeIdx + i) % total]);
-      }
-      return res;
-    };
-
-    // When active is 0 (Dimpy):
-    const t0 = getThumbnails(0);
-    expect(t0.length).toBe(6);
-    expect(t0[0].name).toBe("PixelMeFaizan");
-    expect(t0[5].name).toBe("Aashima Mall");
-    expect(t0.map(p => p.name)).not.toContain("Dimpy's COSMOS");
-
-    // When direct selection picks index 1 (PixelMeFaizan):
-    const t1 = getThumbnails(1);
-    expect(t1.length).toBe(6);
-    expect(t1[0].name).toBe("Sarvagya's Portfolio");
-    expect(t1[5].name).toBe("Dimpy's COSMOS");
-    expect(t1.map(p => p.name)).not.toContain("PixelMeFaizan");
+    // Confirms in-place placeholder with id matching gallery-card-${p.id}
+    expect(source).toContain('id={`gallery-card-${p.id}`}');
+    expect(source).toContain('Elevated to Featured Stage');
+    // Confirms original gallery is the single source of cards
+    expect(source).toContain('filteredProjects.map');
   });
 
-  it('TEST F — RAPID INPUT: verifies race-condition lock is enforced in component', () => {
-    const componentPath = path.resolve(__dirname, '../components/showcase/InfiniteProjectShowcase.jsx');
-    const source = fs.readFileSync(componentPath, 'utf-8');
+  it('TEST 7 — NO DUPLICATION: verifies removal of secondary horizontal thumbnail queue', () => {
+    const stagePath = path.resolve(__dirname, '../components/showcase/FeaturedDestinationStage.jsx');
+    const stageSource = fs.readFileSync(stagePath, 'utf-8');
 
-    // Navigation must be blocked when isTransitioning is true
-    expect(source).toContain('if (isTransitioning || total <= 1) return;');
-    expect(source).toContain('disabled={isTransitioning}');
+    // Must NOT contain separate thumbnail rail or queue labels
+    expect(stageSource).not.toContain('thumbnailProjects');
+    expect(stageSource).not.toContain('Exhibition Project Queue');
+    expect(stageSource).not.toContain('upcoming creations');
+    expect(stageSource).not.toContain('grid-cols-6');
   });
 
-  it('verifies strict animation rules: 3D perspective restricted to featured stage and no fake badges', () => {
-    const componentPath = path.resolve(__dirname, '../components/showcase/InfiniteProjectShowcase.jsx');
-    const source = fs.readFileSync(componentPath, 'utf-8');
+  it('verifies GSAP physical FLIP transition logic in Projects.jsx', () => {
+    const projectsPagePath = path.resolve(__dirname, '../pages/Projects.jsx');
+    const source = fs.readFileSync(projectsPagePath, 'utf-8');
 
-    // Confirms perspective is on featured stage
-    expect(source).toContain('perspective: prefersReducedMotion ? \'none\' : \'1200px\'');
-    // Confirms subtle rotation (3.5 deg)
-    expect(source).toContain('rotateY(-3.5deg)');
-    expect(source).toContain('rotateY(3.5deg)');
-
-    // Confirms no fake applause counters or HTTP 200 badges
-    expect(source).not.toContain('Applauds</span>');
-    expect(source).not.toContain('HTTP 200');
-    expect(source).not.toContain('Verification Pending');
-    expect(source).not.toContain('Exhibition Project Queue');
+    // Confirms GSAP import and timeline usage
+    expect(source).toContain('import gsap from \'gsap\'');
+    expect(source).toContain('getBoundingClientRect()');
+    expect(source).toContain('incomingProxy');
+    expect(source).toContain('outgoingProxy');
+    expect(source).toContain('featured-stage-preview');
   });
 });
