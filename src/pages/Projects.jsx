@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { initialProjects, PROJECT_CATEGORIES } from '../data/projects';
 import { ProjectCard } from '../components/cards/ProjectCard';
 import { LiveWebsiteThumbnail } from '../components/cards/LiveWebsiteThumbnail';
+import { InfiniteProjectShowcase } from '../components/showcase/InfiniteProjectShowcase';
 import { EmptyState } from '../components/common/EmptyState';
 import { projectService } from '../services/projectService';
 import { useApp } from '../context/AppContext';
@@ -58,10 +59,6 @@ export const Projects = () => {
     });
   }, [projects, searchQuery, selectedCategory]);
 
-  // Featured Project: Dimpy's COSMOS (or first featured project)
-  const spotlightProject = useMemo(() => {
-    return projects.find((p) => p.isProjectOfMonth) || projects[0];
-  }, [projects]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
@@ -85,105 +82,13 @@ export const Projects = () => {
         </p>
       </header>
 
-      {/* EDITORIAL SPOTLIGHT: FEATURED HERO CARD */}
-      {spotlightProject && selectedCategory === 'All Projects' && !searchQuery && (
-        <section aria-label="Spotlight Project" className="relative rounded-3xl p-6 sm:p-10 bg-gradient-to-br from-slate-900 via-slate-900/95 to-cyan-950/60 border border-cyan-500/30 shadow-2xl overflow-hidden group">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
-          <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none" />
-
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Visual Preview */}
-            <div className="lg:col-span-6 rounded-2xl overflow-hidden border border-cyan-500/20 shadow-2xl bg-slate-950 relative">
-              <LiveWebsiteThumbnail
-                project={spotlightProject}
-                aspectRatio="aspect-[16/10]"
-                instanceId="spotlight-project-preview"
-                showCategoryBadge={false}
-                showStatusBadge={false}
-              />
-              <div className="absolute top-3 left-3 flex items-center gap-2 z-30 pointer-events-none">
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cyan-500 text-slate-950 text-xs font-black uppercase tracking-wider shadow-lg">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Featured Spotlight
-                </span>
-              </div>
-            </div>
-
-            {/* Editorial Content */}
-            <div className="lg:col-span-6 space-y-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="purple" size="sm">{spotlightProject.category}</Badge>
-                <span className="inline-flex items-center gap-1 text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  {spotlightProject.linkVerificationStatus}
-                </span>
-              </div>
-
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-white group-hover:text-cyan-300 transition-colors">
-                {spotlightProject.name}
-              </h2>
-
-              <div className="flex items-center gap-2 text-xs text-slate-300">
-                <Users className="w-3.5 h-3.5 text-cyan-400" />
-                <span className="font-semibold text-white">{spotlightProject.creators}</span>
-                <span>•</span>
-                <span className="text-slate-400">{spotlightProject.year}</span>
-              </div>
-
-              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-                {spotlightProject.description}
-              </p>
-
-              {/* Highlights */}
-              {spotlightProject.highlights && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
-                  {spotlightProject.highlights.map((hl, i) => (
-                    <div key={i} className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-slate-300 flex items-center gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                      <span className="font-medium truncate">{hl}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Technologies */}
-              <div className="flex flex-wrap gap-1.5 pt-2">
-                {spotlightProject.technologies.map((t, idx) => (
-                  <span key={idx} className="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-800/90 text-cyan-200 border border-slate-700">
-                    {t}
-                  </span>
-                ))}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-4 pt-3">
-                {spotlightProject.url && (
-                  <a
-                    href={spotlightProject.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:-translate-y-0.5"
-                  >
-                    <span>View Live Project</span>
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                )}
-                <button
-                  onClick={() => handleUpvote(spotlightProject.id)}
-                  type="button"
-                  className={`inline-flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold border transition-colors ${
-                    spotlightProject.hasUpvoted
-                      ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
-                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
-                  }`}
-                >
-                  <ThumbsUp className={`w-4 h-4 ${spotlightProject.hasUpvoted ? 'fill-cyan-400 text-cyan-400' : ''}`} />
-                  <span>{spotlightProject.upvotes} Applauds</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
+      {/* 3D INFINITE PROJECT EXHIBITION SHOWCASE */}
+      {selectedCategory === 'All Projects' && !searchQuery && (
+        <InfiniteProjectShowcase
+          projects={projects}
+          onUpvote={handleUpvote}
+          onSelectProject={setSelectedProjectModal}
+        />
       )}
 
       {/* FILTER & SEARCH CONTROL BAR */}
