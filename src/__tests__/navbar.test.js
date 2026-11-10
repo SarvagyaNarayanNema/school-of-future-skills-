@@ -11,7 +11,7 @@ describe('Responsive Navbar Architecture', () => {
     expect(source).not.toContain('max-w-7xl mx-auto px-4 sm:px-6 lg:px-8');
   });
 
-  it('verifies all 10 public navigation links exist', () => {
+  it('verifies all 10 public navigation links exist and "Student Life" was replaced with "Student Clubs"', () => {
     const requiredLabels = [
       'Home',
       'About',
@@ -28,6 +28,29 @@ describe('Responsive Navbar Architecture', () => {
     requiredLabels.forEach((label) => {
       expect(source).toContain(`'${label}'`);
     });
+
+    // Verify "Student Life" is strictly removed in favor of "Student Clubs"
+    expect(source).not.toContain(`'Student Life'`);
+    expect(source).not.toContain(`"Student Life"`);
+  });
+
+  it('enforces strict mobile navbar isolation preventing brand & navigation overlap below 768px and 1200px', () => {
+    // Desktop center nav is completely hidden below 1200px
+    expect(source).toContain('hidden min-[1200px]:flex');
+
+    // Brand container bounds prevents collision with hamburger button
+    expect(source).toContain('min-w-0 max-w-[calc(100%-52px)]');
+    expect(source).toContain('truncate');
+
+    // Right-side controls on mobile: search, theme switcher and CTA are hidden on mobile bar
+    expect(source).toContain('hidden md:flex');
+    expect(source).toContain('hidden min-[1200px]:inline-flex');
+
+    // Hamburger button is visible below 1200px and hidden on >= 1200px
+    expect(source).toContain('flex min-[1200px]:hidden');
+
+    // Mobile drawer renders below 1200px
+    expect(source).toContain('min-[1200px]:hidden');
   });
 
   it('verifies adaptive "More" dropdown implementation for intermediate desktop widths', () => {
@@ -62,3 +85,4 @@ describe('Responsive Navbar Architecture', () => {
     expect(source).toContain('Dark Mode');
   });
 });
+
