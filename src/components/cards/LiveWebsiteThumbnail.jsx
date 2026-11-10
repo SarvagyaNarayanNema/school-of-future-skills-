@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Sparkles, ExternalLink, X, RefreshCw, Eye } from 'lucide-react';
+import { Sparkles, ExternalLink, X, Eye } from 'lucide-react';
 import { getAssetUrl } from '../../utils/assets';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
@@ -44,15 +44,15 @@ export const useActivePreview = (projectId) => {
  * LiveWebsiteThumbnail Component
  * 
  * Interactive YouTube-style live website hover preview:
- * - Displays genuine static screenshot initially.
- * - On desktop hover (250ms debounce): smoothly mounts and streams the actual live website inside an iframe.
- * - Fits perfectly within existing thumbnail dimensions (16:10 or 16:9).
+ * - Displays genuine static screenshot initially and keeps it visible while loading.
+ * - On desktop hover: immediately mounts and streams the actual live website inside an iframe without blocking loaders.
+ * - Seamless opacity transition: iframe fades in smoothly from 0 to 1 once fully ready.
+ * - Fits within existing thumbnail dimensions (16:10 or 16:9) without layout shifts.
  * - Desktop scaling: renders website at 1200x750 virtual viewport and scales down with CSS transform.
  * - pointer-events: none on iframe ensures hover events are never trapped or lost.
- * - On mouse leave: immediately unmounts iframe and frees CPU/memory.
- * - Strictly coordinates a single active preview across the entire page.
- * - Mobile: provides an explicit tap-to-preview toggle with an easy exit button.
- * - Fallback: tasteful image zoom/pan for non-previewable projects.
+ * - On mouse leave: immediately unmounts iframe, restores screenshot, and frees CPU/memory.
+ * - Coordinates a single active preview across the entire page.
+ * - Handles slow or unavailable websites by safely retaining the original screenshot.
  */
 export const LiveWebsiteThumbnail = ({
   project,
@@ -63,9 +63,9 @@ export const LiveWebsiteThumbnail = ({
   instanceId = null,
 }) => {
   const containerRef = useRef(null);
-  const debounceTimerRef = useRef(null);
   const [imgError, setImgError] = useState(false);
   const [isIframeLoaded, setIsIframeLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [scale, setScale] = useState(0.32);
   const { isMobile, prefersReducedMotion } = useReducedMotion();
 
@@ -90,33 +90,47 @@ export const LiveWebsiteThumbnail = ({
     return () => window.removeEventListener('resize', updateScale);
   }, [updateScale]);
 
-  // Clean up debounce timer on unmount
+  // Clean up state when active changes or on unmount
+  useEffect(() => {
+    if (isActive) {
+      setIsIframeLoaded(false);
+      setHasError(false);
+
+      // Safety timeout: if external website takes > 8s, stop waiting to prevent hanging states
+      const timeoutId = setTimeout(() => {
+        setIsIframeLoaded((loaded) => {
+          if (!loaded) {
+            setHasError(true);
+          }
+          return loaded;
+        });
+      }, 8000);
+
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIsIframeLoaded(false);
+      setHasError(false);
+    }
+  }, [isActive]);
+
+  // Clean up global coordinator on component unmount
   useEffect(() => {
     return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
       deactivate();
     };
   }, [deactivate]);
 
-  // Desktop Hover Handlers with 250ms debounce
+  // Immediate Desktop Hover Handlers (ZERO artificial delay / no loading screen)
   const handleMouseEnter = () => {
     if (isMobile || prefersReducedMotion || !supportsLivePreview) return;
-    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-
-    debounceTimerRef.current = setTimeout(() => {
-      updateScale();
-      activate();
-    }, 220);
+    updateScale();
+    activate();
   };
 
   const handleMouseLeave = () => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
     if (isActive) {
       setIsIframeLoaded(false);
+      setHasError(false);
       deactivate();
     }
   };
@@ -126,6 +140,7 @@ export const LiveWebsiteThumbnail = ({
     e.stopPropagation();
     if (isActive) {
       setIsIframeLoaded(false);
+      setHasError(false);
       deactivate();
     } else {
       updateScale();
@@ -142,16 +157,15 @@ export const LiveWebsiteThumbnail = ({
     >
       {/* ---------------------------------------------------- */}
       {/* 1. GENUINE POSTER / SCREENSHOT IMAGE (Always Base)    */}
+      {/* Stays 100% visible while iframe loads; no blank flash */}
       {/* ---------------------------------------------------- */}
       {!imgError && project.image ? (
         <img
           src={getAssetUrl(project.image)}
-          alt={`${project.name} live interface`}
+          alt={`${project.name} preview`}
           loading="lazy"
           onError={() => setImgError(true)}
-          className={`w-full h-full object-cover object-top transition-all duration-500 ease-out ${
-            isActive && isIframeLoaded ? 'opacity-0 scale-95' : 'opacity-100 group-hover/thumb:scale-105'
-          } ${!supportsLivePreview ? 'group-hover/thumb:brightness-105' : ''}`}
+          className="w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover/thumb:scale-105"
         />
       ) : (
         <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-slate-900 via-slate-950 to-cyan-950/40 text-center">
@@ -162,20 +176,10 @@ export const LiveWebsiteThumbnail = ({
 
       {/* ---------------------------------------------------- */}
       {/* 2. LIVE WEBSITE EMBEDDED PREVIEW (IFRAME)            */}
+      {/* Clean opacity transition: no blocking loaders/shimmers */}
       {/* ---------------------------------------------------- */}
-      {isActive && supportsLivePreview && (
-        <div className="absolute inset-0 z-20 bg-slate-950 overflow-hidden pointer-events-none">
-          {/* Subtle Loading Shimmer until live website signals ready */}
-          {!isIframeLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center bg-slate-950/90 z-30 transition-opacity">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/30 text-cyan-300 text-xs font-mono shadow-xl backdrop-blur-md">
-                <RefreshCw className="w-3.5 h-3.5 animate-spin text-cyan-400" />
-                <span>Streaming Live Interface...</span>
-              </div>
-            </div>
-          )}
-
-          {/* Actual Live Website Rendered Inside Virtual Desktop Viewport */}
+      {isActive && supportsLivePreview && !hasError && (
+        <div className="absolute inset-0 z-10 overflow-hidden pointer-events-none">
           <iframe
             src={project.url}
             title={`${project.name} live preview`}
@@ -183,7 +187,8 @@ export const LiveWebsiteThumbnail = ({
             sandbox="allow-scripts allow-same-origin allow-popups"
             scrolling="no"
             onLoad={() => setIsIframeLoaded(true)}
-            className={`w-[1200px] h-[750px] border-0 select-none pointer-events-none transition-opacity duration-500 ${
+            onError={() => setHasError(true)}
+            className={`w-[1200px] h-[750px] border-0 select-none pointer-events-none transition-opacity duration-500 ease-out ${
               isIframeLoaded ? 'opacity-100' : 'opacity-0'
             }`}
             style={{
@@ -191,21 +196,13 @@ export const LiveWebsiteThumbnail = ({
               transformOrigin: 'top left',
             }}
           />
-
-          {/* Floating Live Telemetry Badge (Confirms live site is active) */}
-          <div className="absolute bottom-2.5 left-2.5 z-30 pointer-events-none">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-950/90 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-bold shadow-lg backdrop-blur-md">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>LIVE INTERFACE ACTIVE</span>
-            </span>
-          </div>
         </div>
       )}
 
       {/* ---------------------------------------------------- */}
-      {/* 3. TOP BADGES (Category & Live Status)               */}
+      {/* 3. TOP BADGES (Category & Status)                    */}
       {/* ---------------------------------------------------- */}
-      <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-30 pointer-events-none">
+      <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-20 pointer-events-none">
         {showCategoryBadge && (
           <span className="pointer-events-auto">
             <span className="inline-block text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-950/80 text-cyan-300 border border-cyan-500/30 backdrop-blur-md shadow">
@@ -216,14 +213,6 @@ export const LiveWebsiteThumbnail = ({
 
         {showStatusBadge && (
           <span className="pointer-events-auto flex items-center gap-1.5">
-            {/* Live Preview Capability Indicator Chip */}
-            {supportsLivePreview && !isActive && (
-              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-950/75 border border-cyan-500/20 text-[10px] font-mono text-cyan-400/90 backdrop-blur-md">
-                <Sparkles className="w-2.5 h-2.5 text-cyan-400" />
-                <span>Hover to Preview</span>
-              </span>
-            )}
-
             {/* Verification Status Pill */}
             <span
               className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold backdrop-blur-md shadow border ${
@@ -247,7 +236,7 @@ export const LiveWebsiteThumbnail = ({
       {/* 4. MOBILE PREVIEW TOGGLE BUTTON                      */}
       {/* ---------------------------------------------------- */}
       {supportsLivePreview && (
-        <div className="sm:hidden absolute bottom-2.5 right-2.5 z-40">
+        <div className="sm:hidden absolute bottom-2.5 right-2.5 z-30">
           <button
             onClick={handleMobileToggle}
             type="button"

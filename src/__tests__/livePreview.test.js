@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 import { initialProjects } from '../data/projects';
 
 describe('Live Website Hover Preview System', () => {
@@ -52,5 +54,29 @@ describe('Live Website Hover Preview System', () => {
     // Mouse leave on project 2
     deactivate('proj-pixel-me-faizan');
     expect(globalActiveId).toBeNull();
+  });
+
+  it('verifies removal of blocking loading UI and fake status badges from component source', () => {
+    const componentPath = path.resolve(__dirname, '../components/cards/LiveWebsiteThumbnail.jsx');
+    const source = fs.readFileSync(componentPath, 'utf-8');
+
+    // Must not contain the forbidden blocking strings
+    expect(source).not.toContain('Streaming Live Interface...');
+    expect(source).not.toContain('LIVE INTERFACE ACTIVE');
+    expect(source).not.toContain('RefreshCw');
+    // Must not contain 220ms or artificial debounce timer delaying iframe mount on hover
+    expect(source).not.toContain('debounceTimerRef');
+  });
+
+  it('verifies seamless transition logic where iframe fades in over base screenshot', () => {
+    const componentPath = path.resolve(__dirname, '../components/cards/LiveWebsiteThumbnail.jsx');
+    const source = fs.readFileSync(componentPath, 'utf-8');
+
+    // Confirms iframe has opacity transition
+    expect(source).toContain('transition-opacity');
+    expect(source).toContain('isIframeLoaded ? \'opacity-100\' : \'opacity-0\'');
+    // Confirms fallback safety timeout
+    expect(source).toContain('setTimeout');
+    expect(source).toContain('setHasError');
   });
 });
