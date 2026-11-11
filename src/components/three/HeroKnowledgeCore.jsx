@@ -14,7 +14,12 @@ export const HeroKnowledgeCore = () => {
   const canvasRef = useRef(null);
   const { shouldSimplifyEffects } = useReducedMotion();
   const isVisible = useIntersectionObserver(containerRef);
+  const isVisibleRef = useRef(isVisible);
   const [webglSupported, setWebglSupported] = useState(true);
+
+  useEffect(() => {
+    isVisibleRef.current = isVisible;
+  }, [isVisible]);
 
   useEffect(() => {
     // Check WebGL availability
@@ -203,6 +208,12 @@ export const HeroKnowledgeCore = () => {
       coreGroup.rotation.x = mouse.y * 0.45;
       coreGroup.rotation.z = -mouse.x * 0.35;
 
+      // Cull rendering when scrolled offscreen
+      if (!isVisibleRef.current) {
+        animationFrameId = requestAnimationFrame(animate);
+        return;
+      }
+
       // Inner sphere counter-rotation
       innerSphere.rotation.y -= 0.008;
       innerSphere.rotation.x += 0.004;
@@ -258,7 +269,7 @@ export const HeroKnowledgeCore = () => {
       particleMat.dispose();
       renderer.dispose();
     };
-  }, [isVisible, shouldSimplifyEffects]);
+  }, [shouldSimplifyEffects]);
 
   // Fallback if WebGL disabled or unavailable
   if (!webglSupported) {
@@ -282,6 +293,7 @@ export const HeroKnowledgeCore = () => {
 
       {/* Real 3D WebGL Canvas */}
       <canvas
+        key="hero-knowledge-core-webgl-canvas"
         ref={canvasRef}
         className="w-full h-full cursor-grab active:cursor-grabbing z-10"
         aria-label="Interactive 3D Technology Core. Responds to cursor movement."

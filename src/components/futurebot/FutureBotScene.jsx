@@ -28,6 +28,11 @@ export const FutureBotScene = ({
   const isWebGL = useWebGLSupport();
   const { prefersReducedMotion, isTouchDevice } = useReducedMotion();
   const isIntersecting = useIntersectionObserver(containerRef, { threshold: 0.1 });
+  const isIntersectingRef = useRef(isIntersecting);
+
+  useEffect(() => {
+    isIntersectingRef.current = isIntersecting;
+  }, [isIntersecting]);
 
   const [hasContextError, setHasContextError] = useState(false);
   const characterRef = useRef(null);
@@ -176,7 +181,7 @@ export const FutureBotScene = ({
       animFrameId.current = requestAnimationFrame(animate);
 
       // Cull rendering when scrolled offscreen
-      if (!isIntersecting) return;
+      if (!isIntersectingRef.current) return;
 
       const delta = Math.min(clock.getDelta(), 0.05);
 
@@ -211,7 +216,7 @@ export const FutureBotScene = ({
         renderer.dispose();
       }
     };
-  }, [isWebGL, hasContextError, isIntersecting, prefersReducedMotion, cameraDistance, cameraY]);
+  }, [isWebGL, hasContextError, prefersReducedMotion, cameraDistance, cameraY]);
 
   // Dimension classes based on size prop
   const sizeClasses = {
@@ -248,6 +253,7 @@ export const FutureBotScene = ({
       aria-label={`FutureBot 3D AI Assistant - Status: ${state}`}
     >
       <canvas
+        key="futurebot-3d-webgl-canvas"
         ref={canvasRef}
         className="w-full h-full block pointer-events-auto"
         tabIndex={interactive ? 0 : -1}

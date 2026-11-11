@@ -301,6 +301,7 @@ export const NeuralNetworkCanvas = ({
 
   return (
     <canvas
+      key="neural-network-2d-canvas"
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none z-10 transition-opacity duration-700"
       style={{ opacity: 0.95 }}
